@@ -245,7 +245,7 @@ public class IRCBot extends PircBot {
 		}
 
 		sendMessage(connectedChannel,
-				"The the community chose " + voting.get(chosen).get(0));
+				"The community chose " + voting.get(chosen).get(0));
 
 	}
 
