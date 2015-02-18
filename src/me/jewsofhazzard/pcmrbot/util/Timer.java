@@ -15,6 +15,12 @@ import me.jewsofhazzard.pcmrbot.MyBotMain;
 public class Timer implements Runnable {
 
 	private boolean screenSwitch;
+	private String channel;
+	
+	public Timer(String channel) {
+		this.channel=channel;
+		new Thread(this).start();
+	}
 
 	public void run() {
 
@@ -24,13 +30,13 @@ public class Timer implements Runnable {
 
 		}
 
-		MyBotMain.getConnectedchannel(MyBotMain.getBotChannel()).setTimer(true);
-		MyBotMain.getConnectedchannel(MyBotMain.getBotChannel()).setVoteCall(false);
+		MyBotMain.getConnectedchannel(channel).setTimer(true);
+		MyBotMain.getConnectedchannel(channel).setVoteCall(false);
 
 		if (screenSwitch) {
-			MyBotMain.getConnectedchannel(MyBotMain.getBotChannel()).switchScreen();
+			MyBotMain.getConnectedchannel(channel).switchScreen();
 		}
-		MyBotMain.getConnectedchannel(MyBotMain.getBotChannel()).voteCounter();
+		MyBotMain.getConnectedchannel(channel).voteCounter();
 		screenSwitch = false;
 
 	}

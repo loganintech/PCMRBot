@@ -8,21 +8,16 @@ package me.jewsofhazzard.pcmrbot;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.jewsofhazzard.pcmrbot.util.TFileReader;
+import me.jewsofhazzard.pcmrbot.util.TFileWriter;
 import me.jewsofhazzard.pcmrbot.util.Timer;
 
 import org.jibble.pircbot.PircBot;
@@ -36,13 +31,8 @@ public class IRCBot extends PircBot {
 
 	@SuppressWarnings("unused")
 	private boolean timer = false;
-//	private int voteMain = 0;
-//	private int votePrimary = 0;
-//	private int voteSecondary = 0;
 	private boolean voteCall;
 	private ArrayList<ArrayList<String>> voting = new ArrayList<>();
-	private ArrayList<String> voteChoices = new ArrayList<>();
-	private ArrayList<String> moderatorList = new ArrayList<>();
 	private String connectedChannel;
 
 	private Robot robot;
@@ -115,7 +105,7 @@ public class IRCBot extends PircBot {
 		if (message.equalsIgnoreCase("!voteChangeScreen")) {
 
 			if(connectedChannel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
-				Timer t = new Timer();
+				Timer t = new Timer(connectedChannel);
 				setTimer(false);
 				setVoteCall(true);
 				voteChangeScreen();
@@ -127,27 +117,27 @@ public class IRCBot extends PircBot {
 		if (message.toLowerCase().startsWith("!votestart ") && isMod(sender)) {
 
 			voting = new ArrayList<>();
-			voteChoices = new ArrayList<>();
 
 			message = message.substring(message.indexOf(" ") + 1);
-			String[] dirtyVoteOptions = message.split("[|]");
-			sendMessage(connectedChannel, dirtyVoteOptions[0]);
-			String[] cleanVoteOptions = new String[dirtyVoteOptions.length - 1];
+			String[] voteOptions = message.split("[|]");
+			sendMessage(connectedChannel, voteOptions[0]);
 
-			for (int i = 0; i < cleanVoteOptions.length; i++) {
+			for (int i = 1; i < voteOptions.length; i++) {
 
-				cleanVoteOptions[i] = dirtyVoteOptions[i + 1];
-				sendMessage(connectedChannel, cleanVoteOptions[i]);
+				sendMessage(connectedChannel, voteOptions[i]);
+				voting.add(new ArrayList<String>());
+				voting.get(i-1).add(voteOptions[i]);
+
 			}
-
+			
 			sendMessage(
 					connectedChannel,
 					"Please input your choice by typing !vote {vote number}. Note, if you choose a number higher or lower than required, your vote will be discarded and you will be prohibited from voting this round.");
 
-			for (int i = 0; i < cleanVoteOptions.length; i++) {
+			for (int i = 1; i < voteOptions.length; i++) {
 
-				voting.add(i, new ArrayList<String>());
-				voteChoices.add(cleanVoteOptions[i]);
+				voting.add(new ArrayList<String>());
+				voting.get(i).add(voteOptions[i]);
 
 			}
 
@@ -181,7 +171,7 @@ public class IRCBot extends PircBot {
 						.indexOf(" ") + 1));
 				voting.get(vote - 1).add(sender);
 				sendMessage(connectedChannel, sender + " has voted for "
-						+ voteChoices.get(vote - 1));
+						+ voting.get(vote - 1).get(0));
 
 			}
 
@@ -222,7 +212,7 @@ public class IRCBot extends PircBot {
 
 		sendMessage(connectedChannel, "You have 30 seconds to vote.");
 
-		(new Thread(new Timer())).start();
+		new Timer(connectedChannel);
 
 	}
 
@@ -230,8 +220,8 @@ public class IRCBot extends PircBot {
 
 		sendMessage(connectedChannel, "You have 30 seconds to vote.");
 
-		(new Thread(new Timer())).start();
-
+		new Timer(connectedChannel);
+		
 	}
 
 	public void voteCounter() {
@@ -247,13 +237,13 @@ public class IRCBot extends PircBot {
 		}
 
 		sendMessage(connectedChannel,
-				"The the community chose " + voteChoices.get(chosen));
+				"The the community chose " + voting.get(chosen).get(0));
 
 	}
 
 	public void voteTimner() {
 
-		(new Thread(new Timer())).start();
+		new Timer(connectedChannel);
 
 	}
 
@@ -316,34 +306,8 @@ public class IRCBot extends PircBot {
 
 	public void addModerator(String moderator) throws FileNotFoundException,
 			UnsupportedEncodingException, IOException {
-
-		moderatorList.add(moderator);
-		// writeModerators();
-
-		BufferedReader reader = new BufferedReader(new FileReader(
-				"ModeratorList.txt"));
-
-		String line;
-		while ((line = reader.readLine()) != null) {
-			moderatorList.add(line);
-		}
-		reader.close();
-		System.out.println(moderatorList.size());
-		sendMessage(connectedChannel, "/mod " + moderator);
-		writeModerators();
-		/*
-		 * for (String record : moderatorList) { System.out.println(record); }
-		 * 
-		 * moderatorList.add(moderator);
-		 * 
-		 * for (String record : moderatorList) { System.out.println(record); }
-		 * 
-		 * for(int i = 0; i < moderatorList.size(); i++){
-		 * 
-		 * MyBotMain.writer.println(moderatorList.get(i)); }
-		 * 
-		 * MyBotMain.writer.println(moderator); MyBotMain.writer.close();
-		 */
+		TFileWriter.writeFile(new File(connectedChannel+"Mods.txt"), moderator);
+		sendMessage(connectedChannel, ".mod " + moderator);
 	}
 
 	public boolean isMod(String sender) {
@@ -376,28 +340,6 @@ public class IRCBot extends PircBot {
 			sendMessage(connectedChannel, "I have joined " + sender + "'s channel.");
 		}
 
-	}
-
-	public void writeModerators() {
-		Writer writer = null;
-
-		try {
-			writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream("ModeratorList.txt"), "utf-8"));
-
-			for (int i = 0; i < moderatorList.size(); i++) {
-
-				writer.write(moderatorList.get(i) + "\n");
-			}
-
-		} catch (IOException ex) {
-			// report
-		} finally {
-			try {
-				writer.close();
-			} catch (Exception ex) {
-			}
-		}
 	}
 
 }
