@@ -135,7 +135,7 @@ public class IRCBot extends PircBot {
 
 			for (int i = 0; i < answers.length; i++) {
 
-				sendMessage(connectedChannel, voteOptions[i]);
+				sendMessage(connectedChannel, answers[i]);
 				voting.add(new ArrayList<String>());
 				voting.get(i).add(answers[i]);
 
