@@ -127,13 +127,17 @@ public class IRCBot extends PircBot {
 
 			message = message.substring(message.indexOf(" ") + 1);
 			String[] voteOptions = message.split("[|]");
+			String[] answers = new String[voteOptions.length-2];
+			for(int i=2;i<voteOptions.length;i++) {
+				answers[i-2]=voteOptions[i];
+			}
 			sendMessage(connectedChannel, voteOptions[1]);
 
-			for (int i = 2; i < voteOptions.length; i++) {
+			for (int i = 0; i < answers.length; i++) {
 
 				sendMessage(connectedChannel, voteOptions[i]);
 				voting.add(new ArrayList<String>());
-				voting.get(i - 2).add(voteOptions[i]);
+				voting.get(i).add(answers[i]);
 
 			}
 
@@ -141,10 +145,10 @@ public class IRCBot extends PircBot {
 					connectedChannel,
 					"Please input your choice by typing !vote {vote number}. Note, if you choose a number higher or lower than required, your vote will be discarded and you will be prohibited from voting this round.");
 
-			for (int i = 2; i < voteOptions.length; i++) {
+			for (int i = 0; i < answers.length; i++) {
 
 				voting.add(new ArrayList<String>());
-				voting.get(i-2).add(voteOptions[i]);
+				voting.get(i).add(voteOptions[i]);
 
 			}
 
