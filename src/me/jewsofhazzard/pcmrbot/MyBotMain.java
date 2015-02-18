@@ -21,6 +21,7 @@ public class MyBotMain implements Runnable {
 	private String channel;
 	private static final HashMap<String, IRCBot> connectedChannels = new HashMap<>();
 	private static final String botChannel="#botduck";
+	private static final String oAuth="";
 
 	public MyBotMain(String channel) {
 
@@ -37,7 +38,7 @@ public class MyBotMain implements Runnable {
 
 		getConnectedchannels().get(getBotChannel()).setVerbose(true);
 		getConnectedchannels().get(getBotChannel())
-				.connect("irc.twitch.tv", 6667, "");
+				.connect("irc.twitch.tv", 6667, oAuth);
 		getConnectedchannels().get(getBotChannel()).joinChannel(getBotChannel());
 
 	}
@@ -53,7 +54,7 @@ public class MyBotMain implements Runnable {
 			getConnectedchannels().get(channel).setVerbose(true);
 			try {
 				getConnectedchannels().get(channel).connect("irc.twitch.tv", 6667,
-						"oauth:f4cge65r3sq86886su3if7regvmvrp");
+						oAuth);
 			} catch (IrcException e) {
 				e.printStackTrace();
 			}

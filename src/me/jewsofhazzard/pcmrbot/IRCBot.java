@@ -104,7 +104,7 @@ public class IRCBot extends PircBot {
 
 		if (message.equalsIgnoreCase("!voteChangeScreen")) {
 
-			if(connectedChannel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
+			if (connectedChannel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
 				Timer t = new Timer(connectedChannel);
 				setTimer(false);
 				setVoteCall(true);
@@ -126,10 +126,10 @@ public class IRCBot extends PircBot {
 
 				sendMessage(connectedChannel, voteOptions[i]);
 				voting.add(new ArrayList<String>());
-				voting.get(i-1).add(voteOptions[i]);
+				voting.get(i - 1).add(voteOptions[i]);
 
 			}
-			
+
 			sendMessage(
 					connectedChannel,
 					"Please input your choice by typing !vote {vote number}. Note, if you choose a number higher or lower than required, your vote will be discarded and you will be prohibited from voting this round.");
@@ -221,7 +221,7 @@ public class IRCBot extends PircBot {
 		sendMessage(connectedChannel, "You have 30 seconds to vote.");
 
 		new Timer(connectedChannel);
-		
+
 	}
 
 	public void voteCounter() {
@@ -306,13 +306,22 @@ public class IRCBot extends PircBot {
 
 	public void addModerator(String moderator) throws FileNotFoundException,
 			UnsupportedEncodingException, IOException {
-		TFileWriter.writeFile(new File(connectedChannel+"Mods.txt"), moderator);
-		sendMessage(connectedChannel, ".mod " + moderator);
+		if (!TFileReader.readFile(new File(connectedChannel + "Mods.txt"))
+				.contains(moderator)) {
+			TFileWriter.writeFile(new File(connectedChannel + "Mods.txt"),
+					moderator);
+			sendMessage(connectedChannel, "Successfully added " + moderator
+					+ " to the bots mod list!");
+		} else {
+			sendMessage(connectedChannel, moderator
+					+ " is already a moderator!");
+		}
 	}
 
 	public boolean isMod(String sender) {
-		
-		ArrayList<String> mods=TFileReader.readFile(new File(connectedChannel+"Mods.txt"));
+
+		ArrayList<String> mods = TFileReader.readFile(new File(connectedChannel
+				+ "Mods.txt"));
 		return mods.contains(sender);
 
 	}
@@ -323,21 +332,22 @@ public class IRCBot extends PircBot {
 
 	}
 
-//	public void setChannel(String sender) {
-//
-//		channelConnected = "#" + sender;
-//
-//	}
+	// public void setChannel(String sender) {
+	//
+	// channelConnected = "#" + sender;
+	//
+	// }
 
 	public boolean checkMods() throws FileNotFoundException, IOException {
-		return new File(connectedChannel+"Mods.txt").exists();
+		return new File(connectedChannel + "Mods.txt").exists();
 	}
 
 	public void joinMe(String sender) {
 
-		if(connectedChannel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
+		if (connectedChannel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
 			new MyBotMain("#" + sender);
-			sendMessage(connectedChannel, "I have joined " + sender + "'s channel.");
+			sendMessage(connectedChannel, "I have joined " + sender
+					+ "'s channel.");
 		}
 
 	}
