@@ -5,6 +5,9 @@
  */
 package me.jewsofhazzard.pcmrbot.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import me.jewsofhazzard.pcmrbot.MyBotMain;
 
 
@@ -17,6 +20,8 @@ public class Timer implements Runnable {
 	private boolean screenSwitch;
 	private String channel;
 	
+	private static final Logger logger = Logger.getLogger(Timer.class+"");
+	
 	public Timer(String channel) {
 		this.channel=channel;
 		new Thread(this).start();
@@ -27,7 +32,7 @@ public class Timer implements Runnable {
 		try {
 			Thread.sleep(30000);
 		} catch (InterruptedException ex) {
-
+			logger.log(Level.SEVERE, "An error occurred while sleping!", ex);
 		}
 
 		MyBotMain.getConnectedchannel(channel).setTimer(true);

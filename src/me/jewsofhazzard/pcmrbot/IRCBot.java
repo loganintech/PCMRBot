@@ -9,9 +9,6 @@ import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,8 +31,9 @@ public class IRCBot extends PircBot {
 	private boolean voteCall;
 	private ArrayList<ArrayList<String>> voting = new ArrayList<>();
 	private String connectedChannel;
-
 	private Robot robot;
+	
+	private static final Logger logger = Logger.getLogger(IRCBot.class+"");
 
 	public IRCBot(String channel) {
 		connectedChannel = channel;
@@ -43,6 +41,15 @@ public class IRCBot extends PircBot {
 		try {
 			this.robot = new Robot();
 		} catch (AWTException ex) {
+			logger.log(Level.SEVERE, "An error occurred initializing the Robot!", ex);
+		}
+	}
+	
+	@Override
+	protected void onOp(String channel, String sourceNick, String sourceLogin,
+			String sourceHostname, String recipient) {
+		if(channel.equalsIgnoreCase(connectedChannel)) {
+			addModerator(recipient);
 		}
 	}
 
@@ -180,15 +187,7 @@ public class IRCBot extends PircBot {
 		if (message.toLowerCase().startsWith("!addmod ") && isMod(sender)) {
 
 			message = message.substring(message.indexOf(" ") + 1);
-			try {
-				addModerator(message);
-			} catch (UnsupportedEncodingException ex) {
-				Logger.getLogger(IRCBot.class.getName()).log(Level.SEVERE,
-						null, ex);
-			} catch (IOException ex) {
-				Logger.getLogger(IRCBot.class.getName()).log(Level.SEVERE,
-						null, ex);
-			}
+			addModerator(message);
 
 		}
 
@@ -304,8 +303,7 @@ public class IRCBot extends PircBot {
 
 	}
 
-	public void addModerator(String moderator) throws FileNotFoundException,
-			UnsupportedEncodingException, IOException {
+	public void addModerator(String moderator) {
 		if (!TFileReader.readFile(new File(connectedChannel + "Mods.txt"))
 				.contains(moderator)) {
 			TFileWriter.writeFile(new File(connectedChannel + "Mods.txt"),
@@ -338,7 +336,7 @@ public class IRCBot extends PircBot {
 	//
 	// }
 
-	public boolean checkMods() throws FileNotFoundException, IOException {
+	public boolean checkMods() {
 		return new File(connectedChannel + "Mods.txt").exists();
 	}
 

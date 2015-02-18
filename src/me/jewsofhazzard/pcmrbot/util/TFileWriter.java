@@ -71,7 +71,7 @@ public class TFileWriter {
     }
     catch (IOException e)
     {
-      logger.log(Level.SEVERE, "Error writing the file at location: " + f.getName() + "\n" + e.toString());
+      logger.log(Level.SEVERE, "Error writing the file at location: " + f.getName() + "\n" + e.toString(), e);
     }
   }
   
@@ -85,7 +85,7 @@ public class TFileWriter {
     }
     catch (IOException e)
     {
-      logger.log(Level.SEVERE, "Error writing the file at location: " + f.getName() + "\n" + e.toString());
+      logger.log(Level.SEVERE, "Error writing the file at location: " + f.getName() + "\n" + e.toString(), e);
     }
     try
     {
@@ -99,7 +99,7 @@ public class TFileWriter {
     }
     catch (IOException e)
     {
-      logger.log(Level.SEVERE, "Error writing the file at location: " + f.getName() + "\n" + e.toString());
+      logger.log(Level.SEVERE, "Error writing the file at location: " + f.getName() + "\n" + e.toString(), e);
     }
   }
   
@@ -113,7 +113,7 @@ public class TFileWriter {
     }
     catch (IOException e)
     {
-      logger.log(Level.SEVERE, "Error writing the file at location: " + f.getName() + "\n" + e.toString());
+      logger.log(Level.SEVERE, "Error writing the file at location: " + f.getName() + "\n" + e.toString(), e);
     }
     try
     {
@@ -124,7 +124,7 @@ public class TFileWriter {
     }
     catch (IOException e)
     {
-      logger.log(Level.SEVERE, "Error writing the file at location: " + f.getName() + "\n" + e.toString());
+      logger.log(Level.SEVERE, "Error writing the file at location: " + f.getName() + "\n" + e.toString(), e);
     }
   }
 }

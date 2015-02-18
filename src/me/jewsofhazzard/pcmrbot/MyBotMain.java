@@ -22,6 +22,8 @@ public class MyBotMain implements Runnable {
 	private static final HashMap<String, IRCBot> connectedChannels = new HashMap<>();
 	private static final String botChannel="#botduck";
 	private static final String oAuth="";
+	
+	private static final Logger logger = Logger.getLogger(MyBotMain.class+"");
 
 	public MyBotMain(String channel) {
 
@@ -30,15 +32,19 @@ public class MyBotMain implements Runnable {
 
 	}
 
-	public static void main(String[] args) throws IrcException, IOException {
+	public static void main(String[] args) {
 		getConnectedchannels().put(getBotChannel(), new IRCBot(getBotChannel()));
 		if (!getConnectedchannels().get(getBotChannel()).checkMods()) {
 			TFileWriter.writeFile(new File(getBotChannel()+"Mods.txt"), getBotChannel().substring(1));
 		}
 
 		getConnectedchannels().get(getBotChannel()).setVerbose(true);
-		getConnectedchannels().get(getBotChannel())
-				.connect("irc.twitch.tv", 6667, oAuth);
+		try {
+			getConnectedchannels().get(getBotChannel())
+					.connect("irc.twitch.tv", 6667, oAuth);
+		} catch (IOException | IrcException e) {
+			logger.log(Level.SEVERE, "An error occurred while connecting to "+getBotChannel(), e);
+		}
 		getConnectedchannels().get(getBotChannel()).joinChannel(getBotChannel());
 
 	}
@@ -56,12 +62,11 @@ public class MyBotMain implements Runnable {
 				getConnectedchannels().get(channel).connect("irc.twitch.tv", 6667,
 						oAuth);
 			} catch (IrcException e) {
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "An error occurred while connecting to "+getBotChannel(), e);
 			}
 			getConnectedchannels().get(channel).joinChannel(channel);
 		} catch (IOException ex) {
-			Logger.getLogger(MyBotMain.class.getName()).log(Level.SEVERE, null,
-					ex);
+			logger.log(Level.SEVERE, "An error occurred while connecting to "+getBotChannel(), ex);
 		}
 
 	}

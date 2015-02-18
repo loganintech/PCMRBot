@@ -20,7 +20,7 @@ public class TFileReader {
     }
     catch (FileNotFoundException e)
     {
-      logger.log(Level.SEVERE, "Error reading the file at location: " + f.getName() + "\n" + e.toString());
+      logger.log(Level.SEVERE, "Error reading the file at location: " + f.getName() + "\n" + e.toString(), e);
     }
     ArrayList<String> buffer = new ArrayList<>();
     Scanner scanner = new Scanner(fis);
