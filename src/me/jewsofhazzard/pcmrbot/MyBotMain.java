@@ -20,7 +20,7 @@ public class MyBotMain implements Runnable {
 	private String channel;
 	private static final HashMap<String, IRCBot> connectedChannels = new HashMap<>();
 	private static final String botChannel="#pcmrbot";
-	private static final String oAuth="";
+	private static String oAuth="";
 	
 	private static final Logger logger = Logger.getLogger(MyBotMain.class+"");
 
@@ -32,6 +32,7 @@ public class MyBotMain implements Runnable {
 	}
 
 	public static void main(String[] args) {
+		oAuth=args[0];
 		getConnectedchannels().put(getBotChannel(), new IRCBot(getBotChannel()));
 		if (!getConnectedchannels().get(getBotChannel()).checkMods()) {
 			TFileWriter.writeFile(new File(getBotChannel()+"Mods.txt"), getBotChannel().substring(1), "donald10101", "j3wsofhazard");
