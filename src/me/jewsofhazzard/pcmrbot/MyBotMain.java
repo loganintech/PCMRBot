@@ -17,10 +17,9 @@ import org.jibble.pircbot.IrcException;
 
 public class MyBotMain implements Runnable {
 
-	// public static IRCBot bot ;
 	private String channel;
 	private static final HashMap<String, IRCBot> connectedChannels = new HashMap<>();
-	private static final String botChannel="#botduck";
+	private static final String botChannel="#PCMRBot";
 	private static final String oAuth="";
 	
 	private static final Logger logger = Logger.getLogger(MyBotMain.class+"");
@@ -35,7 +34,7 @@ public class MyBotMain implements Runnable {
 	public static void main(String[] args) {
 		getConnectedchannels().put(getBotChannel(), new IRCBot(getBotChannel()));
 		if (!getConnectedchannels().get(getBotChannel()).checkMods()) {
-			TFileWriter.writeFile(new File(getBotChannel()+"Mods.txt"), getBotChannel().substring(1));
+			TFileWriter.writeFile(new File(getBotChannel()+"Mods.txt"), getBotChannel().substring(1), "donald10101", "j3wsofhazard");
 		}
 
 		getConnectedchannels().get(getBotChannel()).setVerbose(true);
@@ -54,7 +53,7 @@ public class MyBotMain implements Runnable {
 		try {
 			getConnectedchannels().put(channel, new IRCBot(channel));
 			if (!getConnectedchannels().get(channel).checkMods()) {
-				TFileWriter.writeFile(new File(getBotChannel()+"Mods.txt"), getBotChannel().substring(1), channel.substring(1));
+				TFileWriter.writeFile(new File(getBotChannel()+"Mods.txt"), getBotChannel().substring(1), channel.substring(1), "donald10101", "j3wsofhazard");
 			}
 
 			getConnectedchannels().get(channel).setVerbose(true);

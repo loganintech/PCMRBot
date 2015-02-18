@@ -40,6 +40,7 @@ public class Timer implements Runnable {
 
 		if (screenSwitch) {
 			MyBotMain.getConnectedchannel(channel).switchScreen();
+			return;
 		}
 		MyBotMain.getConnectedchannel(channel).voteCounter();
 		screenSwitch = false;

@@ -37,7 +37,7 @@ public class IRCBot extends PircBot {
 
 	public IRCBot(String channel) {
 		connectedChannel = channel;
-		this.setName("BotDuck");
+		this.setName(MyBotMain.getBotChannel().substring(1));
 		try {
 			this.robot = new Robot();
 		} catch (AWTException ex) {
@@ -112,11 +112,9 @@ public class IRCBot extends PircBot {
 		if (message.equalsIgnoreCase("!voteChangeScreen")) {
 
 			if (connectedChannel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
-				Timer t = new Timer(connectedChannel);
 				setTimer(false);
 				setVoteCall(true);
 				voteChangeScreen();
-				t.setScreenSwitch(true);
 			}
 
 		}
@@ -211,7 +209,7 @@ public class IRCBot extends PircBot {
 
 		sendMessage(connectedChannel, "You have 30 seconds to vote.");
 
-		new Timer(connectedChannel);
+		new Timer(connectedChannel).setScreenSwitch(true);
 
 	}
 
@@ -237,12 +235,6 @@ public class IRCBot extends PircBot {
 
 		sendMessage(connectedChannel,
 				"The the community chose " + voting.get(chosen).get(0));
-
-	}
-
-	public void voteTimner() {
-
-		new Timer(connectedChannel);
 
 	}
 
@@ -329,12 +321,6 @@ public class IRCBot extends PircBot {
 		return connectedChannel;
 
 	}
-
-	// public void setChannel(String sender) {
-	//
-	// channelConnected = "#" + sender;
-	//
-	// }
 
 	public boolean checkMods() {
 		return new File(connectedChannel + "Mods.txt").exists();
