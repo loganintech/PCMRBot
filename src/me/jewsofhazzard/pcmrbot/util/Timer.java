@@ -19,10 +19,12 @@ public class Timer implements Runnable {
 
 	private boolean screenSwitch;
 	private String channel;
+	private long time;
 	
 	private static final Logger logger = Logger.getLogger(Timer.class+"");
 	
-	public Timer(String channel) {
+	public Timer(String channel, long time) {
+		this.time = time;
 		this.channel=channel;
 		new Thread(this).start();
 	}
@@ -30,7 +32,7 @@ public class Timer implements Runnable {
 	public void run() {
 
 		try {
-			Thread.sleep(30000);
+			Thread.sleep(time * 1000);
 		} catch (InterruptedException ex) {
 			logger.log(Level.SEVERE, "An error occurred while sleping!", ex);
 		}

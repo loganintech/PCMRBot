@@ -125,13 +125,13 @@ public class IRCBot extends PircBot {
 
 			message = message.substring(message.indexOf(" ") + 1);
 			String[] voteOptions = message.split("[|]");
-			sendMessage(connectedChannel, voteOptions[0]);
+			sendMessage(connectedChannel, voteOptions[1]);
 
-			for (int i = 1; i < voteOptions.length; i++) {
+			for (int i = 2; i < voteOptions.length; i++) {
 
 				sendMessage(connectedChannel, voteOptions[i]);
 				voting.add(new ArrayList<String>());
-				voting.get(i - 1).add(voteOptions[i]);
+				voting.get(i - 2).add(voteOptions[i]);
 
 			}
 
@@ -139,16 +139,16 @@ public class IRCBot extends PircBot {
 					connectedChannel,
 					"Please input your choice by typing !vote {vote number}. Note, if you choose a number higher or lower than required, your vote will be discarded and you will be prohibited from voting this round.");
 
-			for (int i = 1; i < voteOptions.length; i++) {
+			for (int i = 2; i < voteOptions.length; i++) {
 
 				voting.add(new ArrayList<String>());
-				voting.get(i).add(voteOptions[i]);
+				voting.get(i-2).add(voteOptions[i]);
 
 			}
 
 			setTimer(false);
 			setVoteCall(true);
-			vote();
+			vote((long)Integer.valueOf(voteOptions[0]));
 
 		}
 
@@ -209,15 +209,15 @@ public class IRCBot extends PircBot {
 
 		sendMessage(connectedChannel, "You have 30 seconds to vote.");
 
-		new Timer(connectedChannel).setScreenSwitch(true);
+		new Timer(connectedChannel, 30).setScreenSwitch(true);
 
 	}
 
-	public void vote() {
+	public void vote(long time) {
 
-		sendMessage(connectedChannel, "You have 30 seconds to vote.");
+		sendMessage(connectedChannel, "You have " + time + " seconds to vote.");
 
-		new Timer(connectedChannel);
+		new Timer(connectedChannel, time);
 
 	}
 
