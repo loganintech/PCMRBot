@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package me.jewsofhazzard.pcmrbot;
+package me.jewsofhazzard.pcmrbot.util;
+
+import me.jewsofhazzard.pcmrbot.MyBotMain;
 
 
 /**
@@ -22,13 +24,13 @@ public class Timer implements Runnable {
 
 		}
 
-		MyBotMain.getConnectedchannel(MyBotMain.getBotchannel()).setTimer(true);
-		MyBotMain.getConnectedchannel(MyBotMain.getBotchannel()).setVoteCall(false);
+		MyBotMain.getConnectedchannel(MyBotMain.getBotChannel()).setTimer(true);
+		MyBotMain.getConnectedchannel(MyBotMain.getBotChannel()).setVoteCall(false);
 
 		if (screenSwitch) {
-			MyBotMain.getConnectedchannel(MyBotMain.getBotchannel()).switchScreen();
+			MyBotMain.getConnectedchannel(MyBotMain.getBotChannel()).switchScreen();
 		}
-		MyBotMain.getConnectedchannel(MyBotMain.getBotchannel()).voteCounter();
+		MyBotMain.getConnectedchannel(MyBotMain.getBotChannel()).voteCounter();
 		screenSwitch = false;
 
 	}

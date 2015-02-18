@@ -19,9 +19,11 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import me.jewsofhazzard.pcmrbot.util.TFileReader;
+import me.jewsofhazzard.pcmrbot.util.Timer;
 
 import org.jibble.pircbot.PircBot;
 
@@ -41,12 +43,12 @@ public class IRCBot extends PircBot {
 	private ArrayList<ArrayList<String>> voting = new ArrayList<>();
 	private ArrayList<String> voteChoices = new ArrayList<>();
 	private ArrayList<String> moderatorList = new ArrayList<>();
-	private String channelConnected;
+	private String connectedChannel;
 
 	private Robot robot;
 
 	public IRCBot(String channel) {
-		channelConnected = channel;
+		connectedChannel = channel;
 		this.setName("BotDuck");
 		try {
 			this.robot = new Robot();
@@ -105,18 +107,20 @@ public class IRCBot extends PircBot {
 		if (message.equalsIgnoreCase("!helppcmr")) {
 
 			sendMessage(
-					channelConnected,
+					connectedChannel,
 					"Current commands: !join (ask pcmr bot nicely to join your chat) !pcmrbot (information) !vote {choice} (vote during active votes) !votestart (admin only) !addmod (admin only).");
 
 		}
 
 		if (message.equalsIgnoreCase("!voteChangeScreen")) {
 
-			Timer t = new Timer();
-			setTimer(false);
-			setVoteCall(true);
-			voteChangeScreen();
-			t.setScreenSwitch(true);
+			if(connectedChannel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
+				Timer t = new Timer();
+				setTimer(false);
+				setVoteCall(true);
+				voteChangeScreen();
+				t.setScreenSwitch(true);
+			}
 
 		}
 
@@ -127,17 +131,17 @@ public class IRCBot extends PircBot {
 
 			message = message.substring(message.indexOf(" ") + 1);
 			String[] dirtyVoteOptions = message.split("[|]");
-			sendMessage(channelConnected, dirtyVoteOptions[0]);
+			sendMessage(connectedChannel, dirtyVoteOptions[0]);
 			String[] cleanVoteOptions = new String[dirtyVoteOptions.length - 1];
 
 			for (int i = 0; i < cleanVoteOptions.length; i++) {
 
 				cleanVoteOptions[i] = dirtyVoteOptions[i + 1];
-				sendMessage(channelConnected, cleanVoteOptions[i]);
+				sendMessage(connectedChannel, cleanVoteOptions[i]);
 			}
 
 			sendMessage(
-					channelConnected,
+					connectedChannel,
 					"Please input your choice by typing !vote {vote number}. Note, if you choose a number higher or lower than required, your vote will be discarded and you will be prohibited from voting this round.");
 
 			for (int i = 0; i < cleanVoteOptions.length; i++) {
@@ -163,7 +167,7 @@ public class IRCBot extends PircBot {
 
 					if (voting.get(i).get(x).equals(sender)) {
 
-						sendMessage(channelConnected, "I am sorry " + sender
+						sendMessage(connectedChannel, "I am sorry " + sender
 								+ " you cannot vote more than once.");
 						canVote = false;
 					}
@@ -176,7 +180,7 @@ public class IRCBot extends PircBot {
 				int vote = Integer.valueOf(message.substring(message
 						.indexOf(" ") + 1));
 				voting.get(vote - 1).add(sender);
-				sendMessage(channelConnected, sender + " has voted for "
+				sendMessage(connectedChannel, sender + " has voted for "
 						+ voteChoices.get(vote - 1));
 
 			}
@@ -207,7 +211,7 @@ public class IRCBot extends PircBot {
 		if (message.equalsIgnoreCase("!pcmrbot")) {
 
 			sendMessage(
-					channelConnected,
+					connectedChannel,
 					"I was made by J3wsOfHazard in free time during an AP Computer Science class in high school.");
 
 		}
@@ -216,7 +220,7 @@ public class IRCBot extends PircBot {
 
 	public void voteChangeScreen() {
 
-		sendMessage(channelConnected, "You have 30 seconds to vote.");
+		sendMessage(connectedChannel, "You have 30 seconds to vote.");
 
 		(new Thread(new Timer())).start();
 
@@ -224,7 +228,7 @@ public class IRCBot extends PircBot {
 
 	public void vote() {
 
-		sendMessage(channelConnected, "You have 30 seconds to vote.");
+		sendMessage(connectedChannel, "You have 30 seconds to vote.");
 
 		(new Thread(new Timer())).start();
 
@@ -242,7 +246,7 @@ public class IRCBot extends PircBot {
 
 		}
 
-		sendMessage(channelConnected,
+		sendMessage(connectedChannel,
 				"The the community chose " + voteChoices.get(chosen));
 
 	}
@@ -268,7 +272,7 @@ public class IRCBot extends PircBot {
 	public void switchScreen() {
 
 		sendMessage(
-				channelConnected,
+				connectedChannel,
 				"The voting has ended, please wait almost no seconds for the timer to complete.");
 
 		if (voting.get(0).size() > voting.get(1).size()
@@ -280,7 +284,7 @@ public class IRCBot extends PircBot {
 			robot.keyPress(KeyEvent.VK_F3);
 			robot.delay(10);
 			robot.keyRelease(KeyEvent.VK_F3);
-			sendMessage(channelConnected,
+			sendMessage(connectedChannel,
 					"You have switched the screen to view the secondary stream.");
 
 		}
@@ -293,7 +297,7 @@ public class IRCBot extends PircBot {
 			robot.keyPress(KeyEvent.VK_F4);
 			robot.delay(10);
 			robot.keyRelease(KeyEvent.VK_F4);
-			sendMessage(channelConnected,
+			sendMessage(connectedChannel,
 					"You have switched the screen to view the primary stream.");
 
 		}
@@ -303,7 +307,7 @@ public class IRCBot extends PircBot {
 			robot.keyPress(KeyEvent.VK_F2);
 			robot.delay(10);
 			robot.keyRelease(KeyEvent.VK_F2);
-			sendMessage(channelConnected,
+			sendMessage(connectedChannel,
 					"You have switched the screen to view both streams.");
 
 		}
@@ -325,7 +329,7 @@ public class IRCBot extends PircBot {
 		}
 		reader.close();
 		System.out.println(moderatorList.size());
-		sendMessage(channelConnected, "/mod " + moderator);
+		sendMessage(connectedChannel, "/mod " + moderator);
 		writeModerators();
 		/*
 		 * for (String record : moderatorList) { System.out.println(record); }
@@ -343,57 +347,33 @@ public class IRCBot extends PircBot {
 	}
 
 	public boolean isMod(String sender) {
-
-		List<String> records = new ArrayList<String>();
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(
-					"ModeratorList.txt"));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				records.add(line);
-			}
-			reader.close();
-
-		} catch (Exception e) {
-
-			System.err.format("Exception occurred trying to read '%s'.",
-					"ModeratorList.txt");
-			e.printStackTrace();
-
-		}
-
-		for (int i = 0; i < records.size(); i++) {
-
-			if (records.get(i).equalsIgnoreCase(sender))
-				return true;
-		}
-		sendMessage(channelConnected, "I am sorry " + sender
-				+ " you do not have permission to run this command.");
-		return false;
+		
+		ArrayList<String> mods=TFileReader.readFile(new File(connectedChannel+"Mods.txt"));
+		return mods.contains(sender);
 
 	}
 
 	public String getChannel() {
 
-		return channelConnected;
+		return connectedChannel;
 
 	}
 
-	public void setChannel(String sender) {
-
-		channelConnected = "#" + sender;
-
-	}
+//	public void setChannel(String sender) {
+//
+//		channelConnected = "#" + sender;
+//
+//	}
 
 	public boolean checkMods() throws FileNotFoundException, IOException {
-		return new File("ModeratorList.txt").exists();
+		return new File(connectedChannel+"Mods.txt").exists();
 	}
 
 	public void joinMe(String sender) {
 
-		if(channelConnected.equalsIgnoreCase(MyBotMain.getBotchannel())) {
+		if(connectedChannel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
 			new MyBotMain("#" + sender);
-			sendMessage(channelConnected, "I have joined " + sender + "'s channel.");
+			sendMessage(connectedChannel, "I have joined " + sender + "'s channel.");
 		}
 
 	}

@@ -7,10 +7,11 @@ package me.jewsofhazzard.pcmrbot;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import me.jewsofhazzard.pcmrbot.util.TFileWriter;
 
 import org.jibble.pircbot.IrcException;
 
@@ -29,31 +30,15 @@ public class MyBotMain implements Runnable {
 	}
 
 	public static void main(String[] args) throws IrcException, IOException {
-		getConnectedchannels().put(getBotchannel(), new IRCBot(getBotchannel()));
-
-		// create moderator list or read it if it already exists
-		// bot = new IRCBot();
-
-		PrintWriter writer;
-		if (getConnectedchannels().get(getBotchannel()).checkMods()) {
-			writer = new PrintWriter("ModeratorList.txt", "UTF-8");
-			writer.println("j3wsofhazard");
-			writer.println("pcmrbot");
-			writer.println("botduck");
-			writer.close();
-		} else {
-			new File("ModeratorList.txt").createNewFile();
-			writer = new PrintWriter("ModeratorList.txt", "UTF-8");
-			writer.println("j3wsofhazard");
-			writer.println("pcmrbot");
-			writer.println("botduck");
-			writer.close();
+		getConnectedchannels().put(getBotChannel(), new IRCBot(getBotChannel()));
+		if (!getConnectedchannels().get(getBotChannel()).checkMods()) {
+			TFileWriter.writeFile(new File(getBotChannel()+"Mods.txt"), getBotChannel().substring(1));
 		}
 
-		getConnectedchannels().get(getBotchannel()).setVerbose(true);
-		getConnectedchannels().get(getBotchannel())
+		getConnectedchannels().get(getBotChannel()).setVerbose(true);
+		getConnectedchannels().get(getBotChannel())
 				.connect("irc.twitch.tv", 6667, "");
-		getConnectedchannels().get(getBotchannel()).joinChannel(getBotchannel());
+		getConnectedchannels().get(getBotChannel()).joinChannel(getBotChannel());
 
 	}
 
@@ -61,26 +46,17 @@ public class MyBotMain implements Runnable {
 
 		try {
 			getConnectedchannels().put(channel, new IRCBot(channel));
-			
-			PrintWriter writer;
-			if (getConnectedchannels().get(channel).checkMods()) {
-				writer = new PrintWriter("ModeratorList.txt", "UTF-8");
-				writer.println("j3wsofhazard");
-				writer.println("pcmrbot");
-				writer.println("botduck");
-				writer.close();
-			} else {
-				new File("ModeratorList.txt").createNewFile();
-				writer = new PrintWriter("ModeratorList.txt", "UTF-8");
-				writer.println("j3wsofhazard");
-				writer.println("pcmrbot");
-				writer.println("botduck");
-				writer.close();
+			if (!getConnectedchannels().get(channel).checkMods()) {
+				TFileWriter.writeFile(new File(getBotChannel()+"Mods.txt"), getBotChannel().substring(1), channel.substring(1));
 			}
 
 			getConnectedchannels().get(channel).setVerbose(true);
-			// worldDomination.get("#pcmrbot").connect("irc.twitch.tv", 6667,
-			// "oauth:");
+			try {
+				getConnectedchannels().get(channel).connect("irc.twitch.tv", 6667,
+						"oauth:f4cge65r3sq86886su3if7regvmvrp");
+			} catch (IrcException e) {
+				e.printStackTrace();
+			}
 			getConnectedchannels().get(channel).joinChannel(channel);
 		} catch (IOException ex) {
 			Logger.getLogger(MyBotMain.class.getName()).log(Level.SEVERE, null,
@@ -93,7 +69,7 @@ public class MyBotMain implements Runnable {
 		return connectedChannels;
 	}
 
-	public static String getBotchannel() {
+	public static String getBotChannel() {
 		return botChannel;
 	}
 
