@@ -30,7 +30,7 @@ public class IRCBot extends PircBot {
 	private boolean timer = false;
 	private boolean voteCall;
 	private ArrayList<ArrayList<String>> voting = new ArrayList<>();
-	private ArrayList<String> problemUsers = new ArrayList<>();
+	private ArrayList<String> ringazinUsers = new ArrayList<>();
 	private String connectedChannel;
 	private Robot robot;
 	
@@ -123,7 +123,7 @@ public class IRCBot extends PircBot {
 		if (message.toLowerCase().startsWith("!votestart ") && isMod(sender)) {
 
 			voting = new ArrayList<>();
-			problemUsers = new ArrayList<>();
+			ringazinUsers = new ArrayList<>();
 
 			message = message.substring(message.indexOf(" ") + 1);
 			String[] voteOptions = message.split("[|]");
@@ -169,7 +169,7 @@ public class IRCBot extends PircBot {
 
 			}
 			
-			if (problemUsers.contains(sender)) {
+			if (ringazinUsers.contains(sender)) {
 
 				sendMessage(connectedChannel, "I am sorry " + sender
 						+ " you cannot vote more than once.");
@@ -183,7 +183,7 @@ public class IRCBot extends PircBot {
 					voting.get(vote - 1).add(sender);
 				} catch (IndexOutOfBoundsException e) {
 					sendMessage(connectedChannel, sender + " tried to break me, may hell forever reign upon him! (You cannot participate in this vote.)");
-					problemUsers.add(sender);
+					ringazinUsers.add(sender);
 					return;
 				}
 				sendMessage(connectedChannel, sender + " has voted for "
