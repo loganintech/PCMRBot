@@ -52,7 +52,7 @@ public class MyBotMain implements Runnable {
 
 		getConnectedchannels().get(getBotchannel()).setVerbose(true);
 		getConnectedchannels().get(getBotchannel())
-				.connect("irc.twitch.tv", 6667, "oauth:f4cge65r3sq86886su3if7regvmvrp");
+				.connect("irc.twitch.tv", 6667, "");
 		getConnectedchannels().get(getBotchannel()).joinChannel(getBotchannel());
 
 	}
