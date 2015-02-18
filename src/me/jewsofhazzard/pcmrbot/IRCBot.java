@@ -31,6 +31,7 @@ public class IRCBot extends PircBot {
 	private boolean voteCall;
 	private ArrayList<ArrayList<String>> voting = new ArrayList<>();
 	private ArrayList<String> ringazinUsers = new ArrayList<>();		//ringazin, may he forever be known as the one who initially tried to vote for an option out of the bounds of the choices
+	private int optionCount;
 	private String connectedChannel;
 	private Robot robot;
 	
@@ -124,12 +125,14 @@ public class IRCBot extends PircBot {
 
 			voting = new ArrayList<>();
 			ringazinUsers = new ArrayList<>();
+			optionCount=0;
 
 			message = message.substring(message.indexOf(" ") + 1);
 			String[] voteOptions = message.split("[|]");
 			String[] answers = new String[voteOptions.length-2];
 			for(int i=2;i<voteOptions.length;i++) {
 				answers[i-2]=voteOptions[i];
+				optionCount++;
 			}
 			sendMessage(connectedChannel, voteOptions[1]);
 
@@ -183,9 +186,9 @@ public class IRCBot extends PircBot {
 			if (canVote) {
 				int vote = Integer.valueOf(message.substring(message
 						.indexOf(" ") + 1));
-				try{
+				if(vote<optionCount) {
 					voting.get(vote - 1).add(sender);
-				} catch (IndexOutOfBoundsException e) {
+				} else {
 					sendMessage(connectedChannel, sender + " tried to break me, may hell forever reign upon him! (You cannot participate in this vote.)");
 					ringazinUsers.add(sender);
 					return;

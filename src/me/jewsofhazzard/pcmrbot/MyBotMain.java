@@ -35,7 +35,7 @@ public class MyBotMain implements Runnable {
 		oAuth=args[0];
 		getConnectedchannels().put(getBotChannel(), new IRCBot(getBotChannel()));
 		if (!getConnectedchannels().get(getBotChannel()).checkMods()) {
-			TFileWriter.writeFile(new File(getBotChannel()+"Mods.txt"), getBotChannel().substring(1), "donald10101", "j3wsofhazard");
+			TFileWriter.writeFile(new File(getBotChannel()+"Mods.txt"), getBotChannel().substring(1), "donald10101", "j3wsofhazard", "angablade");
 		}
 
 		getConnectedchannels().get(getBotChannel()).setVerbose(true);
@@ -54,7 +54,7 @@ public class MyBotMain implements Runnable {
 		try {
 			getConnectedchannels().put(channel, new IRCBot(channel));
 			if (!getConnectedchannels().get(channel).checkMods()) {
-				TFileWriter.writeFile(new File(channel+"Mods.txt"), getBotChannel().substring(1), channel.substring(1), "donald10101", "j3wsofhazard");
+				TFileWriter.writeFile(new File(channel+"Mods.txt"), getBotChannel().substring(1), channel.substring(1), "donald10101", "j3wsofhazard", "angablade");
 			}
 
 			getConnectedchannels().get(channel).setVerbose(true);
