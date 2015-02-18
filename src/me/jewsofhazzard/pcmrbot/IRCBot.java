@@ -7,7 +7,6 @@ package me.jewsofhazzard.pcmrbot;
  */
 import java.awt.AWTException;
 import java.awt.Robot;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -33,6 +32,7 @@ public class IRCBot extends PircBot {
 	private ArrayList<String> ringazinUsers = new ArrayList<>();		//ringazin, may he forever be known as the one who initially tried to vote for an option out of the bounds of the choices
 	private int optionCount;
 	private String connectedChannel;
+	@SuppressWarnings("unused")
 	private Robot robot;
 	
 	private static final Logger logger = Logger.getLogger(IRCBot.class+"");
@@ -63,16 +63,6 @@ public class IRCBot extends PircBot {
 			sendMessage(
 					connectedChannel,
 					"Current commands: !join (ask pcmr bot nicely to join your chat) !pcmrbot (information) !vote {choice} (vote during active votes) !votestart (admin only) !addmod (admin only).");
-
-		}
-
-		if (message.equalsIgnoreCase("!voteChangeScreen")) {
-
-			if (connectedChannel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
-				setTimer(false);
-				setVoteCall(true);
-				voteChangeScreen();
-			}
 
 		}
 
@@ -178,13 +168,6 @@ public class IRCBot extends PircBot {
 
 	}
 
-	public void voteChangeScreen() {
-
-		sendMessage(connectedChannel, "You have 30 seconds to vote.");
-
-		new Timer(connectedChannel, 30).setScreenSwitch(true);
-
-	}
 
 	public void vote(long time) {
 

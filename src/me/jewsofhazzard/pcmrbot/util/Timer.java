@@ -17,7 +17,6 @@ import me.jewsofhazzard.pcmrbot.MyBotMain;
  */
 public class Timer implements Runnable {
 
-	private boolean screenSwitch;
 	private String channel;
 	private long time;
 	
@@ -40,16 +39,10 @@ public class Timer implements Runnable {
 		MyBotMain.getConnectedchannel(channel).setTimer(true);
 		MyBotMain.getConnectedchannel(channel).setVoteCall(false);
 
-		
 		MyBotMain.getConnectedchannel(channel).voteCounter();
-		screenSwitch = false;
 
 	}
 
-	public void setScreenSwitch(boolean set) {
 
-		screenSwitch = set;
-
-	}
 
 }
