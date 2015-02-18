@@ -19,7 +19,7 @@ public class MyBotMain implements Runnable {
 
 	private String channel;
 	private static final HashMap<String, IRCBot> connectedChannels = new HashMap<>();
-	private static final String botChannel="#PCMRBot";
+	private static final String botChannel="#pcmrbot";
 	private static final String oAuth="";
 	
 	private static final Logger logger = Logger.getLogger(MyBotMain.class+"");
