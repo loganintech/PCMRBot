@@ -53,7 +53,7 @@ public class MyBotMain implements Runnable {
 		try {
 			getConnectedchannels().put(channel, new IRCBot(channel));
 			if (!getConnectedchannels().get(channel).checkMods()) {
-				TFileWriter.writeFile(new File(getBotChannel()+"Mods.txt"), getBotChannel().substring(1), channel.substring(1), "donald10101", "j3wsofhazard");
+				TFileWriter.writeFile(new File(channel+"Mods.txt"), getBotChannel().substring(1), channel.substring(1), "donald10101", "j3wsofhazard");
 			}
 
 			getConnectedchannels().get(channel).setVerbose(true);
