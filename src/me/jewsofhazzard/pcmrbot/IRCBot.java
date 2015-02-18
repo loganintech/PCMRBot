@@ -21,7 +21,7 @@ import org.jibble.pircbot.PircBot;
 
 /**
  *
- * @author JewsOfHazard
+ * @author JewsOfHazard, Donald10101, And peoples.
  */
 
 public class IRCBot extends PircBot {
@@ -57,51 +57,6 @@ public class IRCBot extends PircBot {
 
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message) {
-
-		// Task, find how to pass an FKey when someone says something specific
-		// in the chat.
-
-		/*
-		 * 
-		 * if(message.equalsIgnoreCase("!primary")){
-		 * 
-		 * //for purposes of testing, lets say this is gonna type somehthing
-		 * 
-		 * //sendMessage(channelConnected, "Hello old sport"); //
-		 * robot.keyPress(KeyEvent.VK_ALT);
-		 * //robot.keyPress(KeyEvent.VK_CONTROL);
-		 * robot.keyPress(KeyEvent.VK_F4); robot.delay(10);
-		 * robot.keyRelease(KeyEvent.VK_F4);
-		 * //robot.keyRelease(KeyEvent.VK_CONTROL);
-		 * //robot.keyRelease(KeyEvent.VK_ALT); sendMessage(channelConnected,
-		 * "You have switched the screen to view the primary stream.");
-		 * 
-		 * } if(message.equalsIgnoreCase("!secondary")){
-		 * 
-		 * //robot.keyPress(KeyEvent.VK_ALT);
-		 * //robot.keyPress(KeyEvent.VK_CONTROL);
-		 * robot.keyPress(KeyEvent.VK_F3); robot.delay(10);
-		 * robot.keyRelease(KeyEvent.VK_F3);
-		 * //robot.keyRelease(KeyEvent.VK_CONTROL);
-		 * //robot.keyRelease(KeyEvent.VK_ALT); sendMessage(channelConnected,
-		 * "You have switched the screen to view the secondary stream.");
-		 * 
-		 * 
-		 * }
-		 * 
-		 * if(message.equalsIgnoreCase("!main")){
-		 * 
-		 * //robot.keyPress(KeyEvent.VK_ALT);
-		 * //robot.keyPress(KeyEvent.VK_CONTROL);
-		 * robot.keyPress(KeyEvent.VK_F2); robot.delay(10);
-		 * robot.keyRelease(KeyEvent.VK_F2);
-		 * //robot.keyRelease(KeyEvent.VK_CONTROL);
-		 * //robot.keyRelease(KeyEvent.VK_ALT); sendMessage(channelConnected,
-		 * "You have switched the screen to view both streams.");
-		 * 
-		 * 
-		 * }
-		 */
 
 		if (message.equalsIgnoreCase("!helppcmr")) {
 
@@ -268,51 +223,7 @@ public class IRCBot extends PircBot {
 
 	}
 
-	public void switchScreen() {
-
-		sendMessage(
-				connectedChannel,
-				"The voting has ended, please wait almost no seconds for the timer to complete.");
-
-		if (voting.get(0).size() > voting.get(1).size()
-				&& voting.get(0).size() > voting.get(2).size()) { // if
-																	// secondary
-																	// is the
-																	// highest
-
-			robot.keyPress(KeyEvent.VK_F3);
-			robot.delay(10);
-			robot.keyRelease(KeyEvent.VK_F3);
-			sendMessage(connectedChannel,
-					"You have switched the screen to view the secondary stream.");
-
-		}
-
-		else if (voting.get(1).size() > voting.get(0).size()
-				&& voting.get(1).size() > voting.get(2).size()) { // if primary
-																	// is the
-																	// highest
-
-			robot.keyPress(KeyEvent.VK_F4);
-			robot.delay(10);
-			robot.keyRelease(KeyEvent.VK_F4);
-			sendMessage(connectedChannel,
-					"You have switched the screen to view the primary stream.");
-
-		}
-
-		else {
-
-			robot.keyPress(KeyEvent.VK_F2);
-			robot.delay(10);
-			robot.keyRelease(KeyEvent.VK_F2);
-			sendMessage(connectedChannel,
-					"You have switched the screen to view both streams.");
-
-		}
-
-	}
-
+	
 	public void addModerator(String moderator) {
 		if (!TFileReader.readFile(new File(connectedChannel + "Mods.txt"))
 				.contains(moderator)) {
