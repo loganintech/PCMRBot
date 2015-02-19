@@ -33,7 +33,7 @@ public class IRCBot extends PircBot {
 	private boolean timer = false;
 	private boolean voteCall;
 	private ArrayList<ArrayList<String>> voting = new ArrayList<>();
-	private ArrayList<string> chatpostseen = new arraylist<>();
+	private ArrayList<String> chatPostSeen = new ArrayList<>();
 	private ArrayList<String> ringazinUsers = new ArrayList<>(); // ringazin, may he forever be known as the one who initially tried to vote for an option out of the bounds of the choices
 	private int optionCount;
 	private String connectedChannel;
@@ -68,7 +68,7 @@ public class IRCBot extends PircBot {
 			String hostname, String message) {
 
 			Date date = new Date();
-			chatpostseen.add(sender + "|" + channel + "|" + date.tostring());
+			chatPostSeen.add(sender + "|" + channel + "|" + date.toString());
 			
 			
 		if (!isMod(sender)) {
@@ -163,23 +163,23 @@ public class IRCBot extends PircBot {
 		}
 
 		
-		if (message.ToLowerCase().startswith("!seen ") {
+		if (message.toLowerCase().startsWith("!seen ")) {
 			
 			message = message.substring(message.indexOf(" ") + 1);
 
-			String strtosend = "";
+			String info = "";
 			
-			for(int i = 0; i < chatpostseen.length - 1; i++){
-				String element = chatpostseen[i];
+			for(int i = 0; i < chatPostSeen.size() - 1; i++){
+				String element = chatPostSeen.get(i);
 				
-				if (element.startswith(message))
+				if (element.startsWith(message))
 				{
-					strtosend = element;
+					info = element;
 				}
 			}
 			
-			if (strtosend.contains("|") = true) {
-				String[] tokens = strtosend.split("\\|");
+			if (info.contains("|")) {
+				String[] tokens = info.split("[|]");
 				sendMessage(connectedChannel, sender + ", I last seen '" + tokens[0] + "' was in " + tokens[1] + " on " + tokens[2] + ".");
 			} else {
 				sendMessage(connectedChannel, "I am sorry " + sender + ", I have not seen them.");
