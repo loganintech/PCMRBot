@@ -78,7 +78,7 @@ public class IRCBot extends PircBot {
 			}
 			ResultSet rs = Database
 					.executeQuery("SELECT * FROM " + Database.DEFAULT_SCHEMA
-							+ "." + connectedChannel + "Spam");
+							+ "." + connectedChannel.substring(0) + "Spam");
 			try {
 				while (rs.next()) {
 					if (message.matches("(" + rs.getString(1) + ")+")) {
@@ -262,7 +262,7 @@ public class IRCBot extends PircBot {
 
 	public void addModerator(String moderator) {
 		ResultSet rs = Database.executeQuery("SELECT * FROM "
-				+ Database.DEFAULT_SCHEMA + "." + connectedChannel
+				+ Database.DEFAULT_SCHEMA + "." + connectedChannel.substring(0)
 				+ "Mods WHERE userID=\'" + moderator + "\'");
 		try {
 			if (rs.next()) {
@@ -270,7 +270,7 @@ public class IRCBot extends PircBot {
 						+ " is already a moderator!");
 			} else {
 				Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA
-						+ "." + connectedChannel + "Mods VALUES(\'" + moderator
+						+ "." + connectedChannel.substring(0) + "Mods VALUES(\'" + moderator
 						+ "\')");
 				sendMessage(connectedChannel, "Successfully added " + moderator
 						+ " to the bots mod list!");
