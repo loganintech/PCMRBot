@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.jewsofhazzard.pcmrbot.database.Database;
+import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
 import me.jewsofhazzard.pcmrbot.util.TType;
 import me.jewsofhazzard.pcmrbot.util.Timeouts;
 import me.jewsofhazzard.pcmrbot.util.Timer;
@@ -91,6 +92,14 @@ public class IRCBot extends PircBot {
 				logger.log(Level.SEVERE, "An error occurred checking if "
 						+ sender + "'s message has bad words", e);
 			}
+		}
+		
+		if(message.toLowerCase().startsWith("!title ")) {
+			TwitchUtilities.updateTitle(connectedChannel.substring(1), message.substring(message.indexOf(' ')));
+		}
+		
+		if(message.toLowerCase().startsWith("!game ")) {
+			TwitchUtilities.updateTitle(connectedChannel.substring(1), message.substring(message.indexOf(' ')));
 		}
 		
 		if(message.equalsIgnoreCase("!clearAutoReplies")) {
