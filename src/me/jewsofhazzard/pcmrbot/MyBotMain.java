@@ -32,11 +32,12 @@ public class MyBotMain implements Runnable {
 
 	public static void main(String[] args) {
 		Database.initDBConnection();
-		Database.getMainTables();
-		Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'pcmrbot\')");
-		Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'j3wsofhazard\')");
-		Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'donald10101\')");
-		Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'angablade\')");
+		if(Database.getMainTables()) {
+			Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'pcmrbot\')");
+			Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'j3wsofhazard\')");
+			Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'donald10101\')");
+			Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'angablade\')");
+		}
 		oAuth = args[0];
 		getConnectedChannels()
 				.put(getBotChannel(), new IRCBot(getBotChannel()));
@@ -55,30 +56,30 @@ public class MyBotMain implements Runnable {
 	}
 
 	public void run() {
-
-		try {
-			Database.getChannelTables(channel.substring(1));
-			Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'pcmrbot\')");
-			Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'j3wsofhazard\')");
-			Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'donald10101\')");
-			Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'angablade\')");
-			Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'"+ channel.substring(1) +"\')");
+		boolean firstTime=false;
+			if(Database.getChannelTables(channel.substring(1))) {
+				firstTime=true;
+				Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'pcmrbot\')");
+				Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'j3wsofhazard\')");
+				Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'donald10101\')");
+				Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'angablade\')");
+				Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'"+ channel.substring(1) +"\')");
+			}
 			getConnectedChannels().put(channel, new IRCBot(channel));
 
 			getConnectedChannels().get(channel).setVerbose(true);
 			try {
 				getConnectedChannels().get(channel).connect("irc.twitch.tv",
 						6667, oAuth);
-			} catch (IrcException e) {
+			} catch (IrcException|IOException e) {
 				logger.log(Level.SEVERE,
 						"An error occurred while connecting to "
 								+ getBotChannel(), e);
 			}
 			getConnectedChannels().get(channel).joinChannel(channel);
-		} catch (IOException ex) {
-			logger.log(Level.SEVERE, "An error occurred while connecting to "
-					+ getBotChannel(), ex);
-		}
+			if(firstTime) {
+				getConnectedChannels().get(channel).onJoin();
+			}
 
 	}
 

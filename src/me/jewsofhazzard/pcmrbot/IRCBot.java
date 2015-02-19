@@ -7,7 +7,6 @@ package me.jewsofhazzard.pcmrbot;
  */
 import java.awt.AWTException;
 import java.awt.Robot;
-import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -59,6 +58,9 @@ public class IRCBot extends PircBot {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.jibble.pircbot.PircBot#onMessage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message) {
 
@@ -89,13 +91,12 @@ public class IRCBot extends PircBot {
 				logger.log(Level.SEVERE, "An error occurred checking if "
 						+ sender + "'s message has bad words", e);
 			}
-
-			// for (String s : TFileReader.readFile(new File(connectedChannel +
-			// "Spam.txt"))) {
-			// if (message.matches("[" + s + "]+")) {
-			// new Timeouts(connectedChannel, sender, 1, TType.SPAM);
-			// }
-			// }
+		}
+		
+		if(message.equalsIgnoreCase("!clearAutoReplies")) {
+			if(sender.equalsIgnoreCase(channel.substring(1))) {
+				Database.clearAutoRepliesTable(channel.substring(1));
+			}
 		}
 
 		if (message.equalsIgnoreCase("!helppcmr")) {
@@ -300,19 +301,8 @@ public class IRCBot extends PircBot {
 			}
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "An error occurred adding " + moderator
-					+ " to " + connectedChannel + "'s Mod List", e);
+					+ " to " + connectedChannel + "'s Mod List. This can probably be ignored!", e);
 		}
-
-		// if (!TFileReader.readFile(new File(connectedChannel + "Mods.txt"))
-		// .contains(moderator)) {
-		// TFileWriter.writeFile(new File(connectedChannel + "Mods.txt"),
-		// moderator);
-		// sendMessage(connectedChannel, "Successfully added " + moderator
-		// + " to the bots mod list!");
-		// } else {
-		// sendMessage(connectedChannel, moderator
-		// + " is already a moderator!");
-		// }
 	}
 
 	public boolean isMod(String sender) {
@@ -327,22 +317,12 @@ public class IRCBot extends PircBot {
 					+ " is a mod of " + connectedChannel, e);
 			return false;
 		}
-
-		// ArrayList<String> mods = TFileReader.readFile(new
-		// File(connectedChannel
-		// + "Mods.txt"));
-		// return mods.contains(sender);
-
 	}
 
 	public String getChannel() {
 
 		return connectedChannel;
 
-	}
-
-	public boolean checkMods() {
-		return new File(connectedChannel + "Mods.txt").exists();
 	}
 
 	public void joinMe(String sender) {
@@ -421,9 +401,10 @@ public class IRCBot extends PircBot {
 		
 		return false;
 	}
+	
 	public boolean isSubscriber(String sender){
 		
-		if(true /*this will be where we check to see if they are a follower with the api*/){
+		if(true /*this will be where we check to see if they are a subscriber with the api*/){
 			
 			
 		}

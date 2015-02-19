@@ -51,7 +51,7 @@ public class Database {
 		return true;
 	}
 
-	public static void getMainTables() {
+	public static boolean getMainTables() {
 		Statement stmt;
 		Statement stmt1;
 		Statement stmt2;
@@ -75,6 +75,7 @@ public class Database {
 			stmt1.closeOnCompletion();
 			stmt1.executeQuery("SELECT * FROM " + DEFAULT_SCHEMA
 					+ ".pcmrbotMods");
+			return false;
 		} catch (SQLException e) {
 			try {
 				stmt2 = conn.createStatement();
@@ -115,12 +116,13 @@ public class Database {
 						+ ".pcmrbotAutoReplies(keyWord varchar(255), reply(255), PRIMARY KEY (keyWord))");
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE,
-						"Unable to create table pcmrbotSpam!\n" + ex.toString());
+						"Unable to create table pcmrbotAutoReplies!\n" + ex.toString());
 			}
+			return true;
 		}
 	}
 
-	public static void getChannelTables(String channel) {
+	public static boolean getChannelTables(String channel) {
 		Statement stmt;
 		Statement stmt1;
 		Statement stmt2;
@@ -131,6 +133,7 @@ public class Database {
 			stmt.closeOnCompletion();
 			stmt.executeQuery("SELECT * FROM " + DEFAULT_SCHEMA + "." + channel
 					+ "Mods");
+			return false;
 		} catch (SQLException e) {
 			try {
 				stmt1 = conn.createStatement();
@@ -174,8 +177,9 @@ public class Database {
 						+ "AutoReplies(keyWord varchar(255), reply(255), PRIMARY KEY (keyWord))");
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE, "Unable to create table " + channel
-						+ "Spam!\n" + ex.toString());
+						+ "AutoReplies!\n" + ex.toString());
 			}
+			return true;
 		}
 	}
 
@@ -218,6 +222,35 @@ public class Database {
 					+ "\n" + e.toString());
 		}
 		return rs;
+	}
+	
+	public static void clearAutoRepliesTable(String channel) {
+		Statement stmt;
+		Statement stmt1;
+		try {
+			stmt = conn.createStatement();
+			stmt.closeOnCompletion();
+			stmt.executeUpdate("DROP TABLE "
+					+ DEFAULT_SCHEMA
+					+ "."
+					+ channel
+					+ "AutoReplies");
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Unable to delete table " + channel
+					+ "AutoReplies!\n" + ex.toString());
+		}
+		try {
+			stmt1 = conn.createStatement();
+			stmt1.closeOnCompletion();
+			stmt1.executeUpdate("CREATE TABLE "
+					+ DEFAULT_SCHEMA
+					+ "."
+					+ channel
+					+ "AutoReplies(keyWord varchar(255), reply(255), PRIMARY KEY (keyWord))");
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Unable to create table " + channel
+					+ "AutoReplies!\n" + ex.toString());
+		}
 	}
 
 }
