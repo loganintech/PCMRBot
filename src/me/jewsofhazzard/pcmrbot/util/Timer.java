@@ -36,10 +36,10 @@ public class Timer implements Runnable {
 			logger.log(Level.SEVERE, "An error occurred while sleping!", ex);
 		}
 
-		MyBotMain.getConnectedchannel(channel).setTimer(true);
-		MyBotMain.getConnectedchannel(channel).setVoteCall(false);
+		MyBotMain.getConnectedChannel(channel).setTimer(true);
+		MyBotMain.getConnectedChannel(channel).setVoteCall(false);
 
-		MyBotMain.getConnectedchannel(channel).voteCounter();
+		MyBotMain.getConnectedChannel(channel).voteCounter();
 
 	}
 

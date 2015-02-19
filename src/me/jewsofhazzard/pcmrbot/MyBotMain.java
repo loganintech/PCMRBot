@@ -33,45 +33,45 @@ public class MyBotMain implements Runnable {
 
 	public static void main(String[] args) {
 		oAuth=args[0];
-		getConnectedchannels().put(getBotChannel(), new IRCBot(getBotChannel()));
-		if (!getConnectedchannels().get(getBotChannel()).checkMods()) {
+		getConnectedChannels().put(getBotChannel(), new IRCBot(getBotChannel()));
+		if (!getConnectedChannels().get(getBotChannel()).checkMods()) {
 			TFileWriter.writeFile(new File(getBotChannel()+"Mods.txt"), getBotChannel().substring(1), "donald10101", "j3wsofhazard", "angablade");
 		}
 
-		getConnectedchannels().get(getBotChannel()).setVerbose(true);
+		getConnectedChannels().get(getBotChannel()).setVerbose(true);
 		try {
-			getConnectedchannels().get(getBotChannel())
+			getConnectedChannels().get(getBotChannel())
 					.connect("irc.twitch.tv", 6667, oAuth);
 		} catch (IOException | IrcException e) {
 			logger.log(Level.SEVERE, "An error occurred while connecting to "+getBotChannel(), e);
 		}
-		getConnectedchannels().get(getBotChannel()).joinChannel(getBotChannel());
+		getConnectedChannels().get(getBotChannel()).joinChannel(getBotChannel());
 
 	}
 
 	public void run() {
 
 		try {
-			getConnectedchannels().put(channel, new IRCBot(channel));
-			if (!getConnectedchannels().get(channel).checkMods()) {
+			getConnectedChannels().put(channel, new IRCBot(channel));
+			if (!getConnectedChannels().get(channel).checkMods()) {
 				TFileWriter.writeFile(new File(channel+"Mods.txt"), getBotChannel().substring(1), channel.substring(1), "donald10101", "j3wsofhazard", "angablade");
 			}
 
-			getConnectedchannels().get(channel).setVerbose(true);
+			getConnectedChannels().get(channel).setVerbose(true);
 			try {
-				getConnectedchannels().get(channel).connect("irc.twitch.tv", 6667,
+				getConnectedChannels().get(channel).connect("irc.twitch.tv", 6667,
 						oAuth);
 			} catch (IrcException e) {
 				logger.log(Level.SEVERE, "An error occurred while connecting to "+getBotChannel(), e);
 			}
-			getConnectedchannels().get(channel).joinChannel(channel);
+			getConnectedChannels().get(channel).joinChannel(channel);
 		} catch (IOException ex) {
 			logger.log(Level.SEVERE, "An error occurred while connecting to "+getBotChannel(), ex);
 		}
 
 	}
 
-	private static HashMap<String, IRCBot> getConnectedchannels() {
+	public static HashMap<String, IRCBot> getConnectedChannels() {
 		return connectedChannels;
 	}
 
@@ -79,7 +79,7 @@ public class MyBotMain implements Runnable {
 		return botChannel;
 	}
 
-	public static IRCBot getConnectedchannel(String channel) {
+	public static IRCBot getConnectedChannel(String channel) {
 		return connectedChannels.get(channel);
 	}
 

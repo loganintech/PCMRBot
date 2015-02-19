@@ -157,6 +157,12 @@ public class IRCBot extends PircBot {
 			joinMe(sender);
 
 		}
+		
+		if (message.equalsIgnoreCase("!leave")) {
+			
+			leaveMe(sender);
+			
+		}
 
 		if (message.equalsIgnoreCase("!pcmrbot")) {
 
@@ -246,6 +252,13 @@ public class IRCBot extends PircBot {
 					+ "'s channel.");
 		}
 
+	}
+	
+	public void leaveMe(String channel) {
+		if (MyBotMain.getConnectedChannel(channel)!=null) {
+			MyBotMain.getConnectedChannel(channel).partChannel(channel);
+			MyBotMain.getConnectedChannels().remove(channel);
+		}
 	}
 
 }
