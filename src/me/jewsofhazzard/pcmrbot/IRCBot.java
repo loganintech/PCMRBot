@@ -381,7 +381,7 @@ public class IRCBot extends PircBot {
 		keywords[1] = cutUp[1];
 		String reply = cutUp[cutUp.length-1];
 		
-		//need another table in the database for a list of autorepies.
+		
 		
 		
 	}

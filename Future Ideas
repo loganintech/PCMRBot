@@ -4,8 +4,12 @@ Change game
 Change stream title
 Timed messages
 
-Commercials
 
-Client Side:
-Follower Notifications/Sub Notifications
-Play sound on command
+
+
+
+
+
+A little down the line:
+
+Make a client side that can play sounds based off of commands by waiting for some notification from the server side.
