@@ -5,14 +5,13 @@ package me.jewsofhazzard.pcmrbot;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import java.awt.AWTException;
-import java.awt.Robot;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Date;
 
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
@@ -31,12 +30,10 @@ public class IRCBot extends PircBot {
 
 	private boolean voteCall;
 	private ArrayList<ArrayList<String>> voting = new ArrayList<>();
-	private ArrayList<String> chatPostSeen = new ArrayList<>();
+	private static HashMap<String, String> chatPostSeen = new HashMap<>();
 	private ArrayList<String> ringazinUsers = new ArrayList<>(); // ringazin, may he forever be known as the one who initially tried to vote for an option out of the bounds of the choices
 	private int optionCount;
 	private String connectedChannel;
-	@SuppressWarnings("unused")
-	private Robot robot;
 
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
@@ -48,12 +45,6 @@ public class IRCBot extends PircBot {
 	public IRCBot(String channel) {
 		connectedChannel = channel;
 		this.setName(MyBotMain.getBotChannel().substring(1));
-		try {
-			this.robot = new Robot();
-		} catch (AWTException ex) {
-			logger.log(Level.SEVERE,
-					"An error occurred initializing the Robot!", ex);
-		}
 	}
 	
 	@Override
@@ -68,8 +59,8 @@ public class IRCBot extends PircBot {
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message) {
 
-			Date date = new Date();
-			chatPostSeen.add(sender + "|" + channel + "|" + date.toString());
+		Date date = new Date();
+		chatPostSeen.put(sender, channel + "|" + date.toString());
 			
 			
 		if (!isMod(sender)) {
@@ -166,22 +157,13 @@ public class IRCBot extends PircBot {
 			
 			message = message.substring(message.indexOf(" ") + 1);
 
-			String info = "";
+			String info = chatPostSeen.get(message);
 			
-			for(int i = 0; i < chatPostSeen.size() - 1; i++){
-				String element = chatPostSeen.get(i);
-				
-				if (element.startsWith(message))
-				{
-					info = element;
-				}
-			}
-			
-			if (info.contains("|")) {
+			if (info != null) {
 				String[] tokens = info.split("[|]");
-				sendMessage(connectedChannel, sender + ", I last seen '" + tokens[0] + "' was in " + tokens[1] + " on " + tokens[2] + ".");
+				sendMessage(connectedChannel, sender + ", I last saw " + message + " in " + tokens[0].substring(1) + " on " + tokens[1] + ".");
 			} else {
-				sendMessage(connectedChannel, "I am sorry " + sender + ", I have not seen them.");
+				sendMessage(connectedChannel, "I am sorry " + sender + ", I have not seen "+message+" recently.");
 			}
 
 		}
