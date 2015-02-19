@@ -255,9 +255,9 @@ public class IRCBot extends PircBot {
 	}
 	
 	public void leaveMe(String channel) {
-		if (MyBotMain.getConnectedChannel(channel)!=null) {
-			MyBotMain.getConnectedChannel(channel).partChannel(channel);
-			MyBotMain.getConnectedChannels().remove(channel);
+		if (MyBotMain.getConnectedChannel("#"+channel)!=null) {
+			MyBotMain.getConnectedChannel("#"+channel).partChannel("#"+channel);
+			MyBotMain.getConnectedChannels().remove("#"+channel);
 		}
 	}
 
