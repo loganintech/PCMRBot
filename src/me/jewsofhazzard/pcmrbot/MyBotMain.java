@@ -5,13 +5,12 @@
  */
 package me.jewsofhazzard.pcmrbot;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.jewsofhazzard.pcmrbot.util.TFileWriter;
+import me.jewsofhazzard.pcmrbot.database.Database;
 
 import org.jibble.pircbot.IrcException;
 
@@ -32,11 +31,10 @@ public class MyBotMain implements Runnable {
 	}
 
 	public static void main(String[] args) {
+		Database.initDBConnection();
+		Database.getMainTables();
 		oAuth=args[0];
 		getConnectedChannels().put(getBotChannel(), new IRCBot(getBotChannel()));
-		if (!getConnectedChannels().get(getBotChannel()).checkMods()) {
-			TFileWriter.writeFile(new File(getBotChannel()+"Mods.txt"), getBotChannel().substring(1), "donald10101", "j3wsofhazard", "angablade");
-		}
 
 		getConnectedChannels().get(getBotChannel()).setVerbose(true);
 		try {
@@ -52,10 +50,8 @@ public class MyBotMain implements Runnable {
 	public void run() {
 
 		try {
+			Database.getChannelTables(channel.substring(1));
 			getConnectedChannels().put(channel, new IRCBot(channel));
-			if (!getConnectedChannels().get(channel).checkMods()) {
-				TFileWriter.writeFile(new File(channel+"Mods.txt"), getBotChannel().substring(1), channel.substring(1), "donald10101", "j3wsofhazard", "angablade");
-			}
 
 			getConnectedChannels().get(channel).setVerbose(true);
 			try {

@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Wed Feb 18 22:42:29 CST 2015:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.8.3.2 - (1557835): instance a816c00e-014b-a024-eca5-00000694f7e0 
+on database directory J:\Software Development\Personal\BotDuck\PCMRBot\PcmrBotDB  with class loader sun.misc.Launcher$AppClassLoader@79f71773 
+Loaded from file:/C:/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_65-b19
+user.dir=J:\Software Development\Personal\BotDuck\PCMRBot
+os.name=Windows 7
+os.arch=amd64
+os.version=6.1
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
