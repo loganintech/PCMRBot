@@ -255,9 +255,13 @@ public class IRCBot extends PircBot {
 	}
 	
 	public void leaveMe(String channel) {
-		if (MyBotMain.getConnectedChannel("#"+channel)!=null) {
+		if (MyBotMain.getConnectedChannel("#"+channel)!=null && connectedChannel != "#pcmrbot") {
+			sendMessage(connectedChannel, "I have disconnected from " + channel + "'s channel.");
 			MyBotMain.getConnectedChannel("#"+channel).partChannel("#"+channel);
 			MyBotMain.getConnectedChannels().remove("#"+channel);
+		}
+		else {
+			sendMessage("#" + channel, "Sorry " + channel + ", I cannot allow you to disconnect me from my hope channel.");			
 		}
 	}
 
