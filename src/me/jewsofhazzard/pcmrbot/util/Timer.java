@@ -21,12 +21,21 @@ public class Timer implements Runnable {
 
 	private static final Logger logger = Logger.getLogger(Timer.class + "");
 
+	/**
+	 * Creates a new instance of the Timer class.
+	 * 
+	 * @param channel - The channel this timer is for
+	 * @param time - The time (in seconds) until this Timer will expire
+	 */
 	public Timer(String channel, long time) {
 		this.time = time;
 		this.channel = channel;
 		new Thread(this).start();
 	}
 
+	/**
+	 * Sleeps for time seconds then tells the IRCBot to tally the votes.
+	 */
 	public void run() {
 
 		try {
@@ -34,8 +43,6 @@ public class Timer implements Runnable {
 		} catch (InterruptedException ex) {
 			logger.log(Level.SEVERE, "An error occurred while sleping!", ex);
 		}
-
-		MyBotMain.getConnectedChannel(channel).setTimer(true);
 		MyBotMain.getConnectedChannel(channel).setVoteCall(false);
 
 		MyBotMain.getConnectedChannel(channel).voteCounter();

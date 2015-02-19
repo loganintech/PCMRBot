@@ -18,6 +18,11 @@ public class Database {
 
 	static final Logger logger = Logger.getLogger(Database.class + "");
 
+	/**
+	 * Creates a connection to the database.
+	 * 
+	 * @return - true if connection is successful
+	 */
 	public static boolean initDBConnection() {
 		try {
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
@@ -51,6 +56,11 @@ public class Database {
 		return true;
 	}
 
+	/**
+	 * Creates the tables and for the bot's channel. Also creates the Schema.
+	 * 
+	 * @return - true if it has to create the tables
+	 */
 	public static boolean getMainTables() {
 		Statement stmt;
 		Statement stmt1;
@@ -122,6 +132,12 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Creates the tables for the provided channel
+	 * 
+	 * @param channel - the channel we are connecting to.
+	 * @return - true if it has to create the tables
+	 */
 	public static boolean getChannelTables(String channel) {
 		Statement stmt;
 		Statement stmt1;
@@ -183,6 +199,12 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Sends an update to the database (eg. INSERT, DELETE, etc.)
+	 * 
+	 * @param sqlCommand
+	 * @return - true if it successfully executes the update
+	 */
 	public static boolean executeUpdate(String sqlCommand) {
 		Statement stmt = null;
 		try {
@@ -204,6 +226,11 @@ public class Database {
 		return true;
 	}
 
+	/**
+	 * Sends a query to the database (eg. SELECT, etc.)
+	 * @param sqlQuery
+	 * @return
+	 */
 	public static ResultSet executeQuery(String sqlQuery) {
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -224,6 +251,11 @@ public class Database {
 		return rs;
 	}
 	
+	/**
+	 * Clears the auto replies table for the channel provided.
+	 * 
+	 * @param channel - the channel to clear auto replies for
+	 */
 	public static void clearAutoRepliesTable(String channel) {
 		Statement stmt;
 		Statement stmt1;

@@ -23,13 +23,20 @@ public class MyBotMain implements Runnable {
 
 	private static final Logger logger = Logger.getLogger(MyBotMain.class + "");
 
+	/**
+	 * Creates a new instance of MyBotMain (called whenever the bot joins a new channel).
+	 * @param channel - the channel we are joining
+	 */
 	public MyBotMain(String channel) {
-
 		this.channel = channel;
 		new Thread(this).start();
-
 	}
 
+	/**
+	 * Performs all of the setup for the bot, both on first run, and all subsequent runs.
+	 * 
+	 * @param args - the oAuth for the bot is passed on the command-line
+	 */
 	public static void main(String[] args) {
 		Database.initDBConnection();
 		if(Database.getMainTables()) {
@@ -55,6 +62,9 @@ public class MyBotMain implements Runnable {
 
 	}
 
+	/**
+	 * Performs all of the setup for the bot in the channel specified, both on first run, and all subsequent runs.
+	 */
 	public void run() {
 		boolean firstTime=false;
 			if(Database.getChannelTables(channel.substring(1))) {
@@ -78,7 +88,7 @@ public class MyBotMain implements Runnable {
 			}
 			getConnectedChannels().get(channel).joinChannel(channel);
 			if(firstTime) {
-				getConnectedChannels().get(channel).onJoin();
+				getConnectedChannels().get(channel).onFirstJoin();
 			}
 
 	}

@@ -29,8 +29,6 @@ import org.jibble.pircbot.PircBot;
 
 public class IRCBot extends PircBot {
 
-	@SuppressWarnings("unused")
-	private boolean timer = false;
 	private boolean voteCall;
 	private ArrayList<ArrayList<String>> voting = new ArrayList<>();
 	private ArrayList<String> chatPostSeen = new ArrayList<>();
@@ -42,6 +40,11 @@ public class IRCBot extends PircBot {
 
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
+	/**
+	 * Creates a new instance of IRCBot for the specified channel
+	 * 
+	 * @param channel - The IRC Channel we are connecting to.
+	 */
 	public IRCBot(String channel) {
 		connectedChannel = channel;
 		this.setName(MyBotMain.getBotChannel().substring(1));
@@ -52,7 +55,7 @@ public class IRCBot extends PircBot {
 					"An error occurred initializing the Robot!", ex);
 		}
 	}
-
+	
 	@Override
 	protected void onOp(String channel, String sourceNick, String sourceLogin,
 			String sourceHostname, String recipient) {
@@ -60,10 +63,8 @@ public class IRCBot extends PircBot {
 			addModerator(recipient);
 		}
 	}
-
-	/* (non-Javadoc)
-	 * @see org.jibble.pircbot.PircBot#onMessage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
+	
+	@Override
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message) {
 
@@ -155,8 +156,6 @@ public class IRCBot extends PircBot {
 				voting.get(i).add(voteOptions[i]);
 
 			}
-
-			setTimer(false);
 			setVoteCall(true);
 			vote((long) Integer.valueOf(voteOptions[0]));
 
@@ -288,6 +287,11 @@ public class IRCBot extends PircBot {
 		
 	}
 
+	/**
+	 * Sends a message to the channel telling them how long they have to vote and sets up the timer
+	 * 
+	 * @param time - The amount of time (in seconds) the vote will last.
+	 */
 	public void vote(long time) {
 
 		sendMessage(connectedChannel, "You have " + time + " seconds to vote.");
@@ -296,6 +300,9 @@ public class IRCBot extends PircBot {
 
 	}
 
+	/**
+	 * Tallies and decides what option wins the vote, then reports it to the channel.
+	 */
 	public void voteCounter() {
 
 		int chosen = 0;
@@ -313,18 +320,14 @@ public class IRCBot extends PircBot {
 
 	}
 
-	public void setTimer(boolean duh) {
-
-		this.timer = duh;
-
-	}
-
-	public void setVoteCall(boolean set) {
-
-		this.voteCall = set;
-
-	}
-
+	/**
+	 * <p>Does one of two things.</p>
+	 * 
+	 * <p>1. Add's a moderator to the channel's Mod's table in the database and notifies the channel</p>
+	 * <p>2. Notifies the channel that the user is already a moderator</p>
+	 * 
+	 * @param moderator
+	 */
 	public void addModerator(String moderator) {
 		ResultSet rs = Database.executeQuery("SELECT * FROM "
 				+ Database.DEFAULT_SCHEMA + "." + connectedChannel.substring(0)
@@ -360,12 +363,11 @@ public class IRCBot extends PircBot {
 		}
 	}
 
-	public String getChannel() {
-
-		return connectedChannel;
-
-	}
-
+	/**
+	 * Checks if the sender is a moderator for the channel
+	 * 
+	 * @param sender
+	 */
 	public void joinMe(String sender) {
 
 		if (connectedChannel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
@@ -376,6 +378,11 @@ public class IRCBot extends PircBot {
 
 	}
 
+	/**
+	 * Leaves the channel provided. (WIP?)
+	 * 
+	 * @param channel
+	 */
 	public void leaveMe(String channel) {
 		if (MyBotMain.getConnectedChannel("#" + channel) != null
 				&& connectedChannel != "#pcmrbot") {
@@ -393,11 +400,10 @@ public class IRCBot extends PircBot {
 		}
 	}
 
-	public void onJoin() {
-
-		// if statement to check if the database has an entry for this channel.
-		// Might need a for loop and an if statement inside
-
+	/**
+	 * Setup messages sent when the bot join's a channel for the first time. (WIP)
+	 */
+	public void onFirstJoin() {
 		sendMessage(
 				connectedChannel,
 				"Hello, this appears to be the first time you have invited me to join your channel. We just have a few preliminary manners to attend to.");
@@ -416,6 +422,11 @@ public class IRCBot extends PircBot {
 
 	}
 	
+	/**
+	 * Add's an auto reply to the channels database and send a confirmation message to the channel
+	 * 
+	 * @param message
+	 */
 	public void autoReply(String message){
 		
 		message = message.substring(message.indexOf(" ") + 1);
@@ -430,19 +441,26 @@ public class IRCBot extends PircBot {
 		String reply = cutUp[cutUp.length-1];
 		Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + connectedChannel.substring(1) + "AutoReplies VALUES(\'"+ keywords.toString() +"\' , '"+reply+"\')"  );
 		
+		sendMessage(connectedChannel, "Added auto reply: "+reply+" When all of the following key words are said in a message: "+keywords.toString());
 		
 	}
-	
+
+	/**
+	 * Checks to see if sender is a follower of the channel we are currently connected to.
+	 * 
+	 * @param sender
+	 * @return true if sender is a following of connectedChannel
+	 */
 	public boolean isFollower(String sender){
-		
-		if(true /*this will be where we check to see if they are a follower with the api*/){
-			
-			
-		}
-		
-		return false;
+		return TwitchUtilities.isFollower(sender, connectedChannel);
 	}
 	
+	/**
+	 * Checks to see if sender is a subscriber of the channel we are currently connected to. (WIP)
+	 * 
+	 * @param sender
+	 * @return true if sender is subscribed to connectedChannel
+	 */
 	public boolean isSubscriber(String sender){
 		
 		if(true /*this will be where we check to see if they are a subscriber with the api*/){
@@ -454,6 +472,26 @@ public class IRCBot extends PircBot {
 		return false;
 	}
 
+	/**
+	 * Gets the channel we are currently connected to.
+	 * 
+	 * @return the channel we are currently connected to
+	 */
+	public String getChannel() {
+
+		return connectedChannel;
+
+	}
+
+	/**
+	 * Sets the boolean voteCall to the value of set.
+	 * 
+	 * @param set
+	 */
+	public void setVoteCall(boolean set) {
+
+		this.voteCall = set;
+
+	}
+
 }
-// add a general voting system using 2d array lists to ask questions. Also, I
-// can do !callvote 
