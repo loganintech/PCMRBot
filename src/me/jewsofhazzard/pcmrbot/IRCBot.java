@@ -220,7 +220,30 @@ public class IRCBot extends PircBot {
 			autoReply(message);
 			
 		}
-
+		
+		ResultSet rs;
+		rs = Database.executeQuery("SELECT * FROM " + Database.DEFAULT_SCHEMA + "." + connectedChannel.substring(1) + "AutoReplies");
+		try {
+			while(rs.next()){
+				String [] keyword = rs.getString("keyword").split(",");
+				StringBuilder matchMe = new StringBuilder();
+				
+				for(int i = 0; i < keyword.length-1; i++){
+					matchMe.append("([\\s]*" + keyword[i] + "[\\s]*)+");
+				}
+				if(message.matches(matchMe.toString())){
+					
+					sendMessage(connectedChannel, rs.getString("reply"));
+					
+				}
+				
+			}
+		} catch (SQLException e) {
+			
+			logger.log(Level.SEVERE, "An error occured while trying to access the database.", e);
+		}
+		
+		
 	}
 
 	public void vote(long time) {
@@ -376,14 +399,37 @@ public class IRCBot extends PircBot {
 		
 		message = message.substring(message.indexOf(" ") + 1);
 		String [] cutUp = message.split("[|]");
-		String [] keywords = new String[2];
-		keywords[0] = cutUp[0];
-		keywords[1] = cutUp[1];
+		StringBuilder keywords = new StringBuilder();
+		for(int i = 0; i < cutUp.length-2; i++){
+			
+			keywords.append(cutUp[i] + ",");
+			
+		}
+		keywords.append(cutUp.length-2);
 		String reply = cutUp[cutUp.length-1];
+		Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + connectedChannel.substring(1) + "AutoReplies VALUES(\'"+ keywords.toString() +"\' , '"+reply+"\')"  );
 		
 		
+	}
+	
+	public boolean isFollower(String sender){
+		
+		if(true /*this will be where we check to see if they are a follower with the api*/){
+			
+			
+		}
+		
+		return false;
+	}
+	public boolean isSubscriber(String sender){
+		
+		if(true /*this will be where we check to see if they are a follower with the api*/){
+			
+			
+		}
 		
 		
+		return false;
 	}
 
 }

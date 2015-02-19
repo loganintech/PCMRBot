@@ -58,6 +58,11 @@ public class MyBotMain implements Runnable {
 
 		try {
 			Database.getChannelTables(channel.substring(1));
+			Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'pcmrbot\')");
+			Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'j3wsofhazard\')");
+			Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'donald10101\')");
+			Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'angablade\')");
+			Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'"+ channel.substring(1) +"\')");
 			getConnectedChannels().put(channel, new IRCBot(channel));
 
 			getConnectedChannels().get(channel).setVerbose(true);
