@@ -214,6 +214,12 @@ public class IRCBot extends PircBot {
 					"I was made by J3wsOfHazard in free time during an AP Computer Science class in high school.");
 
 		}
+		
+		if (message.equalsIgnoreCase("!addautoreply") && isMod(sender)) {
+
+			autoReply(message);
+			
+		}
 
 	}
 
@@ -364,6 +370,20 @@ public class IRCBot extends PircBot {
 				connectedChannel,
 				"To change this, please run !changeOption {type to change}|{new value}. Note: If you make paragraph to short users may not be able to post proper sentences. Think of it like twitter messages.");
 
+	}
+	
+	public void autoReply(String message){
+		
+		message = message.substring(message.indexOf(" ") + 1);
+		String [] cutUp = message.split("[|]");
+		String [] keywords = new String[2];
+		keywords[0] = cutUp[0];
+		keywords[1] = cutUp[1];
+		String reply = cutUp[cutUp.length-1];
+		
+		//need another table in the database for a list of autorepies.
+		
+		
 	}
 
 }
