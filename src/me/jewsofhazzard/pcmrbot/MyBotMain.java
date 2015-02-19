@@ -33,6 +33,10 @@ public class MyBotMain implements Runnable {
 	public static void main(String[] args) {
 		Database.initDBConnection();
 		Database.getMainTables();
+		Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'pcmrbot\')");
+		Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'j3wsofhazard\')");
+		Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'donald10101\')");
+		Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'angablade\')");
 		oAuth = args[0];
 		getConnectedChannels()
 				.put(getBotChannel(), new IRCBot(getBotChannel()));

@@ -295,7 +295,7 @@ public class IRCBot extends PircBot {
 	public boolean isMod(String sender) {
 
 		ResultSet rs = Database.executeQuery("SELECT * FROM "
-				+ Database.DEFAULT_SCHEMA + "." + connectedChannel
+				+ Database.DEFAULT_SCHEMA + "." + connectedChannel.substring(0)
 				+ "Mods WHERE userID=\'" + sender + "\'");
 		try {
 			return rs.next();
