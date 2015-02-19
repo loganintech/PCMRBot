@@ -285,6 +285,19 @@ public class IRCBot extends PircBot {
 			sendMessage("#" + channel, "Sorry " + channel + ", I cannot allow you to disconnect me from my hope channel.");			
 		}
 	}
+	
+	public void onJoin(){
+		
+		//if statement to check if the database has an entry for this channel. Might need a for loop and an if statement inside
+		
+		sendMessage(connectedChannel, "Hello, this appears to be the first time you have invited me to join your channel. We just have a few preliminary manners to attend to.");
+		sendMessage(connectedChannel, "To begin with, we use a three-part system to define a few options. Let's begin with timeing out a user.");
+		sendMessage(connectedChannel, "Users are timed out for excessive caps or symbols, an excessive or exclusive message of emoticons, links, repeated messages (spam), and messages longer than 250 characters.");
+		sendMessage(connectedChannel, "We would like you to configure the ammount of emoticons(default 15), capital letters(default 20), and paragraphs(defaults to 250 characters) allowed in a message.");
+		sendMessage(connectedChannel, "To change this, please run !changeOption {type to change}|{new value}. Note: If you make paragraph to short users may not be able to post proper sentences. Think of it like twitter messages.");
+		
+		
+	}
 
 }
 // add a general voting system using 2d array lists to ask questions. Also, I
