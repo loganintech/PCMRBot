@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Date;
 
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.util.TType;
@@ -31,6 +32,7 @@ public class IRCBot extends PircBot {
 	private boolean timer = false;
 	private boolean voteCall;
 	private ArrayList<ArrayList<String>> voting = new ArrayList<>();
+	private ArrayList<string> chatpostseen = new arraylist<>();
 	private ArrayList<String> ringazinUsers = new ArrayList<>(); // ringazin, may he forever be known as the one who initially tried to vote for an option out of the bounds of the choices
 	private int optionCount;
 	private String connectedChannel;
@@ -64,6 +66,10 @@ public class IRCBot extends PircBot {
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message) {
 
+			Date date = new Date();
+			chatpostseen.add(sender + "|" + channel + "|" + date.tostring());
+			
+			
 		if (!isMod(sender)) {
 			if (message.matches("[A-Z]{20,}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.CAPS);
@@ -147,6 +153,32 @@ public class IRCBot extends PircBot {
 
 		}
 
+		
+		if (message.ToLowerCase().startswith("!seen ") {
+			
+			message = message.substring(message.indexOf(" ") + 1);
+
+			String strtosend = "";
+			
+			for(int i = 0; i < chatpostseen.length - 1; i++){
+				String element = chatpostseen[i];
+				
+				if (element.startswith(message))
+				{
+					strtosend = element;
+				}
+			}
+			
+			if (strtosend.contains("|") = true) {
+				String[] tokens = strtosend.split("\\|");
+				sendMessage(connectedChannel, sender + ", I last seen '" + tokens[0] + "' was in " + tokens[1] + " on " + tokens[2] + ".");
+			} else {
+				sendMessage(connectedChannel, "I am sorry " + sender + ", I have not seen them.");
+			}
+
+		}
+		
+		
 		if (message.toLowerCase().startsWith("!vote ") && voteCall) {
 
 			boolean canVote = true;
