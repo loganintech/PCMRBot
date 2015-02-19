@@ -1,7 +1,7 @@
 Ideas:
 
-Change game
-Change stream title
+Change game ✓
+Change stream title ✓
 Timed messages
 
 
