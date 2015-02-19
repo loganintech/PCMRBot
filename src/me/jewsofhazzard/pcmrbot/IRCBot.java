@@ -8,12 +8,13 @@ package me.jewsofhazzard.pcmrbot;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.io.File;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.jewsofhazzard.pcmrbot.util.TFileReader;
-import me.jewsofhazzard.pcmrbot.util.TFileWriter;
+import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.util.TType;
 import me.jewsofhazzard.pcmrbot.util.Timeouts;
 import me.jewsofhazzard.pcmrbot.util.Timer;
@@ -31,13 +32,13 @@ public class IRCBot extends PircBot {
 	private boolean timer = false;
 	private boolean voteCall;
 	private ArrayList<ArrayList<String>> voting = new ArrayList<>();
-	private ArrayList<String> ringazinUsers = new ArrayList<>();		//ringazin, may he forever be known as the one who initially tried to vote for an option out of the bounds of the choices
+	private ArrayList<String> ringazinUsers = new ArrayList<>(); // ringazin, may he forever be known as the one who initially tried to vote for an option out of the bounds of the choices
 	private int optionCount;
 	private String connectedChannel;
 	@SuppressWarnings("unused")
 	private Robot robot;
-	
-	private static final Logger logger = Logger.getLogger(IRCBot.class+"");
+
+	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
 	public IRCBot(String channel) {
 		connectedChannel = channel;
@@ -45,38 +46,56 @@ public class IRCBot extends PircBot {
 		try {
 			this.robot = new Robot();
 		} catch (AWTException ex) {
-			logger.log(Level.SEVERE, "An error occurred initializing the Robot!", ex);
+			logger.log(Level.SEVERE,
+					"An error occurred initializing the Robot!", ex);
 		}
 	}
-	
+
 	@Override
 	protected void onOp(String channel, String sourceNick, String sourceLogin,
 			String sourceHostname, String recipient) {
-		if(channel.equalsIgnoreCase(connectedChannel)) {
+		if (channel.equalsIgnoreCase(connectedChannel)) {
 			addModerator(recipient);
 		}
 	}
 
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message) {
-		
-		if(!isMod(sender)){
-			if(message.matches("[A-Z]{20,}")){
+
+		if (!isMod(sender)) {
+			if (message.matches("[A-Z]{20,}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.CAPS);
-			} else if(message.matches("([A-Za-z0-9_:/\\-@\\\\s.]+[\\s?\\.\\s?]?)+([\\s?\\.\\s?](c\\s?o\\s?m|n\\s?e\\s?t|o\\s?r\\s?g|c\\s?o|a\\s?u|u\\s?k|u\\s?s|m\\s?e|b\\s?z|i\\s?n\\s?t|e\\s?d\\s?u|g\\s?o\\s?v\\s?|m\\s?i\\s?l|a\\s?c)(\\s)?(/)?)+")) {
+			} else if (message
+					.matches("([A-Za-z0-9_:/\\-@\\\\s.]+[\\s?\\.\\s?]?)+([\\s?\\.\\s?](c\\s?o\\s?m|n\\s?e\\s?t|o\\s?r\\s?g|c\\s?o|a\\s?u|u\\s?k|u\\s?s|m\\s?e|b\\s?z|i\\s?n\\s?t|e\\s?d\\s?u|g\\s?o\\s?v\\s?|m\\s?i\\s?l|a\\s?c)(\\s)?(/)?)+")) {
 				new Timeouts(connectedChannel, sender, 1, TType.LINK);
-			} else if(message.matches("[\\W_]{15,}")) {
+			} else if (message.matches("[\\W_]{15,}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.SYMBOLS);
-			} else if(message.length()>=250) {
+			} else if (message.length() >= 250) {
 				new Timeouts(connectedChannel, sender, 1, TType.PARAGRAPH);
-			} else if(message.matches("(:\\(|:\\)|:/|:D|:o|:p|:z|;\\)|;p|<3|>\\(|B\\)|o_o|R\\)|4Head|ANELE|ArsonNoSexy|AsianGlow|AtGL|AthenaPMS|AtIvy|BabyRage|AtWW|BatChest|BCWarrior|BibleThump|BigBrother|BionicBunion|BlargNaut|BloodTrail|BORT|BrainSlug|BrokeBack|BuddhaBar|CougarHunt|DAESuppy|DansGame|DatSheffy|DBstyle|DendiFace|DogFace|EagleEye|EleGiggle|EvilFetus|FailFish|FPSMarksman|FrankerZ|FreakinStinkin|FUNgineer|FunRun|FuzzyOtterOO|GasJoker|GingerPower|GrammarKing|HassaanChop|HassanChop|HeyGuys|HotPokket|HumbleLife|ItsBoshyTime|Jebaited|KZowl|JKanStyle|JonCarnage|KAPOW|Kappa|Keepo|KevinTurtle|Kippa|Kreygasm|KZassault|KZcover|KZguerilla|KZhelghast|KZskull|Mau5|mcaT|MechaSupes|MrDestructoid|MrDestructoid|MVGame|NightBat|NinjaTroll|NoNoSpot|noScope|NotAtk|OMGScoots|OneHand|OpieOP|OptimizePrime|panicBasket|PanicVis|PazPazowitz|PeoplesChamp|PermaSmug|PicoMause|PipeHype|PJHarley|PJSalt|PMSTwin|PogChamp|Poooound|PRChase|PunchTrees|PuppeyFace|RaccAttack|RalpherZ|RedCoat|ResidentSleeper|RitzMitz|RuleFive|Shazam|shazamicon|ShazBotstix|ShazBotstix|ShibeZ|SMOrc|SMSkull|SoBayed|SoonerLater|SriHead|SSSsss|StoneLightning|StrawBeary|SuperVinlin|SwiftRage|TF2John|TheRinger|TheTarFu|TheThing|ThunBeast|TinyFace|TooSpicy|TriHard|TTours|UleetBackup|UncleNox|UnSane|Volcania|WholeWheat|WinWaker|WTRuck|WutFace|YouWHY|\\(mooning\\)|\\(poolparty\\)|\\(puke\\)|:'\\(|:tf:|aPliS|BaconEffect|BasedGod|BroBalt|bttvNice|ButterSauce|cabbag3|CandianRage|CHAccepted|CiGrip|ConcernDoge|D:|DatSauce|FapFapFap|FishMoley|ForeverAlone|FuckYea|GabeN|HailHelix|HerbPerve|Hhhehehe|HHydro|iAMbh|iamsocal|iDog|JessSaiyan|JuliAwesome|KaRappa|KKona|LLuda|M&Mjc|ManlyScreams|NaM|OhGod|OhGodchanZ|OhhhKee|OhMyGoodness|PancakeMix|PedoBear|PedoNam|PokerFace|PoleDoge|RageFace|RebeccaBlack|RollIt!|rStrike|SexPanda|She'llBeRight|ShoopDaWhoop|SourPls|SuchFraud|SwedSwag|TaxiBro|tEh|ToasTy|TopHam|TwaT|UrnCrown|VisLaud|WatChuSay|WhatAYolk|YetiZ|PraiseIt|\\s){8,}")) {
+			} else if (message
+					.matches("(:\\(|:\\)|:/|:D|:o|:p|:z|;\\)|;p|<3|>\\(|B\\)|o_o|R\\)|4Head|ANELE|ArsonNoSexy|AsianGlow|AtGL|AthenaPMS|AtIvy|BabyRage|AtWW|BatChest|BCWarrior|BibleThump|BigBrother|BionicBunion|BlargNaut|BloodTrail|BORT|BrainSlug|BrokeBack|BuddhaBar|CougarHunt|DAESuppy|DansGame|DatSheffy|DBstyle|DendiFace|DogFace|EagleEye|EleGiggle|EvilFetus|FailFish|FPSMarksman|FrankerZ|FreakinStinkin|FUNgineer|FunRun|FuzzyOtterOO|GasJoker|GingerPower|GrammarKing|HassaanChop|HassanChop|HeyGuys|HotPokket|HumbleLife|ItsBoshyTime|Jebaited|KZowl|JKanStyle|JonCarnage|KAPOW|Kappa|Keepo|KevinTurtle|Kippa|Kreygasm|KZassault|KZcover|KZguerilla|KZhelghast|KZskull|Mau5|mcaT|MechaSupes|MrDestructoid|MrDestructoid|MVGame|NightBat|NinjaTroll|NoNoSpot|noScope|NotAtk|OMGScoots|OneHand|OpieOP|OptimizePrime|panicBasket|PanicVis|PazPazowitz|PeoplesChamp|PermaSmug|PicoMause|PipeHype|PJHarley|PJSalt|PMSTwin|PogChamp|Poooound|PRChase|PunchTrees|PuppeyFace|RaccAttack|RalpherZ|RedCoat|ResidentSleeper|RitzMitz|RuleFive|Shazam|shazamicon|ShazBotstix|ShazBotstix|ShibeZ|SMOrc|SMSkull|SoBayed|SoonerLater|SriHead|SSSsss|StoneLightning|StrawBeary|SuperVinlin|SwiftRage|TF2John|TheRinger|TheTarFu|TheThing|ThunBeast|TinyFace|TooSpicy|TriHard|TTours|UleetBackup|UncleNox|UnSane|Volcania|WholeWheat|WinWaker|WTRuck|WutFace|YouWHY|\\(mooning\\)|\\(poolparty\\)|\\(puke\\)|:'\\(|:tf:|aPliS|BaconEffect|BasedGod|BroBalt|bttvNice|ButterSauce|cabbag3|CandianRage|CHAccepted|CiGrip|ConcernDoge|D:|DatSauce|FapFapFap|FishMoley|ForeverAlone|FuckYea|GabeN|HailHelix|HerbPerve|Hhhehehe|HHydro|iAMbh|iamsocal|iDog|JessSaiyan|JuliAwesome|KaRappa|KKona|LLuda|M&Mjc|ManlyScreams|NaM|OhGod|OhGodchanZ|OhhhKee|OhMyGoodness|PancakeMix|PedoBear|PedoNam|PokerFace|PoleDoge|RageFace|RebeccaBlack|RollIt!|rStrike|SexPanda|She'llBeRight|ShoopDaWhoop|SourPls|SuchFraud|SwedSwag|TaxiBro|tEh|ToasTy|TopHam|TwaT|UrnCrown|VisLaud|WatChuSay|WhatAYolk|YetiZ|PraiseIt|\\s){8,}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.EMOTE);
 			}
-			for(String s:TFileReader.readFile(new File(connectedChannel+"Spam.txt"))) {
-				if(message.matches("["+s+"]+")) {
-					new Timeouts(connectedChannel, sender, 1, TType.SPAM);
+			ResultSet rs = Database
+					.executeQuery("SELECT * FROM " + Database.DEFAULT_SCHEMA
+							+ "." + connectedChannel + "Spam");
+			try {
+				while (rs.next()) {
+					if (message.matches("(" + rs.getString(1) + ")+")) {
+						new Timeouts(connectedChannel, sender, 1, TType.SPAM);
+					}
 				}
+			} catch (SQLException e) {
+				logger.log(Level.SEVERE, "An error occurred checking if "
+						+ sender + "'s message has bad words", e);
 			}
+
+			// for (String s : TFileReader.readFile(new File(connectedChannel +
+			// "Spam.txt"))) {
+			// if (message.matches("[" + s + "]+")) {
+			// new Timeouts(connectedChannel, sender, 1, TType.SPAM);
+			// }
+			// }
 		}
 
 		if (message.equalsIgnoreCase("!helppcmr")) {
@@ -91,13 +110,13 @@ public class IRCBot extends PircBot {
 
 			voting = new ArrayList<>();
 			ringazinUsers = new ArrayList<>();
-			optionCount=0;
+			optionCount = 0;
 
 			message = message.substring(message.indexOf(" ") + 1);
 			String[] voteOptions = message.split("[|]");
-			String[] answers = new String[voteOptions.length-2];
-			for(int i=2;i<voteOptions.length;i++) {
-				answers[i-2]=voteOptions[i];
+			String[] answers = new String[voteOptions.length - 2];
+			for (int i = 2; i < voteOptions.length; i++) {
+				answers[i - 2] = voteOptions[i];
 				optionCount++;
 			}
 			sendMessage(connectedChannel, voteOptions[1]);
@@ -123,7 +142,7 @@ public class IRCBot extends PircBot {
 
 			setTimer(false);
 			setVoteCall(true);
-			vote((long)Integer.valueOf(voteOptions[0]));
+			vote((long) Integer.valueOf(voteOptions[0]));
 
 		}
 
@@ -141,7 +160,7 @@ public class IRCBot extends PircBot {
 				}
 
 			}
-			
+
 			if (ringazinUsers.contains(sender)) {
 
 				sendMessage(connectedChannel, "I am sorry " + sender
@@ -152,10 +171,13 @@ public class IRCBot extends PircBot {
 			if (canVote) {
 				int vote = Integer.valueOf(message.substring(message
 						.indexOf(" ") + 1));
-				if(vote<optionCount) {
+				if (vote < optionCount) {
 					voting.get(vote - 1).add(sender);
 				} else {
-					sendMessage(connectedChannel, sender + " tried to break me, may hell forever reign upon him! (You cannot participate in this vote.)");
+					sendMessage(
+							connectedChannel,
+							sender
+									+ " tried to break me, may hell forever reign upon him! (You cannot participate in this vote.)");
 					ringazinUsers.add(sender);
 					return;
 				}
@@ -178,11 +200,11 @@ public class IRCBot extends PircBot {
 			joinMe(sender);
 
 		}
-		
+
 		if (message.equalsIgnoreCase("!leave")) {
-			
+
 			leaveMe(sender);
-			
+
 		}
 
 		if (message.equalsIgnoreCase("!pcmrbot")) {
@@ -194,7 +216,6 @@ public class IRCBot extends PircBot {
 		}
 
 	}
-
 
 	public void vote(long time) {
 
@@ -233,25 +254,55 @@ public class IRCBot extends PircBot {
 
 	}
 
-	
 	public void addModerator(String moderator) {
-		if (!TFileReader.readFile(new File(connectedChannel + "Mods.txt"))
-				.contains(moderator)) {
-			TFileWriter.writeFile(new File(connectedChannel + "Mods.txt"),
-					moderator);
-			sendMessage(connectedChannel, "Successfully added " + moderator
-					+ " to the bots mod list!");
-		} else {
-			sendMessage(connectedChannel, moderator
-					+ " is already a moderator!");
+		ResultSet rs = Database.executeQuery("SELECT * FROM "
+				+ Database.DEFAULT_SCHEMA + "." + connectedChannel
+				+ "Mods WHERE userID=\'" + moderator + "\'");
+		try {
+			if (rs.next()) {
+				sendMessage(connectedChannel, moderator
+						+ " is already a moderator!");
+			} else {
+				Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA
+						+ "." + connectedChannel + "Mods VALUES(\'" + moderator
+						+ "\')");
+				sendMessage(connectedChannel, "Successfully added " + moderator
+						+ " to the bots mod list!");
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "An error occurred adding " + moderator
+					+ " to " + connectedChannel + "'s Mod List", e);
 		}
+
+		// if (!TFileReader.readFile(new File(connectedChannel + "Mods.txt"))
+		// .contains(moderator)) {
+		// TFileWriter.writeFile(new File(connectedChannel + "Mods.txt"),
+		// moderator);
+		// sendMessage(connectedChannel, "Successfully added " + moderator
+		// + " to the bots mod list!");
+		// } else {
+		// sendMessage(connectedChannel, moderator
+		// + " is already a moderator!");
+		// }
 	}
 
 	public boolean isMod(String sender) {
 
-		ArrayList<String> mods = TFileReader.readFile(new File(connectedChannel
-				+ "Mods.txt"));
-		return mods.contains(sender);
+		ResultSet rs = Database.executeQuery("SELECT * FROM "
+				+ Database.DEFAULT_SCHEMA + "." + connectedChannel
+				+ "Mods WHERE userID=\'" + sender + "\'");
+		try {
+			return rs.next();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "An error occurred checking if " + sender
+					+ " is a mod of " + connectedChannel, e);
+			return false;
+		}
+
+		// ArrayList<String> mods = TFileReader.readFile(new
+		// File(connectedChannel
+		// + "Mods.txt"));
+		// return mods.contains(sender);
 
 	}
 
@@ -274,29 +325,45 @@ public class IRCBot extends PircBot {
 		}
 
 	}
-	
+
 	public void leaveMe(String channel) {
-		if (MyBotMain.getConnectedChannel("#"+channel)!=null && connectedChannel != "#pcmrbot") {
-			sendMessage(connectedChannel, "I have disconnected from " + channel + "'s channel.");
-			MyBotMain.getConnectedChannel("#"+channel).partChannel("#"+channel);
-			MyBotMain.getConnectedChannels().remove("#"+channel);
-		}
-		else {
-			sendMessage("#" + channel, "Sorry " + channel + ", I cannot allow you to disconnect me from my hope channel.");			
+		if (MyBotMain.getConnectedChannel("#" + channel) != null
+				&& connectedChannel != "#pcmrbot") {
+			sendMessage(connectedChannel, "I have disconnected from " + channel
+					+ "'s channel.");
+			MyBotMain.getConnectedChannel("#" + channel).partChannel(
+					"#" + channel);
+			MyBotMain.getConnectedChannels().remove("#" + channel);
+		} else {
+			sendMessage(
+					"#" + channel,
+					"Sorry "
+							+ channel
+							+ ", I cannot allow you to disconnect me from my hope channel.");
 		}
 	}
-	
-	public void onJoin(){
-		
-		//if statement to check if the database has an entry for this channel. Might need a for loop and an if statement inside
-		
-		sendMessage(connectedChannel, "Hello, this appears to be the first time you have invited me to join your channel. We just have a few preliminary manners to attend to.");
-		sendMessage(connectedChannel, "To begin with, we use a three-part system to define a few options. Let's begin with timeing out a user.");
-		sendMessage(connectedChannel, "Users are timed out for excessive caps or symbols, an excessive or exclusive message of emoticons, links, repeated messages (spam), and messages longer than 250 characters.");
-		sendMessage(connectedChannel, "We would like you to configure the ammount of emoticons(default 15), capital letters(default 20), and paragraphs(defaults to 250 characters) allowed in a message.");
-		sendMessage(connectedChannel, "To change this, please run !changeOption {type to change}|{new value}. Note: If you make paragraph to short users may not be able to post proper sentences. Think of it like twitter messages.");
-		
-		
+
+	public void onJoin() {
+
+		// if statement to check if the database has an entry for this channel.
+		// Might need a for loop and an if statement inside
+
+		sendMessage(
+				connectedChannel,
+				"Hello, this appears to be the first time you have invited me to join your channel. We just have a few preliminary manners to attend to.");
+		sendMessage(
+				connectedChannel,
+				"To begin with, we use a three-part system to define a few options. Let's begin with timeing out a user.");
+		sendMessage(
+				connectedChannel,
+				"Users are timed out for excessive caps or symbols, an excessive or exclusive message of emoticons, links, repeated messages (spam), and messages longer than 250 characters.");
+		sendMessage(
+				connectedChannel,
+				"We would like you to configure the ammount of emoticons(default 15), capital letters(default 20), and paragraphs(defaults to 250 characters) allowed in a message.");
+		sendMessage(
+				connectedChannel,
+				"To change this, please run !changeOption {type to change}|{new value}. Note: If you make paragraph to short users may not be able to post proper sentences. Think of it like twitter messages.");
+
 	}
 
 }

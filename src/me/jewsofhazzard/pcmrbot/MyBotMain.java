@@ -18,10 +18,10 @@ public class MyBotMain implements Runnable {
 
 	private String channel;
 	private static final HashMap<String, IRCBot> connectedChannels = new HashMap<>();
-	private static final String botChannel="#pcmrbot";
-	private static String oAuth="";
-	
-	private static final Logger logger = Logger.getLogger(MyBotMain.class+"");
+	private static final String botChannel = "#pcmrbot";
+	private static String oAuth = "";
+
+	private static final Logger logger = Logger.getLogger(MyBotMain.class + "");
 
 	public MyBotMain(String channel) {
 
@@ -33,17 +33,20 @@ public class MyBotMain implements Runnable {
 	public static void main(String[] args) {
 		Database.initDBConnection();
 		Database.getMainTables();
-		oAuth=args[0];
-		getConnectedChannels().put(getBotChannel(), new IRCBot(getBotChannel()));
+		oAuth = args[0];
+		getConnectedChannels()
+				.put(getBotChannel(), new IRCBot(getBotChannel()));
 
 		getConnectedChannels().get(getBotChannel()).setVerbose(true);
 		try {
-			getConnectedChannels().get(getBotChannel())
-					.connect("irc.twitch.tv", 6667, oAuth);
+			getConnectedChannels().get(getBotChannel()).connect(
+					"irc.twitch.tv", 6667, oAuth);
 		} catch (IOException | IrcException e) {
-			logger.log(Level.SEVERE, "An error occurred while connecting to "+getBotChannel(), e);
+			logger.log(Level.SEVERE, "An error occurred while connecting to "
+					+ getBotChannel(), e);
 		}
-		getConnectedChannels().get(getBotChannel()).joinChannel(getBotChannel());
+		getConnectedChannels().get(getBotChannel())
+				.joinChannel(getBotChannel());
 
 	}
 
@@ -55,14 +58,17 @@ public class MyBotMain implements Runnable {
 
 			getConnectedChannels().get(channel).setVerbose(true);
 			try {
-				getConnectedChannels().get(channel).connect("irc.twitch.tv", 6667,
-						oAuth);
+				getConnectedChannels().get(channel).connect("irc.twitch.tv",
+						6667, oAuth);
 			} catch (IrcException e) {
-				logger.log(Level.SEVERE, "An error occurred while connecting to "+getBotChannel(), e);
+				logger.log(Level.SEVERE,
+						"An error occurred while connecting to "
+								+ getBotChannel(), e);
 			}
 			getConnectedChannels().get(channel).joinChannel(channel);
 		} catch (IOException ex) {
-			logger.log(Level.SEVERE, "An error occurred while connecting to "+getBotChannel(), ex);
+			logger.log(Level.SEVERE, "An error occurred while connecting to "
+					+ getBotChannel(), ex);
 		}
 
 	}

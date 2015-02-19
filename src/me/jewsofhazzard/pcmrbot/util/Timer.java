@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import me.jewsofhazzard.pcmrbot.MyBotMain;
 
-
 /**
  *
  * @author Hazard
@@ -19,12 +18,12 @@ public class Timer implements Runnable {
 
 	private String channel;
 	private long time;
-	
-	private static final Logger logger = Logger.getLogger(Timer.class+"");
-	
+
+	private static final Logger logger = Logger.getLogger(Timer.class + "");
+
 	public Timer(String channel, long time) {
 		this.time = time;
-		this.channel=channel;
+		this.channel = channel;
 		new Thread(this).start();
 	}
 
@@ -42,7 +41,5 @@ public class Timer implements Runnable {
 		MyBotMain.getConnectedChannel(channel).voteCounter();
 
 	}
-
-
 
 }
