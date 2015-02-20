@@ -296,11 +296,6 @@ public class IRCBot extends PircBot {
 			message = message.substring(message.indexOf(" "));
 			raffle(message);
 			
-		} else if(message.equalsIgnoreCase("!raffle ")){
-			
-			message = message.substring(message.indexOf(" "));
-			raffle(message);
-			
 		}
 		
 		ResultSet rs;
