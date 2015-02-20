@@ -51,10 +51,10 @@ public class Database {
 							,e);
 		}
 		try {
-			conn = DriverManager.getConnection(URL, "botLowPerm" , pass);
+			conn = DriverManager.getConnection(URL, "botLowPerms" , pass);
 		} catch (SQLException e) {
 			try {
-				conn = DriverManager.getConnection(URL + ";create=true;", "botLowPerm" , pass);
+				conn = DriverManager.getConnection(URL + ";create=true;", "botLowPerms" , pass);
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE,
 						"An Internal Communication Error Occurred With the Database");
