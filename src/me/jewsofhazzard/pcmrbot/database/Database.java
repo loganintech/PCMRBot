@@ -12,7 +12,7 @@ public class Database {
 
 	private static Connection conn;
 
-	private static final String URL = "jdbc:derby:PcmrBotDB";
+	private static final String URL = "jdbc:derby://localhost/PCMRBot";
 
 	public static final String DEFAULT_SCHEMA = "PCMRBOT";
 
@@ -25,7 +25,7 @@ public class Database {
 	 */
 	public static boolean initDBConnection() {
 		try {
-			Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
+			Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException e) {
 			logger.log(
