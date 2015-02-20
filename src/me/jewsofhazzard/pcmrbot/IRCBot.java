@@ -25,21 +25,21 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 //
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
 import me.jewsofhazzard.pcmrbot.util.TType;
 import me.jewsofhazzard.pcmrbot.util.Timeouts;
 import me.jewsofhazzard.pcmrbot.util.Timer;
+import net.swisstech.bitly.BitlyClient;
+import net.swisstech.bitly.model.Response;
+import net.swisstech.bitly.model.v3.ShortenResponse;
 
 import org.jibble.pircbot.PircBot;
+
+import com.google.gson.JsonParser;
+//
 
 /**
  *
@@ -71,8 +71,6 @@ public class IRCBot extends PircBot {
 																	// choices
 	private int optionCount;
 	private String connectedChannel;
-	private static String sURL;
-	
 	Random rand = new Random();
 
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
@@ -94,34 +92,6 @@ public class IRCBot extends PircBot {
 		if (channel.equalsIgnoreCase(connectedChannel)) {
 			addModerator(recipient);
 		}
-	}
-
-	public static String Shorten(String Link) throws MalformedURLException, IOException {
-		URL url = new URL("https://bitly.com/shorten/?url=" + Link);
-		HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-        httpCon.addRequestProperty("Connection", "keep-alive");
-        httpCon.addRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-        httpCon.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36");
-        httpCon.addRequestProperty("Accept-Encoding", "gzip,deflate,sdch");
-        httpCon.addRequestProperty("Accept-Language", "en-US,en;q=0.8");
-        HttpURLConnection.setFollowRedirects(false);
-        httpCon.setInstanceFollowRedirects(false);
-        httpCon.setDoOutput(true);
-        httpCon.setUseCaches(true);
-
-        httpCon.setRequestMethod("GET");
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(httpCon.getInputStream(), "UTF-8"));
-        String inputLine;
-        StringBuilder a = new StringBuilder();
-        while ((inputLine = in.readLine()) != null)
-			a.append(inputLine);
-        in.close();
-        httpCon.disconnect();
-		
-		inputLine = inputLine.substring(inputLine.indexof("shortened_url") + 21);
-		inputLine = inputLine.substring(0,inputLine.indexof((char)34));
-		return inputLine;
 	}
 	
 	@Override
@@ -252,15 +222,18 @@ public class IRCBot extends PircBot {
 		} else if (message.toLowerCase().startsWith("!shorten ") && isMod(sender)) {
 			// !shorten <url>
 			// <bot>: Url: http://bit.ly/<link_id>
-			String targeturl = message.substring(message.indexOf(" ") + 1);
-			targeturl = Shorten(targeturl);
-			sendMessage(connectedChannel, "URL: " + targeturl);
+			String out = shortenURL(message.substring(message.indexOf(" ") + 1));
+			if(out == null) {
+				sendMessage(connectedChannel, message.substring(message.indexOf(' ')+1) + " is an invalid url! Make sure you include http(s)://.");
+			}
+			sendMessage(connectedChannel, "URL: " + out);
 			
 		} else if (message.toLowerCase().startsWith("!slap ")) {
 			// !slap <username>
 			// <bot has slapped <target> with a raw fish!>
 			String target = message.substring(message.indexOf(" ") + 1);
-			sendMessage(connectedChannel, (char)1 + "ACTION" + (char)1 " slapped " + target + " with a raw fish!");
+//			sendMessage(connectedChannel, (char)1 + "ACTION" + (char)1 " slapped " + target + " with a raw fish!");
+			sendAction(connectedChannel, "slaps" + target + " with a raw fish");
 			
 		} else if (message.toLowerCase().startsWith("!seen ")) {
 			// !seen <username>
@@ -269,7 +242,7 @@ public class IRCBot extends PircBot {
 			
 			String target = message.substring(message.indexOf(" ") + 1);
 			
-			if(chatPostSeen.contains(target))
+			if(chatPostSeen.containsKey(target))
 			{// they have a recent message in the chatPostSeen map
 		
 				// the info of the message (channel & date)
@@ -277,8 +250,7 @@ public class IRCBot extends PircBot {
 
 				String[] tokens = info.split("|");
 	
-				sendMessage(connectedChannel, sender + ", I have last seen " + target + " in " +
-				tokens[0].subString(1)  = " on " + tokens[1] + " .");
+				sendMessage(connectedChannel, sender + ", I last saw " + target + " in " + tokens[0].substring(1) + " on " + tokens[1] + ".");
 			}
 			
 			else
@@ -566,49 +538,16 @@ public class IRCBot extends PircBot {
 		
 
 	}
-
-	/**
-	 * Checks to see if sender is a follower of the channel we are currently
-	 * connected to.
-	 * 
-	 * @param sender
-	 * @return true if sender is a following of connectedChannel
-	 */
-	public boolean isFollower(String sender) {
-		return TwitchUtilities.isFollower(sender, connectedChannel);
-	}
-
-	/**
-	 * Checks to see if sender is a subscriber of the channel we are currently
-	 * connected to. (WIP)
-	 * 
-	 * @param sender
-	 * @return true if sender is subscribed to connectedChannel
-	 */
-	public boolean isSubscriber(String sender) {
-		return TwitchUtilities.isSubscriber(sender, connectedChannel);
-	}
-
-	/**
-	 * Gets the channel we are currently connected to.
-	 * 
-	 * @return the channel we are currently connected to
-	 */
-	public String getChannel() {
-
-		return connectedChannel;
-
-	}
-
-	/**
-	 * Sets the boolean voteCall to the value of set.
-	 * 
-	 * @param set
-	 */
-	public void setVoteCall(boolean set) {
-
-		this.voteCall = set;
-
+	
+	public static String shortenURL(String link) {
+		BitlyClient client=new BitlyClient("596d69348e5db5711a9f698ed606f4500fe0e766");
+		Response<ShortenResponse> repShort = client.shorten().setLongUrl(link).call();
+		System.out.println(repShort.toString());
+		
+		if(repShort.status_txt.equalsIgnoreCase("ok")) {
+			return new JsonParser().parse(repShort.data.toString()).getAsJsonObject().getAsJsonPrimitive("url").getAsString();
+		}
+		return null;
 	}
 
 	public void raffle(String type) {
@@ -618,11 +557,6 @@ public class IRCBot extends PircBot {
 		new Timer(connectedChannel, 300, "raffle");
 		
 
-	}
-	public void setRaffle(boolean set){
-		
-		this.raffleActive = set;
-		
 	}
 	
 	public void raffleCount(){
@@ -668,6 +602,55 @@ public class IRCBot extends PircBot {
 		else{
 		sendMessage(connectedChannel, "I am sorry "+ sender +" you are not allowed to join this raffle.");
 		}
+		
+	}
+
+	/**
+	 * Checks to see if sender is a follower of the channel we are currently
+	 * connected to.
+	 * 
+	 * @param sender
+	 * @return true if sender is a following of connectedChannel
+	 */
+	public boolean isFollower(String sender) {
+		return TwitchUtilities.isFollower(sender, connectedChannel);
+	}
+
+	/**
+	 * Checks to see if sender is a subscriber of the channel we are currently
+	 * connected to. (WIP)
+	 * 
+	 * @param sender
+	 * @return true if sender is subscribed to connectedChannel
+	 */
+	public boolean isSubscriber(String sender) {
+		return TwitchUtilities.isSubscriber(sender, connectedChannel);
+	}
+
+	/**
+	 * Gets the channel we are currently connected to.
+	 * 
+	 * @return the channel we are currently connected to
+	 */
+	public String getChannel() {
+
+		return connectedChannel;
+
+	}
+
+	/**
+	 * Sets the boolean voteCall to the value of set.
+	 * 
+	 * @param set
+	 */
+	public void setVoteCall(boolean set) {
+
+		this.voteCall = set;
+
+	}
+	public void setRaffle(boolean set){
+		
+		this.raffleActive = set;
 		
 	}
 	//I needed to add this to make a new commit
