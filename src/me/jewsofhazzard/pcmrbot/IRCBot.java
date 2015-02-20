@@ -25,7 +25,14 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+//
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+//
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
 import me.jewsofhazzard.pcmrbot.util.TType;
@@ -36,7 +43,7 @@ import org.jibble.pircbot.PircBot;
 
 /**
  *
- * @author JewsOfHazard, Donald10101, And peoples.
+ * @author JewsOfHazard, Donald10101, And Angablade.
  */
 
 public class IRCBot extends PircBot {
@@ -64,6 +71,8 @@ public class IRCBot extends PircBot {
 																	// choices
 	private int optionCount;
 	private String connectedChannel;
+	private static String sURL;
+	
 	Random rand = new Random();
 
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
@@ -87,6 +96,34 @@ public class IRCBot extends PircBot {
 		}
 	}
 
+	public static String Shorten(String Link) throws MalformedURLException, IOException {
+		URL url = new URL("https://bitly.com/shorten/?url=" + Link);
+		HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+        httpCon.addRequestProperty("Connection", "keep-alive");
+        httpCon.addRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+        httpCon.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36");
+        httpCon.addRequestProperty("Accept-Encoding", "gzip,deflate,sdch");
+        httpCon.addRequestProperty("Accept-Language", "en-US,en;q=0.8");
+        HttpURLConnection.setFollowRedirects(false);
+        httpCon.setInstanceFollowRedirects(false);
+        httpCon.setDoOutput(true);
+        httpCon.setUseCaches(true);
+
+        httpCon.setRequestMethod("GET");
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(httpCon.getInputStream(), "UTF-8"));
+        String inputLine;
+        StringBuilder a = new StringBuilder();
+        while ((inputLine = in.readLine()) != null)
+			a.append(inputLine);
+        in.close();
+        httpCon.disconnect();
+		
+		inputLine = inputLine.substring(inputLine.indexof("shortened_url") + 21);
+		inputLine = inputLine.substring(0,inputLine.indexof((char)34));
+		return inputLine;
+	}
+	
 	@Override
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message) {
@@ -212,20 +249,42 @@ public class IRCBot extends PircBot {
 			}
 			setVoteCall(true);
 			vote((long) Integer.valueOf(voteOptions[0]));
-
+		} else if (message.toLowerCase().startsWith("!shorten ") && isMod(sender)) {
+			// !shorten <url>
+			// <bot>: Url: http://bit.ly/<link_id>
+			String targeturl = message.substring(message.indexOf(" ") + 1);
+			targeturl = Shorten(targeturl);
+			sendMessage(connectedChannel, "URL: " + targeturl);
+			
+		} else if (message.toLowerCase().startsWith("!slap ")) {
+			// !slap <username>
+			// <bot has slapped <target> with a raw fish!>
+			String target = message.substring(message.indexOf(" ") + 1);
+			sendMessage(connectedChannel, (char)1 + "ACTION" + (char)1 " slapped " + target + " with a raw fish!");
+			
 		} else if (message.toLowerCase().startsWith("!seen ")) {
+			// !seen <username>
+			// <bot>: <sender>, I last seen <target> in <channel> on <date>.
+			// <bot>: I'm sorry <sender>, I haven't seen <target>.
 			
-			message = message.substring(message.indexOf(" ") + 1);
+			String target = message.substring(message.indexOf(" ") + 1);
+			
+			if(chatPostSeen.contains(target))
+			{// they have a recent message in the chatPostSeen map
+		
+				// the info of the message (channel & date)
+				String info = chatPostSeen.get(target);
 
-			String info = chatPostSeen.get(message);
-			
-			if (info != null) {
-				String[] tokens = info.split("[|]");
-				sendMessage(connectedChannel, sender + ", I last saw " + message + " in " + tokens[0].substring(1) + " on " + tokens[1] + ".");
-			} else {
-				sendMessage(connectedChannel, "I am sorry " + sender + ", I have not seen "+message+" recently.");
+				String[] tokens = info.split("|");
+	
+				sendMessage(connectedChannel, sender + ", I have last seen " + target + " in " +
+				tokens[0].subString(1)  = " on " + tokens[1] + " .");
 			}
-
+			
+			else
+			{// they haven't chatted  (They are not in the map)
+				sendMessage(connectedChannel, "I'm sorry " + sender + ", I haven't seen " + message + ".");
+			}
 		} else if (message.toLowerCase().startsWith("!vote ") && voteCall) {
 
 			boolean canVote = true;
