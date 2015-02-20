@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +35,7 @@ public class IRCBot extends PircBot {
 	private ArrayList<String> ringazinUsers = new ArrayList<>(); // ringazin, may he forever be known as the one who initially tried to vote for an option out of the bounds of the choices
 	private int optionCount;
 	private String connectedChannel;
+	Random rand = new Random();
 
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
@@ -272,6 +274,13 @@ public class IRCBot extends PircBot {
 			logger.log(Level.SEVERE, "An error occured while trying to access the database.", e);
 		}
 		
+		if(message.equalsIgnoreCase("!raffle ")){
+			
+			message = message.substring(message.indexOf(" "));
+			raffle(message);
+			
+		}
+		
 		
 	}
 
@@ -474,5 +483,42 @@ public class IRCBot extends PircBot {
 		this.voteCall = set;
 
 	}
+	
+	public void raffle(String type){
+		ArrayList<String> users = new ArrayList<>();
+		for(int i = 0; i < getUsers(connectedChannel).length; i++){
+		
+			if(type.equalsIgnoreCase("follower") || type.equalsIgnoreCase("followers")){
+				
+				if(isFollower(getUsers(connectedChannel)[i].getNick())){
+					
+					users.add(getUsers(connectedChannel)[i].getNick());
+					
+				}
+				
+			}
+			
+			if(type.equalsIgnoreCase("subscriber") || type.equalsIgnoreCase("subscribers")){
+				
+				if(isSubscriber(getUsers(connectedChannel)[i].getNick())){
+					
+					users.add(getUsers(connectedChannel)[i].getNick());
+					
+				}
+				
+			}
+			else{
+			
+				users.add(getUsers(connectedChannel)[i].getNick());
+				
+			}
+						
+		}
+		
+		int selection = rand.nextInt(users.size());
+		sendMessage(connectedChannel, "The selected user is " + users.get(selection));
+		
+	}
+
 
 }
