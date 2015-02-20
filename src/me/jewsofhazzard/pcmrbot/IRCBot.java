@@ -241,9 +241,8 @@ public class IRCBot extends PircBot {
 			// <bot>: I'm sorry <sender>, I haven't seen <target>.
 			
 			String target = message.substring(message.indexOf(" ") + 1);
-			
-			if(chatPostSeen.containsKey(target)) {// they have a recent message in the chatPostSeen map
-		
+			if(chatPostSeen.containsKey(target)) {
+				// they have a recent message in the chatPostSeen map
 				// the info of the message (channel & date)
 				String info = chatPostSeen.get(target);
 
