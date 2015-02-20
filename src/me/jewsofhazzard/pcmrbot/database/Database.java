@@ -29,7 +29,7 @@ public class Database {
 
 	private static Connection conn;
 
-	private static final String URL = "jdbc:mysql://localhost:3306/pcmrbot";
+	private static final String URL = "jdbc:derby://localhost:3306/pcmrbot";
 
 	public static final String DEFAULT_SCHEMA = "PCMRBOT";
 
