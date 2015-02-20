@@ -18,32 +18,32 @@
 package me.jewsofhazzard.pcmrbot;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
+
+import net.swisstech.bitly.BitlyClient;
+import net.swisstech.bitly.model.Response;
+import net.swisstech.bitly.model.v3.ShortenResponse;
 
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
 public class Driver {
 
 	public static void main(String[] args) throws IOException {
-		String element = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL("https://api.twitch.tv/kraken/channels/donald10101/follows?direction=DESC&limit=25&offset=50").openStream()))).getAsJsonObject().getAsJsonArray("follows").get(25).getAsJsonObject().getAsJsonObject("user").get("display_name").getAsString();
-		System.out.println(element);
-		
-		int i=new JsonParser().parse(new JsonReader(new InputStreamReader(new URL("https://api.twitch.tv/kraken/channels/donald10101").openStream()))).getAsJsonObject().getAsJsonPrimitive("followers").getAsInt();
-		System.out.println(i);
-		
-//		String url = "https://api.twitch.tv/kraken/channels/donald10101/";
-//		String charset=StandardCharsets.UTF_8.name();
-//		String status="ProgrammingL";
-//		String _method="put";
-//		String oauth_token="0waiocof76g654kpilbt83l3lhwxvn";
+//		String element = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL("https://api.twitch.tv/kraken/channels/donald10101/follows?direction=DESC&limit=25&offset=50").openStream()))).getAsJsonObject().getAsJsonArray("follows").get(25).getAsJsonObject().getAsJsonObject("user").get("display_name").getAsString();
+//		System.out.println(element);
 //		
-//		String query = String.format("channel[game]=%s&_method=%s&oauth_token=%s", URLEncoder.encode(status, charset), URLEncoder.encode(_method, charset), URLEncoder.encode(oauth_token, charset));
-//		
-//		URLConnection connection = new URL(url + "?" + query).openConnection();
-//		connection.setRequestProperty("Accept-Charset", charset);
-//		connection.getInputStream();
+//		int i=new JsonParser().parse(new JsonReader(new InputStreamReader(new URL("https://api.twitch.tv/kraken/channels/donald10101").openStream()))).getAsJsonObject().getAsJsonPrimitive("followers").getAsInt();
+//		System.out.println(i);
+		
+		String link = "http://www.google.com";
+		BitlyClient client=new BitlyClient("596d69348e5db5711a9f698ed606f4500fe0e766");
+		Response<ShortenResponse> repShort = client.shorten().setLongUrl(link).call();
+		System.out.println(repShort.toString());
+		
+		if(repShort.status_txt.equalsIgnoreCase("ok")) {
+			String out = new JsonParser().parse(repShort.data.toString()).getAsJsonObject().getAsJsonPrimitive("url").getAsString();
+			System.out.println(out);
+		}
+		
 		
 	}
 
