@@ -1,9 +1,5 @@
 Ideas:
 
-Change game ✓
-Change stream title ✓
-Timed messages
-
 
 
 
@@ -12,4 +8,6 @@ Timed messages
 
 A little down the line:
 
+Detect a thread crash and automatically restart the thread and connect it to that channel.
+Add a readme and license
 Make a client side that can play sounds based off of commands by waiting for some notification from the server side.

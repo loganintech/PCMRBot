@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,6 +47,7 @@ public class IRCBot extends PircBot {
 	private ArrayList<String> ringazinUsers = new ArrayList<>(); // ringazin, may he forever be known as the one who initially tried to vote for an option out of the bounds of the choices
 	private int optionCount;
 	private String connectedChannel;
+	Random rand = new Random();
 
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
@@ -128,8 +130,37 @@ public class IRCBot extends PircBot {
 
 			sendMessage(
 					connectedChannel,
-					"Current commands: !join (ask pcmr bot nicely to join your chat) !pcmrbot (information) !vote {choice} (vote during active votes) !votestart (admin only) !addmod (admin only).");
+					"//Change this to a link that has all the commands, we don't want a wall of text now do we.");
 
+		}
+		
+		if (message.startsWith("!help ")){
+			
+			message = message.substring(message.indexOf(" "));
+			
+			if(message.equalsIgnoreCase("votestart")){
+				
+				sendMessage(connectedChannel, "The format of the votestart command is as follows:"
+						+ " !votestart {time in seconds}|{question to ask}|{option 1}|{infinte more options}");
+				sendMessage(connectedChannel, "Note, you do not need { or } and you must not add spaces "
+						+ "between |."
+						+ " For example, !votestart 30|What game should I play?|Bioshock|Minecraft|League. Is perfect.");
+			}
+			if(message.equalsIgnoreCase("addautoreply")){
+				
+				sendMessage(connectedChannel, "Autoreply is formated similarly to starting votes. All you need is to type"
+						+ " !addautoreply {keyword}|{keyword}|{reply}. Note: again, there can be no spaces between pipes ( | )"
+						+ ". The difference is that you may add as many keywords as you like as long as the reply is last.");
+				
+			}
+			if(message.equalsIgnoreCase("raffle")){
+				
+				sendMessage(connectedChannel, "A raffle's context is simply !raffle {type} where type could be (all, follower or follwers,"
+						+ " subscriber or subscribers.");
+				
+			}
+			
+			
 		}
 
 		if (message.toLowerCase().startsWith("!votestart ") && isMod(sender)) {
@@ -282,6 +313,13 @@ public class IRCBot extends PircBot {
 		} catch (SQLException e) {
 			
 			logger.log(Level.SEVERE, "An error occured while trying to access the database.", e);
+		}
+		
+		if(message.equalsIgnoreCase("!raffle ")){
+			
+			message = message.substring(message.indexOf(" "));
+			raffle(message);
+			
 		}
 		
 		
@@ -486,5 +524,42 @@ public class IRCBot extends PircBot {
 		this.voteCall = set;
 
 	}
+	
+	public void raffle(String type){
+		ArrayList<String> users = new ArrayList<>();
+		for(int i = 0; i < getUsers(connectedChannel).length; i++){
+		
+			if(type.equalsIgnoreCase("follower") || type.equalsIgnoreCase("followers")){
+				
+				if(isFollower(getUsers(connectedChannel)[i].getNick())){
+					
+					users.add(getUsers(connectedChannel)[i].getNick());
+					
+				}
+				
+			}
+			
+			if(type.equalsIgnoreCase("subscriber") || type.equalsIgnoreCase("subscribers")){
+				
+				if(isSubscriber(getUsers(connectedChannel)[i].getNick())){
+					
+					users.add(getUsers(connectedChannel)[i].getNick());
+					
+				}
+				
+			}
+			else{
+			
+				users.add(getUsers(connectedChannel)[i].getNick());
+				
+			}
+						
+		}
+		
+		int selection = rand.nextInt(users.size());
+		sendMessage(connectedChannel, "The selected user is " + users.get(selection));
+		
+	}
+
 
 }
