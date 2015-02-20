@@ -172,6 +172,10 @@ public class IRCBot extends PircBot {
 			message = message.substring(message.indexOf(" ") + 1);
 			String[] voteOptions = message.split("[|]");
 			String[] answers = new String[voteOptions.length - 2];
+			if(answers.length<2) {
+				sendMessage(connectedChannel, "You must provide at least two answers!");
+				return;
+			}
 			for (int i = 2; i < voteOptions.length; i++) {
 				answers[i - 2] = voteOptions[i];
 				optionCount++;
