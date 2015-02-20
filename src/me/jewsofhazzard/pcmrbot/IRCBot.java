@@ -106,27 +106,27 @@ public class IRCBot extends PircBot {
 			}
 		}
 		
-		if(message.startsWith("!lmgtfy ")) {
+		else if(message.startsWith("!lmgtfy ")) {
 			message=message.substring(message.indexOf(' '));
 			String param=message.replace(' ', '+');
 			sendMessage(connectedChannel, "http://lmgtfy.com?q="+param);
 		}
 		
-		if(message.toLowerCase().startsWith("!title ") && isMod(sender)) {
+		else if(message.toLowerCase().startsWith("!title ") && isMod(sender)) {
 			TwitchUtilities.updateTitle(connectedChannel.substring(1), message.substring(message.indexOf(' ')));
 		}
 		
-		if(message.toLowerCase().startsWith("!game ") && isMod(sender)) {
+		else if(message.toLowerCase().startsWith("!game ") && isMod(sender)) {
 			TwitchUtilities.updateTitle(connectedChannel.substring(1), message.substring(message.indexOf(' ')));
 		}
 		
-		if(message.equalsIgnoreCase("!clearAutoReplies")) {
+		else if(message.equalsIgnoreCase("!clearAutoReplies")) {
 			if(sender.equalsIgnoreCase(channel.substring(1))) {
 				Database.clearAutoRepliesTable(channel.substring(1));
 			}
 		}
 
-		if (message.equalsIgnoreCase("!helppcmr")) {
+		else if (message.equalsIgnoreCase("!helppcmr")) {
 
 			sendMessage(
 					connectedChannel,
@@ -134,7 +134,7 @@ public class IRCBot extends PircBot {
 
 		}
 		
-		if (message.startsWith("!help ")){
+		else if (message.startsWith("!help ")){
 			
 			message = message.substring(message.indexOf(" "));
 			
@@ -146,14 +146,14 @@ public class IRCBot extends PircBot {
 						+ "between |."
 						+ " For example, !votestart 30|What game should I play?|Bioshock|Minecraft|League. Is perfect.");
 			}
-			if(message.equalsIgnoreCase("addautoreply")){
+			else if(message.equalsIgnoreCase("addautoreply")){
 				
 				sendMessage(connectedChannel, "Autoreply is formated similarly to starting votes. All you need is to type"
 						+ " !addautoreply {keyword}|{keyword}|{reply}. Note: again, there can be no spaces between pipes ( | )"
 						+ ". The difference is that you may add as many keywords as you like as long as the reply is last.");
 				
 			}
-			if(message.equalsIgnoreCase("raffle")){
+			else if(message.equalsIgnoreCase("raffle")){
 				
 				sendMessage(connectedChannel, "A raffle's context is simply !raffle {type} where type could be (all, follower or follwers,"
 						+ " subscriber or subscribers.");
@@ -163,7 +163,7 @@ public class IRCBot extends PircBot {
 			
 		}
 
-		if (message.toLowerCase().startsWith("!votestart ") && isMod(sender)) {
+		else if (message.toLowerCase().startsWith("!votestart ") && isMod(sender)) {
 
 			voting = new ArrayList<>();
 			ringazinUsers = new ArrayList<>();
@@ -202,7 +202,7 @@ public class IRCBot extends PircBot {
 		}
 
 		
-		if (message.toLowerCase().startsWith("!seen ")) {
+		else if (message.toLowerCase().startsWith("!seen ")) {
 			
 			message = message.substring(message.indexOf(" ") + 1);
 
@@ -218,7 +218,7 @@ public class IRCBot extends PircBot {
 		}
 		
 		
-		if (message.toLowerCase().startsWith("!vote ") && voteCall) {
+		else if (message.toLowerCase().startsWith("!vote ") && voteCall) {
 
 			boolean canVote = true;
 
@@ -260,26 +260,26 @@ public class IRCBot extends PircBot {
 
 		}
 
-		if (message.toLowerCase().startsWith("!addmod ") && isMod(sender)) {
+		else if (message.toLowerCase().startsWith("!addmod ") && isMod(sender)) {
 
 			message = message.substring(message.indexOf(" ") + 1);
 			addModerator(message);
 
 		}
 
-		if (message.equalsIgnoreCase("!join")) {
+		else if (message.equalsIgnoreCase("!join")) {
 
 			joinMe(sender);
 
 		}
 
-		if (message.equalsIgnoreCase("!leave")) {
+		else if (message.equalsIgnoreCase("!leave")) {
 
 			leaveMe(sender);
 
 		}
 
-		if (message.equalsIgnoreCase("!pcmrbot")) {
+		else if (message.equalsIgnoreCase("!pcmrbot")) {
 
 			sendMessage(
 					connectedChannel,
@@ -287,7 +287,7 @@ public class IRCBot extends PircBot {
 
 		}
 		
-		if (message.equalsIgnoreCase("!addautoreply") && isMod(sender)) {
+		else if (message.equalsIgnoreCase("!addautoreply") && isMod(sender)) {
 
 			autoReply(message);
 			
@@ -315,7 +315,7 @@ public class IRCBot extends PircBot {
 			logger.log(Level.SEVERE, "An error occured while trying to access the database.", e);
 		}
 		
-		if(message.equalsIgnoreCase("!raffle ")){
+		else if(message.equalsIgnoreCase("!raffle ")){
 			
 			message = message.substring(message.indexOf(" "));
 			raffle(message);
