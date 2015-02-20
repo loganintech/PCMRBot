@@ -1,5 +1,5 @@
 /*	  It's a Twitch bot, because we can.
- *    Copyright (C) 2015  Logan Ssaso, James Wolff, Angablade
+ *    Copyright (C) 2015  Logan Saso, James Wolff, Kyle Nabinger
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ public class IRCBot extends PircBot {
 
 	private boolean voteCall;
 	private boolean raffleActive;
-	private ArrayList<String> inRaffle;
+	private ArrayList<String> inRaffle;		//Let it be known, Mr_chris is the first user to ever win the raffle.
 	private String raffleType;
 	private ArrayList<ArrayList<String>> voting = new ArrayList<>();
 	private static HashMap<String, String> chatPostSeen = new HashMap<>();
@@ -194,7 +194,7 @@ public class IRCBot extends PircBot {
 
 			for (int i = 0; i < answers.length; i++) {
 
-				sendMessage(connectedChannel, answers[i]);
+				sendMessage(connectedChannel, (i + 1) + ": " +  answers[i]);
 				voting.add(new ArrayList<String>());
 				voting.get(i).add(answers[i]);
 
@@ -269,11 +269,11 @@ public class IRCBot extends PircBot {
 
 			}
 
-		} else if (message.equalsIgnoreCase("!enter") && raffleActive){
+		} else if (message.toLowerCase().startsWith("!enter") && raffleActive){
 			
 			joinRaffle(sender, raffleType);
 			
-		} else if (message.toLowerCase().startsWith("!addmod ") && isMod(sender)) {
+		} else if (message.toLowerCase().startsWith("!addmod ") && sender.equals(connectedChannel.substring(1))) {
 
 			message = message.substring(message.indexOf(" ") + 1);
 			addModerator(message);
@@ -294,7 +294,7 @@ public class IRCBot extends PircBot {
 
 			autoReply(message);
 			
-		} else if(message.equalsIgnoreCase("!raffle ")){
+		} else if(message.toLowerCase().startsWith("!raffle ")){
 			
 			message = message.substring(message.indexOf(" ") + 1);
 			sendMessage(connectedChannel, "The raffle has begun for " + message);
@@ -553,7 +553,8 @@ public class IRCBot extends PircBot {
 	}
 
 	public void raffle(String type) {
-		
+		raffleActive = true;
+		this.raffleType = type;
 		inRaffle = new ArrayList<>();
 		new Timer(connectedChannel, 300, "raffle");
 		
@@ -581,7 +582,7 @@ public class IRCBot extends PircBot {
 			if(inRaffle.contains(sender)){
 				
 				inRaffleAlready = true;
-				sendMessage(connectedChannel, sender + " is a dirty cheater and tried to join the raffle twice, may he be smiten.");
+				sendMessage(connectedChannel, sender + " is a dirty cheater and tried to join the raffle more than once, may he be smiten.");
 				
 				
 			}
@@ -605,8 +606,9 @@ public class IRCBot extends PircBot {
 			sendMessage(connectedChannel, sender + " has joined the raffle.");
 			
 		}
-		
+		else{
 		sendMessage(connectedChannel, "I am sorry "+ sender +" you are not allowed to join this raffle.");
+		}
 		
 	}
 	//I needed to add this to make a new commit
