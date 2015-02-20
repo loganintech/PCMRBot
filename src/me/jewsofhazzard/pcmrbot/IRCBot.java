@@ -42,6 +42,9 @@ import org.jibble.pircbot.PircBot;
 public class IRCBot extends PircBot {
 
 	private boolean voteCall;
+	private boolean raffleActive;
+	private ArrayList<String> inRaffle;
+	private String raffleType;
 	private ArrayList<ArrayList<String>> voting = new ArrayList<>();
 	private static HashMap<String, String> chatPostSeen = new HashMap<>();
 	private ArrayList<String> ringazinUsers = new ArrayList<>(); // ringazin,
@@ -266,6 +269,10 @@ public class IRCBot extends PircBot {
 
 			}
 
+		} else if (message.equalsIgnoreCase("!enter") && raffleActive){
+			
+			joinRaffle(sender, raffleType);
+			
 		} else if (message.toLowerCase().startsWith("!addmod ") && isMod(sender)) {
 
 			message = message.substring(message.indexOf(" ") + 1);
@@ -289,7 +296,8 @@ public class IRCBot extends PircBot {
 			
 		} else if(message.equalsIgnoreCase("!raffle ")){
 			
-			message = message.substring(message.indexOf(" "));
+			message = message.substring(message.indexOf(" ") + 1);
+			sendMessage(connectedChannel, "The raffle has begun for " + message);
 			raffle(message);
 			
 		}
@@ -328,7 +336,7 @@ public class IRCBot extends PircBot {
 
 		sendMessage(connectedChannel, "You have " + time + " seconds to vote.");
 
-		new Timer(connectedChannel, time);
+		new Timer(connectedChannel, time, "vote");
 
 	}
 
@@ -545,41 +553,61 @@ public class IRCBot extends PircBot {
 	}
 
 	public void raffle(String type) {
-		ArrayList<String> users = new ArrayList<>();
-		for (int i = 0; i < getUsers(connectedChannel).length; i++) {
+		
+		inRaffle = new ArrayList<>();
+		new Timer(connectedChannel, 300, "raffle");
+		
 
-			if (type.equalsIgnoreCase("follower")
-					|| type.equalsIgnoreCase("followers")) {
-
-				if (isFollower(getUsers(connectedChannel)[i].getNick())) {
-
-					users.add(getUsers(connectedChannel)[i].getNick());
-
-				}
-
+	}
+	public void setRaffle(boolean set){
+		
+		this.raffleActive = set;
+		
+	}
+	
+	public void raffleCount(){
+		
+		sendMessage(connectedChannel, "There raffle has closed. There are "
+				+ inRaffle.size()
+				+ " users in the raffle.");
+		int selection = rand.nextInt(inRaffle.size());
+		sendMessage(connectedChannel, "The raffle winner is " + inRaffle.get(selection) + ".");
+		
+	}
+	
+	public void joinRaffle(String sender, String raffleType){
+		boolean inRaffleAlready = false;
+		
+			if(inRaffle.contains(sender)){
+				
+				inRaffleAlready = true;
+				sendMessage(connectedChannel, sender + " is a dirty cheater and tried to join the raffle twice, may he be smiten.");
+				
+				
 			}
-
-			if (type.equalsIgnoreCase("subscriber")
-					|| type.equalsIgnoreCase("subscribers")) {
-
-				if (isSubscriber(getUsers(connectedChannel)[i].getNick())) {
-
-					users.add(getUsers(connectedChannel)[i].getNick());
-
-				}
-
-			} else {
-
-				users.add(getUsers(connectedChannel)[i].getNick());
-
-			}
-
+			
+		
+		if(raffleType.equalsIgnoreCase("follower") && isFollower(sender) && !inRaffleAlready){
+			
+			inRaffle.add(sender);
+			sendMessage(connectedChannel, sender + " has joined the raffle.");
+			
 		}
-
-		int selection = rand.nextInt(users.size());
-		sendMessage(connectedChannel,
-				"The selected user is " + users.get(selection));
-
+		else if(raffleType.equalsIgnoreCase("subscriber") && isSubscriber(sender) && !inRaffleAlready){
+			
+			inRaffle.add(sender);
+			sendMessage(connectedChannel, sender + " has joined the raffle.");
+			
+		}
+		else if(raffleType.equals("all") && !inRaffleAlready){
+			
+			inRaffle.add(sender);
+			sendMessage(connectedChannel, sender + " has joined the raffle.");
+			
+		}
+		
+		sendMessage(connectedChannel, "I am sorry "+ sender +" you are not allowed to join this raffle.");
+		
 	}
 	//I needed to add this to make a new commit
 

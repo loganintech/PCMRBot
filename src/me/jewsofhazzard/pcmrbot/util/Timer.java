@@ -30,6 +30,7 @@ public class Timer implements Runnable {
 
 	private String channel;
 	private long time;
+	private String type;
 
 	private static final Logger logger = Logger.getLogger(Timer.class + "");
 
@@ -39,8 +40,9 @@ public class Timer implements Runnable {
 	 * @param channel - The channel this timer is for
 	 * @param time - The time (in seconds) until this Timer will expire
 	 */
-	public Timer(String channel, long time) {
+	public Timer(String channel, long time, String type) {
 		this.time = time;
+		this.type = type;
 		this.channel = channel;
 		new Thread(this).start();
 	}
@@ -55,10 +57,17 @@ public class Timer implements Runnable {
 		} catch (InterruptedException ex) {
 			logger.log(Level.SEVERE, "An error occurred while sleping!", ex);
 		}
+		if(type.equals("vote")){
 		MyBotMain.getConnectedChannel(channel).setVoteCall(false);
-
 		MyBotMain.getConnectedChannel(channel).voteCounter();
-
+		}
+		else if(type.equals("raffle")){
+			
+			MyBotMain.getConnectedChannel(channel).setRaffle(false);
+			MyBotMain.getConnectedChannel(channel).raffleCount();
+			
+		}
+		
 	}
-
+	
 }
