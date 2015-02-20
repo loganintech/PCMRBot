@@ -106,7 +106,7 @@ public class IRCBot extends PircBot {
 			}
 		}
 		
-		else if(message.startsWith("!lmgtfy ")) {
+		if(message.startsWith("!lmgtfy ")) {
 			message=message.substring(message.indexOf(' '));
 			String param=message.replace(' ', '+');
 			sendMessage(connectedChannel, "http://lmgtfy.com?q="+param);
