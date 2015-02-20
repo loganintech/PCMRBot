@@ -92,11 +92,17 @@ public class IRCBot extends PircBot {
 			}
 		}
 		
-		if(message.toLowerCase().startsWith("!title ")) {
+		if(message.startsWith("!lmgtfy ")) {
+			message=message.substring(message.indexOf(' '));
+			String param=message.replace(' ', '+');
+			sendMessage(connectedChannel, "http://lmgtfy.com?q="+param);
+		}
+		
+		if(message.toLowerCase().startsWith("!title ") && isMod(sender)) {
 			TwitchUtilities.updateTitle(connectedChannel.substring(1), message.substring(message.indexOf(' ')));
 		}
 		
-		if(message.toLowerCase().startsWith("!game ")) {
+		if(message.toLowerCase().startsWith("!game ") && isMod(sender)) {
 			TwitchUtilities.updateTitle(connectedChannel.substring(1), message.substring(message.indexOf(' ')));
 		}
 		
@@ -444,14 +450,7 @@ public class IRCBot extends PircBot {
 	 * @return true if sender is subscribed to connectedChannel
 	 */
 	public boolean isSubscriber(String sender){
-		
-		if(true /*this will be where we check to see if they are a subscriber with the api*/){
-			
-			
-		}
-		
-		
-		return false;
+		return TwitchUtilities.isSubscriber(sender, connectedChannel);
 	}
 
 	/**

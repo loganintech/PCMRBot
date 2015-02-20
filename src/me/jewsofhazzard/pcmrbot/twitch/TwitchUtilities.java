@@ -9,8 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
@@ -75,26 +75,54 @@ public class TwitchUtilities {
 	 */
 	public static boolean isFollower(String sender, String channel) {
 		try {
-			int count=followerCount(channel);
-			int pages=count/25;
-			if(count%25!=0) {
-				pages++;
-			}
-			String nextUrl = "https://api.twitch.tv/kraken/channels/"+channel.substring(1)+"/follows";
-			JsonArray followers;
-			for(int i=0;i<pages;i++) {
-				followers = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject().getAsJsonArray("follows");
-				for(int j=0;j<25;j++) {
-					if(sender.equalsIgnoreCase(followers.get(i).getAsJsonObject().getAsJsonObject("user").get("display_name").getAsString())) {
-						return true;
-					}
-				}
-				nextUrl = URLEncoder.encode(new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject().getAsJsonArray("_links").get(1).getAsString(), CHARSET);
+			String nextUrl = "https://api.twitch.tv/kraken/users/"+sender+"/follows/channels/"+channel.substring(1);
+			JsonObject following = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
+			try {
+				following.get("error");
+				return false;
+			} catch (JsonIOException e) {
+				return true;
 			}
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
 			logger.log(Level.SEVERE, "An error occurred checking if "+sender+" is following "+channel.substring(1), e);
-		} catch (IndexOutOfBoundsException e) {
-			return false;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the sender is subscribed to channel
+	 * 
+	 * @param sender
+	 * @param channel
+	 * @return - true if sender is subscribed to channel
+	 */
+	public static boolean isSubscriber(String sender, String channel) {
+		try {
+			String userOAuth=""; //TODO: Store and access userOAuths
+			String nextUrl = "https://api.twitch.tv/kraken/channels/"+channel.substring(1)+"/subscriptions/?oauth_token="+userOAuth;
+			JsonObject obj = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
+			try {
+				obj.get("error");
+				return false;
+			} catch (JsonIOException e) {
+				int count = subscriberCount(channel, userOAuth);
+				int pages = count/25;
+				if(count%25!=0) {
+					pages++;
+				}
+				for(int i=0;i<pages;i++) {
+					for(int j=0;j<25;j++) {
+						if(sender.equalsIgnoreCase(obj.getAsJsonArray("subscriptions").get(j).getAsJsonObject().getAsJsonPrimitive("display_name").getAsString())) {
+							return true;
+						}
+					}
+					nextUrl =URLEncoder.encode(obj.getAsJsonArray("_links").get(1).getAsJsonPrimitive().getAsString(), CHARSET);
+					obj = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
+				}
+				return false;
+			}
+		} catch (JsonIOException | JsonSyntaxException | IOException e) {
+			logger.log(Level.SEVERE, "An error occurred checking if "+sender+" is following "+channel.substring(1), e);
 		}
 		return false;
 	}
@@ -108,6 +136,22 @@ public class TwitchUtilities {
 	public static int followerCount(String channel) {
 		try {
 			return new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"channels"+channel.substring(1)).openStream()))).getAsJsonObject().getAsJsonPrimitive("followers").getAsInt();
+		} catch (JsonIOException | JsonSyntaxException | IOException e) {
+			logger.log(Level.SEVERE, "An error occurred getting the follower count for "+channel.substring(1), e);
+		}
+		return 0;
+	}
+	
+	/**
+	 * Gets the amount of people subscribed to the specified channel
+	 * 
+	 * @param channel
+	 * @param oAuth
+	 * @return number of subscribers for the channel
+	 */
+	public static int subscriberCount(String channel, String oAuth) {
+		try {
+			return new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"channels"+channel.substring(1)+"/subscriptions/?oauth_token="+oAuth).openStream()))).getAsJsonObject().getAsJsonPrimitive("_total").getAsInt();
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
 			logger.log(Level.SEVERE, "An error occurred getting the follower count for "+channel.substring(1), e);
 		}
