@@ -29,7 +29,7 @@ public class Database {
 
 	private static Connection conn;
 
-	private static final String URL = "jdbc:derby://localhost:3306/pcmrbot";
+	private static final String URL = "jdbc:mysql://localhost:3306/pcmrbot";
 
 	public static final String DEFAULT_SCHEMA = "PCMRBOT";
 
@@ -51,10 +51,10 @@ public class Database {
 							,e);
 		}
 		try {
-			conn = DriverManager.getConnection(URL, "botLowPerms" , pass);
+			conn = DriverManager.getConnection(URL, "bot" , pass);
 		} catch (SQLException e) {
 			try {
-				conn = DriverManager.getConnection(URL + ";create=true;", "botLowPerms" , pass);
+				conn = DriverManager.getConnection(URL + ";create=true;", "bot" , pass);
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE,
 						"An Internal Communication Error Occurred With the Database");
