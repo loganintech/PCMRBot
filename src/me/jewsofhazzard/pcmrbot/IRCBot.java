@@ -240,7 +240,7 @@ public class IRCBot extends PircBot {
 
 			sendMessage(
 					connectedChannel,
-					"I was made by J3wsOfHazard in free time during an AP Computer Science class in high school.");
+					"I was made by J3wsOfHazard, Donald10101, and Angablade.");
 
 		}
 		
