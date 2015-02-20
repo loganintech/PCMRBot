@@ -121,7 +121,7 @@ public class IRCBot extends PircBot {
 		}
 		
 		else if(message.equalsIgnoreCase("!clearAutoReplies")) {
-			if(sender.equalsIgnoreCase(channel.substring(1))) {
+			if(sender.equalsIgnoreCase(channel.substring(1))) {		//This makes sure ONLY the channel admin can run this
 				Database.clearAutoRepliesTable(channel.substring(1));
 			}
 		}
@@ -157,6 +157,12 @@ public class IRCBot extends PircBot {
 				
 				sendMessage(connectedChannel, "A raffle's context is simply !raffle {type} where type could be (all, follower or follwers,"
 						+ " subscriber or subscribers.");
+				
+			}
+			else{
+				
+				sendMessage(connectedChannel, "I am sorry " + sender + " we have not added command-specific help for that command yet. Please proceed to "
+						+ "162.212.1.135/commands for more information.");
 				
 			}
 			
@@ -245,8 +251,15 @@ public class IRCBot extends PircBot {
 			}
 
 			if (canVote) {
-				int vote = Integer.valueOf(message.substring(message
-						.indexOf(" ") + 1));
+				message = message.substring(message
+						.indexOf(" ") + 1);
+				int vote = 0;
+				if(message.equalsIgnoreCase("random")){
+					vote = rand.nextInt(optionCount);
+				}
+				else{
+				vote = Integer.valueOf(message);
+				}
 				if (vote < optionCount) {
 					voting.get(vote - 1).add(sender);
 				} else {
@@ -319,7 +332,7 @@ public class IRCBot extends PircBot {
 			logger.log(Level.SEVERE, "An error occured while trying to access the database.", e);
 		}
 		
-		else if(message.equalsIgnoreCase("!raffle ")){
+		if(message.equalsIgnoreCase("!raffle ")){
 			
 			message = message.substring(message.indexOf(" "));
 			raffle(message);
@@ -461,7 +474,10 @@ public class IRCBot extends PircBot {
 		sendMessage(
 				connectedChannel,
 				"To change this, please run !changeOption {type to change}|{new value}. Note: If you make paragraph to short users may not be able to post proper sentences. Think of it like twitter messages.");
-
+		sendMessage(
+				connectedChannel,
+				"Also, if you are partnered and would wish to use subscriber raffles or change the stream title and game, please go to http://162.212.1.135/authorize to allow your chat.");
+		
 	}
 	
 	/**
