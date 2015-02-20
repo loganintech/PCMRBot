@@ -29,7 +29,7 @@ public class Database {
 
 	private static Connection conn;
 
-	private static final String URL = "jdbc:derby://localhost:3306/PCMRBot";
+	private static final String URL = "jdbc:derby://localhost:1527/PCMRBot";
 
 	public static final String DEFAULT_SCHEMA = "PCMRBOT";
 
@@ -47,7 +47,7 @@ public class Database {
 				| ClassNotFoundException e) {
 			logger.log(
 					Level.SEVERE,
-					"Unable to find ClientDriver in classpath!\n"
+					"Unable to find ClientDriver in classpath!"
 							,e);
 		}
 		try {
