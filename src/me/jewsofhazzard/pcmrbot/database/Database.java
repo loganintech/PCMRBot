@@ -29,7 +29,7 @@ public class Database {
 
 	private static Connection conn;
 
-	private static final String URL = "jdbc:derby://localhost:3306/pcmrbot";
+	private static final String URL = "jdbc:mysql://localhost:3306/pcmrbot?";
 
 	public static final String DEFAULT_SCHEMA = "PCMRBOT";
 
@@ -42,24 +42,18 @@ public class Database {
 	 */
 	public static boolean initDBConnection(String pass) {
 		try {
-			Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException e) {
 			logger.log(
 					Level.SEVERE,
-					"Unable to find ClientDriver in classpath!"
+					"Unable to find Driver in classpath!"
 							,e);
 		}
 		try {
-			conn = DriverManager.getConnection(URL, "bot" , pass);
+			conn = DriverManager.getConnection(URL+"user=bot&password="+pass);
 		} catch (SQLException e) {
-			try {
-				conn = DriverManager.getConnection(URL + ";create=true;", "bot" , pass);
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE,
-						"An Internal Communication Error Occurred With the Database");
-				return false;
-			}
+			return false;
 		}
 		return true;
 	}
