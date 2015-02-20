@@ -139,7 +139,7 @@ public class IRCBot extends PircBot {
 					"//Change this to a link that has all the commands, we don't want a wall of text now do we.");
 		} else if (message.startsWith("!help ")){
 			
-			message = message.substring(message.indexOf(" "));
+			message = message.substring(message.indexOf(" ") + 1);
 			
 			if(message.equalsIgnoreCase("votestart")){
 				
