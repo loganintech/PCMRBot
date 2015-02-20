@@ -12,7 +12,7 @@ public class Database {
 
 	private static Connection conn;
 
-	private static final String URL = "jdbc:derby://localhost/PCMRBot";
+	private static final String URL = "jdbc:derby://localhost:1527/PCMRBot";
 
 	public static final String DEFAULT_SCHEMA = "PCMRBOT";
 
@@ -23,7 +23,7 @@ public class Database {
 	 * 
 	 * @return - true if connection is successful
 	 */
-	public static boolean initDBConnection() {
+	public static boolean initDBConnection(String pass) {
 		try {
 			Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
 		} catch (InstantiationException | IllegalAccessException
@@ -34,19 +34,10 @@ public class Database {
 							+ e.toString());
 		}
 		try {
-			conn = DriverManager.getConnection(URL);
+			conn = DriverManager.getConnection(URL, "botLowPerm" , pass);
 		} catch (SQLException e) {
-			SQLException f = (SQLException) e;
-			while (f.getNextException() != null) {
-				f = f.getNextException();
-			}
-			if (f.getSQLState().equals("XSDB6")) {
-				javax.swing.JOptionPane.showMessageDialog(null,
-						"The Program is already running in another instance!");
-				System.exit(0);
-			}
 			try {
-				conn = DriverManager.getConnection(URL + ";create=true;");
+				conn = DriverManager.getConnection(URL + ";create=true;", "botLowPerm" , pass);
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE,
 						"An Internal Communication Error Occurred With the Database");

@@ -38,7 +38,7 @@ public class MyBotMain implements Runnable {
 	 * @param args - the oAuth for the bot is passed on the command-line
 	 */
 	public static void main(String[] args) {
-		Database.initDBConnection();
+		Database.initDBConnection(args[1]);
 		if(Database.getMainTables()) {
 			Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'pcmrbot\')");
 			Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'j3wsofhazard\')");
