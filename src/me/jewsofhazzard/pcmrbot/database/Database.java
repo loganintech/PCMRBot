@@ -47,8 +47,8 @@ public class Database {
 				| ClassNotFoundException e) {
 			logger.log(
 					Level.SEVERE,
-					"Unable to find EmbeddedDriver in classpath!\n"
-							+ e.toString());
+					"Unable to find ClientDriver in classpath!\n"
+							,e);
 		}
 		try {
 			conn = DriverManager.getConnection(URL, "botLowPerm" , pass);

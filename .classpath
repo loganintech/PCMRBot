@@ -8,7 +8,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="pircbot.jar"/>
-	<classpathentry exported="true" kind="lib" path="Future Ideas.txt"/>
 	<classpathentry exported="true" kind="lib" path="derbyclient.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
