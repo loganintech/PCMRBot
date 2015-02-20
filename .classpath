@@ -9,5 +9,6 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="pircbot.jar"/>
 	<classpathentry kind="lib" path="mysql-connector-java-5.1.34-bin.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Hazard/Documents/GitHub/PCMRBot/mysql-connector-java-5.1.34-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

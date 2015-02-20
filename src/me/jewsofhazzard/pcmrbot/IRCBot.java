@@ -108,7 +108,7 @@ public class IRCBot extends PircBot {
 			}
 			ResultSet rs = Database
 					.executeQuery("SELECT * FROM " + Database.DEFAULT_SCHEMA
-							+ "." + connectedChannel.substring(0) + "Spam");
+							+ "." + connectedChannel.substring(1) + "Spam");
 			try {
 				while (rs.next()) {
 					if (message.matches("(" + rs.getString(1) + ")+")) {
@@ -246,16 +246,12 @@ public class IRCBot extends PircBot {
 			}
 
 			if (canVote) {
-				message = message.substring(message
-						.indexOf(" ") + 1);
-				int vote = 0;
-				if(message.equalsIgnoreCase("random")){
+				int vote = Integer.valueOf(message.substring(message.indexOf(" ")+ 1));
+				if(message.substring(message.indexOf(" ")+1).equalsIgnoreCase("random")){
 					vote = rand.nextInt(optionCount);
-				}
-				else{
-				vote = Integer.valueOf(message);
-				}
-				if (vote < optionCount) {
+				}		
+					
+				if (vote < optionCount + 1) {
 					voting.get(vote - 1).add(sender);
 				} else {
 					sendMessage(
@@ -374,7 +370,7 @@ public class IRCBot extends PircBot {
 	 */
 	public void addModerator(String moderator) {
 		ResultSet rs = Database.executeQuery("SELECT * FROM "
-				+ Database.DEFAULT_SCHEMA + "." + connectedChannel.substring(0)
+				+ Database.DEFAULT_SCHEMA + "." + connectedChannel.substring(1)
 				+ "Mods WHERE userID=\'" + moderator + "\'");
 		try {
 			if (rs.next()) {
@@ -382,7 +378,7 @@ public class IRCBot extends PircBot {
 						+ " is already a moderator!");
 			} else {
 				Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA
-						+ "." + connectedChannel.substring(0)
+						+ "." + connectedChannel.substring(1)
 						+ "Mods VALUES(\'" + moderator + "\')");
 				sendMessage(connectedChannel, "Successfully added " + moderator
 						+ " to the bots mod list!");

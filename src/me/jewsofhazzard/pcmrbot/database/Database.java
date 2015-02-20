@@ -31,7 +31,7 @@ public class Database {
 
 	private static final String URL = "jdbc:mysql://localhost:3306/pcmrbot?";
 
-	public static final String DEFAULT_SCHEMA = "PCMRBOT";
+	public static final String DEFAULT_SCHEMA = "pcmrbot";
 
 	static final Logger logger = Logger.getLogger(Database.class + "");
 
@@ -125,7 +125,7 @@ public class Database {
 				stmt5.closeOnCompletion();
 				stmt5.executeUpdate("CREATE TABLE "
 						+ DEFAULT_SCHEMA
-						+ ".pcmrbotAutoReplies(keyWord varchar(255), reply(255), PRIMARY KEY (keyWord))");
+						+ ".pcmrbotAutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))");
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE,
 						"Unable to create table pcmrbotAutoReplies!\n" + ex.toString());
@@ -192,7 +192,7 @@ public class Database {
 						+ DEFAULT_SCHEMA
 						+ "."
 						+ channel
-						+ "AutoReplies(keyWord varchar(255), reply(255), PRIMARY KEY (keyWord))");
+						+ "AutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))");
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE, "Unable to create table " + channel
 						+ "AutoReplies!\n" + ex.toString());
@@ -280,7 +280,7 @@ public class Database {
 					+ DEFAULT_SCHEMA
 					+ "."
 					+ channel
-					+ "AutoReplies(keyWord varchar(255), reply(255), PRIMARY KEY (keyWord))");
+					+ "AutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))");
 		} catch (SQLException ex) {
 			logger.log(Level.SEVERE, "Unable to create table " + channel
 					+ "AutoReplies!\n" + ex.toString());
