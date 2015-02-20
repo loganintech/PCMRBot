@@ -118,8 +118,37 @@ public class IRCBot extends PircBot {
 
 			sendMessage(
 					connectedChannel,
-					"Current commands: !join (ask pcmr bot nicely to join your chat) !pcmrbot (information) !vote {choice} (vote during active votes) !votestart (admin only) !addmod (admin only).");
+					"//Change this to a link that has all the commands, we don't want a wall of text now do we.");
 
+		}
+		
+		if (message.startsWith("!help ")){
+			
+			message = message.substring(message.indexOf(" "));
+			
+			if(message.equalsIgnoreCase("votestart")){
+				
+				sendMessage(connectedChannel, "The format of the votestart command is as follows:"
+						+ " !votestart {time in seconds}|{question to ask}|{option 1}|{infinte more options}");
+				sendMessage(connectedChannel, "Note, you do not need { or } and you must not add spaces "
+						+ "between |."
+						+ " For example, !votestart 30|What game should I play?|Bioshock|Minecraft|League. Is perfect.");
+			}
+			if(message.equalsIgnoreCase("addautoreply")){
+				
+				sendMessage(connectedChannel, "Autoreply is formated similarly to starting votes. All you need is to type"
+						+ " !addautoreply {keyword}|{keyword}|{reply}. Note: again, there can be no spaces between pipes ( | )"
+						+ ". The difference is that you may add as many keywords as you like as long as the reply is last.");
+				
+			}
+			if(message.equalsIgnoreCase("raffle")){
+				
+				sendMessage(connectedChannel, "A raffle's context is simply !raffle {type} where type could be (all, follower or follwers,"
+						+ " subscriber or subscribers.");
+				
+			}
+			
+			
 		}
 
 		if (message.toLowerCase().startsWith("!votestart ") && isMod(sender)) {
