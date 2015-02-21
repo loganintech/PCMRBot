@@ -73,11 +73,12 @@ public class IRCBot extends PircBot {
 																	// choices
 	private int optionCount;
 	private String connectedChannel;
-	//private int paragraphLength = 250;
-	//private int numSymbols = 15;
+	private int paragraphLength = 250;
+	private int numSymbols = 15;
 	//private int numEmotes = 10;
 	Random rand = new Random();
 	private boolean welcomeEnabled = true;
+	private String welcomeMessage = " to our channel, may you find it entertaining or flat out enjoyable.";
 
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
@@ -105,7 +106,7 @@ public class IRCBot extends PircBot {
 		
 		
 		if(welcomeEnabled){
-		sendMessage(connectedChannel, "Welcome " + sender + " to our channel, may you find it entertaining or flat out enjoyable.");
+		sendMessage(connectedChannel, "Welcome " + sender + welcomeMessage);
 		}
 		
 	}
@@ -116,7 +117,7 @@ public class IRCBot extends PircBot {
 		Date date = new Date();
 		chatPostSeen.put(sender, channel + "|" + date.toString());
 			
-		/*
+		
 		if (!isMod(sender)) {
 			if (message.matches("[A-Z]{20,}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.CAPS);
@@ -127,10 +128,10 @@ public class IRCBot extends PircBot {
 				new Timeouts(connectedChannel, sender, 1, TType.SYMBOLS);
 			} else if (message.length() >= paragraphLength) {
 				new Timeouts(connectedChannel, sender, 1, TType.PARAGRAPH);
-			} else if (message
-					.matches("(:\\(|:\\)|:/|:D|:o|:p|:z|;\\)|;p|<3|>\\(|B\\)|o_o|R\\)|4Head|ANELE|ArsonNoSexy|AsianGlow|AtGL|AthenaPMS|AtIvy|BabyRage|AtWW|BatChest|BCWarrior|BibleThump|BigBrother|BionicBunion|BlargNaut|BloodTrail|BORT|BrainSlug|BrokeBack|BuddhaBar|CougarHunt|DAESuppy|DansGame|DatSheffy|DBstyle|DendiFace|DogFace|EagleEye|EleGiggle|EvilFetus|FailFish|FPSMarksman|FrankerZ|FreakinStinkin|FUNgineer|FunRun|FuzzyOtterOO|GasJoker|GingerPower|GrammarKing|HassaanChop|HassanChop|HeyGuys|HotPokket|HumbleLife|ItsBoshyTime|Jebaited|KZowl|JKanStyle|JonCarnage|KAPOW|Kappa|Keepo|KevinTurtle|Kippa|Kreygasm|KZassault|KZcover|KZguerilla|KZhelghast|KZskull|Mau5|mcaT|MechaSupes|MrDestructoid|MrDestructoid|MVGame|NightBat|NinjaTroll|NoNoSpot|noScope|NotAtk|OMGScoots|OneHand|OpieOP|OptimizePrime|panicBasket|PanicVis|PazPazowitz|PeoplesChamp|PermaSmug|PicoMause|PipeHype|PJHarley|PJSalt|PMSTwin|PogChamp|Poooound|PRChase|PunchTrees|PuppeyFace|RaccAttack|RalpherZ|RedCoat|ResidentSleeper|RitzMitz|RuleFive|Shazam|shazamicon|ShazBotstix|ShazBotstix|ShibeZ|SMOrc|SMSkull|SoBayed|SoonerLater|SriHead|SSSsss|StoneLightning|StrawBeary|SuperVinlin|SwiftRage|TF2John|TheRinger|TheTarFu|TheThing|ThunBeast|TinyFace|TooSpicy|TriHard|TTours|UleetBackup|UncleNox|UnSane|Volcania|WholeWheat|WinWaker|WTRuck|WutFace|YouWHY|\\(mooning\\)|\\(poolparty\\)|\\(puke\\)|:'\\(|:tf:|aPliS|BaconEffect|BasedGod|BroBalt|bttvNice|ButterSauce|cabbag3|CandianRage|CHAccepted|CiGrip|ConcernDoge|D:|DatSauce|FapFapFap|FishMoley|ForeverAlone|FuckYea|GabeN|HailHelix|HerbPerve|Hhhehehe|HHydro|iAMbh|iamsocal|iDog|JessSaiyan|JuliAwesome|KaRappa|KKona|LLuda|M&Mjc|ManlyScreams|NaM|OhGod|OhGodchanZ|OhhhKee|OhMyGoodness|PancakeMix|PedoBear|PedoNam|PokerFace|PoleDoge|RageFace|RebeccaBlack|RollIt!|rStrike|SexPanda|She'llBeRight|ShoopDaWhoop|SourPls|SuchFraud|SwedSwag|TaxiBro|tEh|ToasTy|TopHam|TwaT|UrnCrown|VisLaud|WatChuSay|WhatAYolk|YetiZ|PraiseIt|\\s){"+numEmotes+",}")) {
-				new Timeouts(connectedChannel, sender, 1, TType.EMOTE);
-			}
+			} //else if (message
+				//	.matches("(:\\(|:\\)|:/|:D|:o|:p|:z|;\\)|;p|<3|>\\(|B\\)|o_o|R\\)|4Head|ANELE|ArsonNoSexy|AsianGlow|AtGL|AthenaPMS|AtIvy|BabyRage|AtWW|BatChest|BCWarrior|BibleThump|BigBrother|BionicBunion|BlargNaut|BloodTrail|BORT|BrainSlug|BrokeBack|BuddhaBar|CougarHunt|DAESuppy|DansGame|DatSheffy|DBstyle|DendiFace|DogFace|EagleEye|EleGiggle|EvilFetus|FailFish|FPSMarksman|FrankerZ|FreakinStinkin|FUNgineer|FunRun|FuzzyOtterOO|GasJoker|GingerPower|GrammarKing|HassaanChop|HassanChop|HeyGuys|HotPokket|HumbleLife|ItsBoshyTime|Jebaited|KZowl|JKanStyle|JonCarnage|KAPOW|Kappa|Keepo|KevinTurtle|Kippa|Kreygasm|KZassault|KZcover|KZguerilla|KZhelghast|KZskull|Mau5|mcaT|MechaSupes|MrDestructoid|MrDestructoid|MVGame|NightBat|NinjaTroll|NoNoSpot|noScope|NotAtk|OMGScoots|OneHand|OpieOP|OptimizePrime|panicBasket|PanicVis|PazPazowitz|PeoplesChamp|PermaSmug|PicoMause|PipeHype|PJHarley|PJSalt|PMSTwin|PogChamp|Poooound|PRChase|PunchTrees|PuppeyFace|RaccAttack|RalpherZ|RedCoat|ResidentSleeper|RitzMitz|RuleFive|Shazam|shazamicon|ShazBotstix|ShazBotstix|ShibeZ|SMOrc|SMSkull|SoBayed|SoonerLater|SriHead|SSSsss|StoneLightning|StrawBeary|SuperVinlin|SwiftRage|TF2John|TheRinger|TheTarFu|TheThing|ThunBeast|TinyFace|TooSpicy|TriHard|TTours|UleetBackup|UncleNox|UnSane|Volcania|WholeWheat|WinWaker|WTRuck|WutFace|YouWHY|\\(mooning\\)|\\(poolparty\\)|\\(puke\\)|:'\\(|:tf:|aPliS|BaconEffect|BasedGod|BroBalt|bttvNice|ButterSauce|cabbag3|CandianRage|CHAccepted|CiGrip|ConcernDoge|D:|DatSauce|FapFapFap|FishMoley|ForeverAlone|FuckYea|GabeN|HailHelix|HerbPerve|Hhhehehe|HHydro|iAMbh|iamsocal|iDog|JessSaiyan|JuliAwesome|KaRappa|KKona|LLuda|M&Mjc|ManlyScreams|NaM|OhGod|OhGodchanZ|OhhhKee|OhMyGoodness|PancakeMix|PedoBear|PedoNam|PokerFace|PoleDoge|RageFace|RebeccaBlack|RollIt!|rStrike|SexPanda|She'llBeRight|ShoopDaWhoop|SourPls|SuchFraud|SwedSwag|TaxiBro|tEh|ToasTy|TopHam|TwaT|UrnCrown|VisLaud|WatChuSay|WhatAYolk|YetiZ|PraiseIt|\\s){"+numEmotes+",}")) {
+				//new Timeouts(connectedChannel, sender, 1, TType.EMOTE);
+			//}
 			ResultSet rs = Database
 					.executeQuery("SELECT * FROM " + Database.DATABASE
 							+ "." + connectedChannel.substring(1) + "Spam");
@@ -144,7 +145,7 @@ public class IRCBot extends PircBot {
 				logger.log(Level.SEVERE, "An error occurred checking if "
 						+ sender + "'s message has bad words", e);
 			}
-		} */
+		} 
 		
 		if(message.startsWith("!lmgtfy ")) {
 			message=message.substring(message.indexOf(' '));
@@ -271,7 +272,11 @@ public class IRCBot extends PircBot {
 		
 				this.welcomeEnabled = true;
 			
-		}   else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
+		}	else if(message.toLowerCase().startsWith("!changewelcome ")){
+		
+			this.welcomeMessage = message.substring((message.indexOf(" ")+1));
+			
+		}	else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
 			
 			this.confirmationReplys = false;
 			sendMessage(connectedChannel, sender + " has disabled bot replies");
@@ -281,13 +286,13 @@ public class IRCBot extends PircBot {
 			this.confirmationReplys = true;
 			sendMessage(connectedChannel, sender + " has enabled bot replies");
 		
-		}  /* else if(message.toLowerCase().startsWith("!changeoption ")){
+		}   else if(message.toLowerCase().startsWith("!changeoption ")){
 		
 			message = message.substring(message.indexOf(" ") + 1);
 			String [] command = message.split("[|]");
 			changeOption(command);
 		
-		} */  else if (message.toLowerCase().startsWith("!votestart ") && isMod(sender)) {
+		}   else if (message.toLowerCase().startsWith("!votestart ") && isMod(sender)) {
 
 			voting = new ArrayList<>();
 			ringazinUsers = new ArrayList<>();
@@ -814,7 +819,7 @@ public class IRCBot extends PircBot {
 	}
 
 	
-	/*public void changeOption(String [] option){
+	public void changeOption(String [] option){
 		
 		if(option[0].equalsIgnoreCase("paragraph")){
 			
@@ -823,11 +828,11 @@ public class IRCBot extends PircBot {
 			
 		}
 		
-		else if(option[0].equalsIgnoreCase("emotes")){
+		/*else if(option[0].equalsIgnoreCase("emotes")){
 					
 			numEmotes = Integer.valueOf(option[1]);	
 			sendMessage(connectedChannel, "You have changed the value to " + option[1] + ".");		
-				}
+				}*/
 		
 		else if(option[0].equalsIgnoreCase("symbol")){
 			
@@ -842,7 +847,7 @@ public class IRCBot extends PircBot {
 		}
 		
 	}
-	*/
+	
 	
 
 }
