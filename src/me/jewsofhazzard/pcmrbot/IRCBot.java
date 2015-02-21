@@ -205,7 +205,7 @@ public class IRCBot extends PircBot {
 			else{
 				
 				sendMessage(connectedChannel, "I am sorry " + sender + " we have not added command-specific help for that command yet. Please proceed to "
-						+ "162.212.1.135/commands for more information.");
+						+ "http://pcmrbot.no-ip.info/commands for more information.");
 				
 			}
 			
