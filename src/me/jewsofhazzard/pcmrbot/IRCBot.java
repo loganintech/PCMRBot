@@ -242,7 +242,7 @@ public class IRCBot extends PircBot {
 				return;
 			}
 	
-		}	else if(message.toLowerCase().startsWith("!slow ")){
+		}	else if(message.toLowerCase().startsWith("!slow ") && isMod(sender)){
 			
 				if(isMod("pcmrbot")){
 					
