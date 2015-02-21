@@ -123,6 +123,7 @@ public class MyBotMain implements Runnable {
 			bot.sendMessage(bot.getChannel(), "I am shutting down, I will automatically rejoin your channel when I restart!");
 		}
 		TFileWriter.writeFile(new File("connectedChannels.txt"), channels);
+		System.exit(0);
 	}
 
 	public static HashMap<String, IRCBot> getConnectedChannels() {

@@ -161,6 +161,10 @@ public class IRCBot extends PircBot {
 				message=message.substring(message.indexOf(' '));
 				String param=message.replace(' ', '+');
 				sendMessage(connectedChannel, "http://lmgtfy.com?q="+param);
+			} else if(message.equalsIgnoreCase("!shutdown")) {
+				if(connectedChannel.equalsIgnoreCase("#pcmrbot") && isMod(sender)) {
+					MyBotMain.shutdown();
+				}
 			} else if(message.toLowerCase().startsWith("!title ") && isMod(sender)) {
 				message=message.substring(message.indexOf(' '));
 				if(TwitchUtilities.updateTitle(connectedChannel.substring(1), message)) {
