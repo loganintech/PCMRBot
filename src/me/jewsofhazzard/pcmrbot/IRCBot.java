@@ -80,7 +80,6 @@ public class IRCBot extends PircBot {
 	//private int numEmotes = 10;
 	Random rand = new Random();
 	private boolean welcomeEnabled = true;
-	private String welcomeMessage = " to our channel, may you find it entertaining or flat out enjoyable.";
 
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
@@ -108,23 +107,25 @@ public class IRCBot extends PircBot {
 		
 		
 		if(welcomeEnabled){
-		sendMessage(connectedChannel, "Welcome " + sender + welcomeMessage);
+			sendMessage(connectedChannel, Database.getWelcomeMessage(connectedChannel).replace("%user%", sender));
 		}
 		
 	}
 	
+	@Override
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message) {
 
 		Date date = new Date();
-		chatPostSeen.put(sender, channel + "|" + date.toString());
+		chatPostSeen.put(sender, channel.substring(1) + "|" + date.toString());
+		logger.info(sender+" - "+channel + "|" + date.toString());
 			
 		
 		if (!isMod(sender)) {
 			if (message.matches("[A-Z]{20,}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.CAPS);
 			} else if (message
-					.matches("([A-Za-z0-9_:/\\-@\\\\s.]+[\\s?\\.\\s?]?)+([\\s?\\.\\s?](c\\s?o\\s?m|n\\s?e\\s?t|o\\s?r\\s?g|c\\s?o|a\\s?u|u\\s?k|u\\s?s|m\\s?e|b\\s?z|i\\s?n\\s?t|e\\s?d\\s?u|g\\s?o\\s?v\\s?|m\\s?i\\s?l|a\\s?c)(\\s)?(/)?)+")) {
+					.matches("(([A-Za-z0-9_:/\\-@\\s.]+[\\s?\\.\\s?]?)+([\\s?\\.\\s?](c\\s?o\\s?m|n\\s?e\\s?t|o\\s?r\\s?g|c\\s?o|a\\s?u|u\\s?k|u\\s?s|m\\s?e|b\\s?z|i\\s?n\\s?t|e\\s?d\\s?u|g\\s?o\\s?v\\s?|m\\s?i\\s?l|a\\s?c)(\\s)?(/)?)+[A-Za-z0-9_:/\\-@\\s.]+)+")) {
 				new Timeouts(connectedChannel, sender, 1, TType.LINK);
 			} else if (message.matches("[\\W_]{" +numSymbols + ",}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.SYMBOLS);
@@ -276,7 +277,7 @@ public class IRCBot extends PircBot {
 			
 		}	else if(message.toLowerCase().startsWith("!changewelcome ")){
 		
-			this.welcomeMessage = message.substring((message.indexOf(" ")+1));
+			Database.setWelcomeMessage(message.substring((message.indexOf(" ")+1)));
 			
 		}	else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
 			
@@ -357,10 +358,8 @@ public class IRCBot extends PircBot {
 
 				String[] tokens = info.split("|");
 	
-				sendMessage(connectedChannel, sender + ", I last saw " + target + " in " + tokens[0].substring(1) + " on " + tokens[1] + ".");
-			}
-			
-			else {
+				sendMessage(connectedChannel, sender + ", I last saw " + target + " in " + tokens[0] + " on " + tokens[1] + ".");
+			} else {
 				// they haven't chatted  (They are not in the map)
 				sendMessage(connectedChannel, "I'm sorry " + sender + ", I haven't seen " + message + ".");
 			}
@@ -582,16 +581,16 @@ public class IRCBot extends PircBot {
 	 * @param channel
 	 */
 	public void leaveMe(String channel) {
-		if (MyBotMain.getConnectedChannel("#" + channel) != null
+		if (MyBotMain.getConnectedChannel(channel) != null
 				&& connectedChannel != "#pcmrbot") {
 			sendMessage(connectedChannel, "I have disconnected from " + channel
 					+ "'s channel.");
-			MyBotMain.getConnectedChannel("#" + channel).partChannel(
-					"#" + channel);
-			MyBotMain.getConnectedChannels().remove("#" + channel);
+			MyBotMain.getConnectedChannel(channel).partChannel(
+					channel);
+			MyBotMain.getConnectedChannels().remove(channel);
 		} else {
 			sendMessage(
-					"#" + channel,
+					connectedChannel,
 					"Sorry "
 							+ channel
 							+ ", I cannot allow you to disconnect me from my home channel.");

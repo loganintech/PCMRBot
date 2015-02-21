@@ -157,7 +157,7 @@ public class Database {
 						+ DATABASE
 						+ "."
 						+ channel
-						+ "Options(optionID varchar(25), value varchar(25), PRIMARY KEY (optionID))");
+						+ "Options(optionID varchar(25), value varchar(255), PRIMARY KEY (optionID))");
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE, "Unable to create table " + channel
 						+ "Options!\n" + ex.toString());
@@ -285,6 +285,24 @@ public class Database {
 			logger.log(Level.SEVERE, "An error occurred getting "+user+"\'s OAuth from the database", e);
 		}
 		return null;
+	}
+
+	public static String getWelcomeMessage(String channel) {
+		ResultSet rs=executeQuery("SELECT * FROM "+DATABASE+"."+channel.substring(1)+"Options WHERE optionID=\'welcomeMessage\'");
+		try {
+			rs.next();
+			return rs.getString("value");
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Unable to get welcome message for "+channel.substring(1), e);
+		}
+		return null;
+	}
+
+	public static void setWelcomeMessage(String message) {
+		executeUpdate("UPDATE "+DATABASE+".Options SET "
+				+ "optionID=\'welcomeMessage\'," +
+				"value=\'"+message+"\'"
+				+"WHERE optionID=\'welcomeMessage\'");
 	}
 
 }
