@@ -275,7 +275,6 @@ public class Database {
 	}
 	
 	public static String getUserOAuth(String user) {
-		logger.info(user);
 		ResultSet rs=executeQuery("SELECT * FROM "+DATABASE+".userOAuth WHERE userID=\'"+user+"\'");
 		try {
 			if(rs.next()) {
