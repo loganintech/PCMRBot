@@ -281,12 +281,12 @@ public class IRCBot extends PircBot {
 				// they haven't chatted  (They are not in the map)
 				sendMessage(connectedChannel, "I'm sorry " + sender + ", I haven't seen " + message + ".");
 			}
-		}  else if(message.toLowerCase().startsWith("!voteKick ") && !voteKickActive && isMod(sender)){
+		}  else if(message.toLowerCase().startsWith("!votekick ") && !voteKickActive && isMod(sender)){
 		
 			message = message.substring(message.indexOf(" ") + 1);
 			voteKick(message);
 		
-		}  else if(message.equalsIgnoreCase("!voteKick") && voteKickActive){
+		}  else if(message.equalsIgnoreCase("!votekick") && voteKickActive){
 			
 			addToVoteKickCount(sender);
 		
