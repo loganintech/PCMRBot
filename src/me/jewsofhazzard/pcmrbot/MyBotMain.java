@@ -77,12 +77,12 @@ public class MyBotMain implements Runnable {
 		}
 		getConnectedChannels().get(getBotChannel())
 				.joinChannel(getBotChannel());
-		File f=new File("connectedChannel.txt");
+		File f=new File("connectedChannels.txt");
 		if(f.exists()) {
 			for(String s:TFileReader.readFile(f)) {
 				new MyBotMain(s);
 			}
-			new File("connectedChannel.txt").delete();
+			f.delete();
 		}
 
 	}
@@ -125,7 +125,7 @@ public class MyBotMain implements Runnable {
 			channels.add(bot.getChannel());
 			bot.sendMessage(bot.getChannel(), "I am shutting down, I will automatically rejoin your channel when I restart!");
 		}
-		TFileWriter.writeFile(new File("connectedChannels.txt"), channels);
+		TFileWriter.overWriteFile(new File("connectedChannels.txt"), channels);
 		System.exit(0);
 	}
 
