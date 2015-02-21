@@ -279,7 +279,7 @@ public class IRCBot extends PircBot {
 		}	else if(message.toLowerCase().startsWith("!changewelcome ") && isMod(sender)){
 		
 			Database.setWelcomeMessage(connectedChannel, message.substring((message.indexOf(" ")+1)));
-			sendMessage(connectedChannel, "The format has been changed to: " + sender + message.substring((message.indexOf(" ")+1)));
+			sendMessage(connectedChannel, "The format has been changed to: " + message.substring((message.indexOf(" ")+1)));
 			
 		}	else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
 			
