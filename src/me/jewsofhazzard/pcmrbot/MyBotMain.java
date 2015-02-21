@@ -113,9 +113,9 @@ public class MyBotMain implements Runnable {
 								+ getBotChannel(), e);
 			}
 			getConnectedChannels().get(channel).joinChannel(channel);
-			/*if(firstTime) {
+			if(firstTime) {
 				getConnectedChannels().get(channel).onFirstJoin();
-			}*/
+			}
 
 	}
 	
