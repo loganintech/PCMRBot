@@ -26,13 +26,9 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-
 //
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
-import me.jewsofhazzard.pcmrbot.util.TType;
-import me.jewsofhazzard.pcmrbot.util.Timeouts;
 import me.jewsofhazzard.pcmrbot.util.Timer;
 import net.swisstech.bitly.BitlyClient;
 import net.swisstech.bitly.model.Response;
@@ -220,20 +216,37 @@ public class IRCBot extends PircBot {
 			
 		}   else if(message.equalsIgnoreCase("!commercial")){
 		
-			TwitchUtilities.runCommercial(connectedChannel);
+				TwitchUtilities.runCommercial(connectedChannel);
 		
+		}   else if(message.equalsIgnoreCase("!commercial ")){
+			int time = 0;
+			try {	
+				time=Integer.valueOf(message.substring(message.indexOf(' ')));
+			} catch (NumberFormatException e) {
+				sendMessage(connectedChannel, message.substring(message.indexOf(' '))+" is not a valid time. Running a default length commercial!");
+				TwitchUtilities.runCommercial(connectedChannel);
+				return;
+			}
+			if (time<=180 && time%30 == 0) {
+				TwitchUtilities.runCommercial(connectedChannel, time);
+			} else {
+				sendMessage(connectedChannel, message.substring(message.indexOf(' '))+" is not a valid time. Running a default length commercial!");
+				TwitchUtilities.runCommercial(connectedChannel);
+				return;
+			}
+	
 		}	else if(message.toLowerCase().startsWith("!slow ")){
 			
-			if(isMod("pcmrbot")){
-				
-				sendMessage(connectedChannel, "/slow " + message.substring(message.indexOf(" ")+1));
-				
-			}
-			else{
-				
-				sendMessage(connectedChannel, "I am sorry, the pcmrbot is not running as a moderator in the channel.");
-				
-			}
+				if(isMod("pcmrbot")){
+					
+					sendMessage(connectedChannel, "/slow " + message.substring(message.indexOf(" ")+1));
+					
+				}
+				else{
+					
+					sendMessage(connectedChannel, "I am sorry, the pcmrbot is not running as a moderator in the channel.");
+					
+				}
 		
 		}   else if(message.equalsIgnoreCase("!slow")){
 			

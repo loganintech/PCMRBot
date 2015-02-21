@@ -157,7 +157,30 @@ public class TwitchUtilities {
 	public static boolean runCommercial(String channel) {
 		String USER_AGENT = "Mozilla/5.0";
 		String oauth_token=Database.getUserOAuth(channel.substring(1));
-		String url = BASE_URL+"channels/"+channel+"/commercial/?oauth_token="+oauth_token;
+		String url = BASE_URL+"channels/"+channel.substring(1)+"/commercial/?oauth_token="+oauth_token;
+		URL obj = null;
+		try {
+			obj = new URL(url);
+		} catch (MalformedURLException e) {
+			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channel, e);
+		}
+		
+		HttpsURLConnection con = null;
+		try {
+			con = (HttpsURLConnection) obj.openConnection();
+			con.setRequestMethod("POST");
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channel, e);
+		}
+		con.setRequestProperty("User-agent", USER_AGENT);
+		
+		return false;
+	}
+	
+	public static boolean runCommercial(String channel, int length) {
+		String USER_AGENT = "Mozilla/5.0";
+		String oauth_token=Database.getUserOAuth(channel.substring(1));
+		String url = BASE_URL+"channels/"+channel.substring(1)+"/commercial/?oauth_token="+oauth_token+"&length="+length;
 		URL obj = null;
 		try {
 			obj = new URL(url);
