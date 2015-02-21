@@ -126,7 +126,7 @@ public class IRCBot extends PircBot {
 			} else if (message
 					.matches("(([A-Za-z0-9_:/\\-@\\s.]+[\\s?\\.\\s?]?)+([\\s?\\.\\s?](c\\s?o\\s?m|n\\s?e\\s?t|o\\s?r\\s?g|c\\s?o|a\\s?u|u\\s?k|u\\s?s|m\\s?e|b\\s?z|i\\s?n\\s?t|e\\s?d\\s?u|g\\s?o\\s?v\\s?|m\\s?i\\s?l|a\\s?c)(\\s)?(/)?)+[A-Za-z0-9_:/\\-@\\s.]+)+")) {
 				new Timeouts(connectedChannel, sender, 1, TType.LINK);
-			} else if (message.matches("[\\W_]{" +numSymbols + ",}")) {
+			} else if (message.matches("[\\W_]{" +numSymbols + "{15,}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.SYMBOLS);
 			} else if (message.length() >= paragraphLength) {
 				new Timeouts(connectedChannel, sender, 1, TType.PARAGRAPH);
@@ -278,7 +278,7 @@ public class IRCBot extends PircBot {
 			
 		}	else if(message.toLowerCase().startsWith("!changewelcome ") && isMod(sender)){
 		
-			Database.setWelcomeMessage(message.substring((message.indexOf(" ")+1)));
+			Database.setWelcomeMessage(connectedChannel, message.substring((message.indexOf(" ")+1)));
 			sendMessage(connectedChannel, "The format has been changed to: " + sender + message.substring((message.indexOf(" ")+1)));
 			
 		}	else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
@@ -434,7 +434,9 @@ public class IRCBot extends PircBot {
 
 		} else if (message.equalsIgnoreCase("!leave")) {
 
-			leaveMe(connectedChannel);
+			if(sender.equalsIgnoreCase(connectedChannel.substring(1))) {
+				leaveMe();
+			}
 
 		} else if (message.equalsIgnoreCase("!pcmrbot")) {
 			sendMessage(
@@ -582,19 +584,19 @@ public class IRCBot extends PircBot {
 	 * 
 	 * @param channel
 	 */
-	public void leaveMe(String channel) {
-		if (MyBotMain.getConnectedChannel(channel) != null
+	public void leaveMe() {
+		if (MyBotMain.getConnectedChannel(connectedChannel) != null
 				&& connectedChannel != "#pcmrbot") {
-			sendMessage(connectedChannel, "I have disconnected from " + channel
+			sendMessage(connectedChannel, "I have disconnected from " + connectedChannel
 					+ "'s channel.");
-			MyBotMain.getConnectedChannel(channel).partChannel(
-					channel);
-			MyBotMain.getConnectedChannels().remove(channel);
+			MyBotMain.getConnectedChannel(connectedChannel).partChannel(
+					connectedChannel);
+			MyBotMain.getConnectedChannels().remove(connectedChannel);
 		} else {
 			sendMessage(
 					connectedChannel,
 					"Sorry "
-							+ channel
+							+ connectedChannel.substring(1)
 							+ ", I cannot allow you to disconnect me from my home channel.");
 		}
 	}
