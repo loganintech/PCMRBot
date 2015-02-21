@@ -435,7 +435,7 @@ public class IRCBot extends PircBot {
 
 		} else if (message.equalsIgnoreCase("!leave")) {
 
-			leaveMe(sender);
+			leaveMe(connectedChannel);
 
 		} else if (message.equalsIgnoreCase("!pcmrbot")) {
 			sendMessage(
