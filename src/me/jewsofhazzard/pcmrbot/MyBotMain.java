@@ -122,8 +122,12 @@ public class MyBotMain implements Runnable {
 	public static void shutdown() {
 		ArrayList<String> channels=new ArrayList<>();
 		for(IRCBot bot : connectedChannels.values()) {
+		
+			if(!bot.getChannel().equalsIgnoreCase("#pcmrbot")){
 			channels.add(bot.getChannel());
 			bot.sendMessage(bot.getChannel(), "I am shutting down, I will automatically rejoin your channel when I restart!");
+			}
+			
 		}
 		TFileWriter.overWriteFile(new File("connectedChannels.txt"), channels);
 		System.exit(0);
