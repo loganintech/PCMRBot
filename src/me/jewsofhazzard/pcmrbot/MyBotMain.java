@@ -17,12 +17,16 @@
 
 package me.jewsofhazzard.pcmrbot;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.jewsofhazzard.pcmrbot.database.Database;
+import me.jewsofhazzard.pcmrbot.util.TFileReader;
+import me.jewsofhazzard.pcmrbot.util.TFileWriter;
 
 import org.jibble.pircbot.IrcException;
 
@@ -73,6 +77,10 @@ public class MyBotMain implements Runnable {
 		}
 		getConnectedChannels().get(getBotChannel())
 				.joinChannel(getBotChannel());
+		for(String s:TFileReader.readFile(new File("connectedChannel.txt"))) {
+			new MyBotMain(s);
+		}
+		new File("connectedChannel.txt").delete();
 
 	}
 
@@ -106,6 +114,15 @@ public class MyBotMain implements Runnable {
 				getConnectedChannels().get(channel).onFirstJoin();
 			}
 
+	}
+	
+	public static void shutdown() {
+		ArrayList<String> channels=new ArrayList<>();
+		for(IRCBot bot : connectedChannels.values()) {
+			channels.add(bot.getChannel());
+			bot.sendMessage(bot.getChannel(), "I am shutting down, I will automatically rejoin your channel when I restart!");
+		}
+		TFileWriter.writeFile(new File("connectedChannels.txt"), channels);
 	}
 
 	public static HashMap<String, IRCBot> getConnectedChannels() {
