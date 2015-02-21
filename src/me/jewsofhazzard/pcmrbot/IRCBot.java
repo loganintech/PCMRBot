@@ -154,6 +154,7 @@ public class IRCBot extends PircBot {
 			TwitchUtilities.updateTitle(connectedChannel.substring(1), message.substring(message.indexOf(' ')));
 		} else if(message.equalsIgnoreCase("!clearAutoReplies")) {
 			if(sender.equalsIgnoreCase(channel.substring(1))) {		//This makes sure ONLY the channel admin can run this
+				sendMessage(connectedChannel, channel.substring(1) + " has cleared the auto replies.");
 				Database.clearAutoRepliesTable(channel.substring(1));
 			}
 		} else if (message.equalsIgnoreCase("!helppcmr")) {
