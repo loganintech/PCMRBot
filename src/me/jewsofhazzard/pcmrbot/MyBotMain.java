@@ -53,10 +53,10 @@ public class MyBotMain implements Runnable {
 	public static void main(String[] args) {
 		Database.initDBConnection(args[1]);
 		if(Database.getMainTables()) {
-			Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'pcmrbot\')");
-			Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'j3wsofhazard\')");
-			Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'donald10101\')");
-			Database.executeUpdate("INSERT INTO "+Database.DEFAULT_SCHEMA+"."+getBotChannel().substring(1)+"Mods VALUES(\'angablade\')");
+			Database.executeUpdate("INSERT INTO "+Database.DATABASE+"."+getBotChannel().substring(1)+"Mods VALUES(\'pcmrbot\')");
+			Database.executeUpdate("INSERT INTO "+Database.DATABASE+"."+getBotChannel().substring(1)+"Mods VALUES(\'j3wsofhazard\')");
+			Database.executeUpdate("INSERT INTO "+Database.DATABASE+"."+getBotChannel().substring(1)+"Mods VALUES(\'donald10101\')");
+			Database.executeUpdate("INSERT INTO "+Database.DATABASE+"."+getBotChannel().substring(1)+"Mods VALUES(\'angablade\')");
 		}
 		oAuth = args[0];
 		getConnectedChannels()
@@ -82,11 +82,11 @@ public class MyBotMain implements Runnable {
 		boolean firstTime=false;
 			if(Database.getChannelTables(channel.substring(1))) {
 				firstTime=true;
-				Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'pcmrbot\')");
-				Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'j3wsofhazard\')");
-				Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'donald10101\')");
-				Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'angablade\')");
-				Database.executeUpdate("INSERT INTO " + Database.DEFAULT_SCHEMA + "." + channel.substring(1) + "Mods VALUES(\'"+ channel.substring(1) +"\')");
+				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'pcmrbot\')");
+				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'j3wsofhazard\')");
+				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'donald10101\')");
+				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'angablade\')");
+				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'"+ channel.substring(1) +"\')");
 			}
 			getConnectedChannels().put(channel, new IRCBot(channel));
 

@@ -31,7 +31,7 @@ public class Database {
 
 	private static final String URL = "jdbc:mysql://localhost:3306/pcmrbot?";
 
-	public static final String DEFAULT_SCHEMA = "pcmrbot";
+	public static final String DATABASE = "pcmrbot";
 
 	static final Logger logger = Logger.getLogger(Database.class + "");
 
@@ -69,41 +69,28 @@ public class Database {
 		Statement stmt2;
 		Statement stmt3;
 		Statement stmt4;
-		Statement stmt5;
 		try {
 			stmt = conn.createStatement();
 			stmt.closeOnCompletion();
-			stmt.executeUpdate("CREATE SCHEMA " + DEFAULT_SCHEMA);
-		} catch (SQLException ex) {
-			if (!ex.getSQLState().equals("X0Y68")) {
-				logger.log(
-						Level.SEVERE,
-						"Unable To Create Necessary Database Resources\n"
-								+ ex.toString());
-			}
-		}
-		try {
-			stmt1 = conn.createStatement();
-			stmt1.closeOnCompletion();
-			stmt1.executeQuery("SELECT * FROM " + DEFAULT_SCHEMA
+			stmt.executeQuery("SELECT * FROM " + DATABASE
 					+ ".pcmrbotMods");
 			return false;
 		} catch (SQLException e) {
 			try {
-				stmt2 = conn.createStatement();
-				stmt2.closeOnCompletion();
-				stmt2.executeUpdate("CREATE TABLE "
-						+ DEFAULT_SCHEMA
+				stmt1 = conn.createStatement();
+				stmt1.closeOnCompletion();
+				stmt1.executeUpdate("CREATE TABLE "
+						+ DATABASE
 						+ ".pcmrbotMods(userID varchar(25), PRIMARY KEY (userID))");
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE,
 						"Unable to create table pcmrbotMods!\n" + ex.toString());
 			}
 			try {
-				stmt3 = conn.createStatement();
-				stmt3.closeOnCompletion();
-				stmt3.executeUpdate("CREATE TABLE "
-						+ DEFAULT_SCHEMA
+				stmt2 = conn.createStatement();
+				stmt2.closeOnCompletion();
+				stmt2.executeUpdate("CREATE TABLE "
+						+ DATABASE
 						+ ".pcmrbotOptions(optionID varchar(25), value varchar(25), PRIMARY KEY (optionID))");
 			} catch (SQLException ex) {
 				logger.log(
@@ -112,19 +99,19 @@ public class Database {
 								+ ex.toString());
 			}
 			try {
-				stmt4 = conn.createStatement();
-				stmt4.closeOnCompletion();
-				stmt4.executeUpdate("CREATE TABLE " + DEFAULT_SCHEMA
+				stmt3 = conn.createStatement();
+				stmt3.closeOnCompletion();
+				stmt3.executeUpdate("CREATE TABLE " + DATABASE
 						+ ".pcmrbotSpam(word varchar(25), PRIMARY KEY (word))");
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE,
 						"Unable to create table pcmrbotSpam!\n" + ex.toString());
 			}
 			try {
-				stmt5 = conn.createStatement();
-				stmt5.closeOnCompletion();
-				stmt5.executeUpdate("CREATE TABLE "
-						+ DEFAULT_SCHEMA
+				stmt4 = conn.createStatement();
+				stmt4.closeOnCompletion();
+				stmt4.executeUpdate("CREATE TABLE "
+						+ DATABASE
 						+ ".pcmrbotAutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))");
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE,
@@ -149,14 +136,14 @@ public class Database {
 		try {
 			stmt = conn.createStatement();
 			stmt.closeOnCompletion();
-			stmt.executeQuery("SELECT * FROM " + DEFAULT_SCHEMA + "." + channel
+			stmt.executeQuery("SELECT * FROM " + DATABASE + "." + channel
 					+ "Mods");
 			return false;
 		} catch (SQLException e) {
 			try {
 				stmt1 = conn.createStatement();
 				stmt1.closeOnCompletion();
-				stmt1.executeUpdate("CREATE TABLE " + DEFAULT_SCHEMA + "."
+				stmt1.executeUpdate("CREATE TABLE " + DATABASE + "."
 						+ channel
 						+ "Mods(userID varchar(25), PRIMARY KEY (userID))");
 			} catch (SQLException ex) {
@@ -167,7 +154,7 @@ public class Database {
 				stmt2 = conn.createStatement();
 				stmt2.closeOnCompletion();
 				stmt2.executeUpdate("CREATE TABLE "
-						+ DEFAULT_SCHEMA
+						+ DATABASE
 						+ "."
 						+ channel
 						+ "Options(optionID varchar(25), value varchar(25), PRIMARY KEY (optionID))");
@@ -178,7 +165,7 @@ public class Database {
 			try {
 				stmt3 = conn.createStatement();
 				stmt3.closeOnCompletion();
-				stmt3.executeUpdate("CREATE TABLE " + DEFAULT_SCHEMA + "."
+				stmt3.executeUpdate("CREATE TABLE " + DATABASE + "."
 						+ channel
 						+ "Spam(word varchar(25), PRIMARY KEY (word))");
 			} catch (SQLException ex) {
@@ -189,7 +176,7 @@ public class Database {
 				stmt4 = conn.createStatement();
 				stmt4.closeOnCompletion();
 				stmt4.executeUpdate("CREATE TABLE "
-						+ DEFAULT_SCHEMA
+						+ DATABASE
 						+ "."
 						+ channel
 						+ "AutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))");
@@ -265,7 +252,7 @@ public class Database {
 			stmt = conn.createStatement();
 			stmt.closeOnCompletion();
 			stmt.executeUpdate("DROP TABLE "
-					+ DEFAULT_SCHEMA
+					+ DATABASE
 					+ "."
 					+ channel
 					+ "AutoReplies");
@@ -277,7 +264,7 @@ public class Database {
 			stmt1 = conn.createStatement();
 			stmt1.closeOnCompletion();
 			stmt1.executeUpdate("CREATE TABLE "
-					+ DEFAULT_SCHEMA
+					+ DATABASE
 					+ "."
 					+ channel
 					+ "AutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))");
@@ -288,7 +275,7 @@ public class Database {
 	}
 	
 	public static String getUserOAuth(String user) {
-		ResultSet rs=executeQuery("SELECT * FROM "+DEFAULT_SCHEMA+".userOAuth WHERE userID=\'"+user+"\'");
+		ResultSet rs=executeQuery("SELECT * FROM "+DATABASE+".userOAuth WHERE userID=\'"+user+"\'");
 		try {
 			if(rs.next()) {
 				return rs.getString("oAuth");
