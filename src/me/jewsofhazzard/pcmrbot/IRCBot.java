@@ -154,7 +154,7 @@ public class IRCBot extends PircBot {
 		} else if (message.equalsIgnoreCase("!helppcmr")) {
 			sendMessage(
 					connectedChannel,
-					"//Change this to a link that has all the commands, we don't want a wall of text now do we.");
+					"http://pcmrbot.no-ip.info/commands");
 		} else if (message.startsWith("!help ")){
 			
 			message = message.substring(message.indexOf(" ") + 1);
@@ -255,8 +255,6 @@ public class IRCBot extends PircBot {
 			setVoteCall(true);
 			vote((long) Integer.valueOf(voteOptions[0]));
 		} else if (message.toLowerCase().startsWith("!shorten ") && isMod(sender)) {
-			// !shorten <url>
-			// <bot>: Url: http://bit.ly/<link_id>
 			String out = shortenURL(message.substring(message.indexOf(" ") + 1));
 			if(out == null) {
 				sendMessage(connectedChannel, message.substring(message.indexOf(' ')+1) + " is an invalid url! Make sure you include http(s)://.");
@@ -264,17 +262,10 @@ public class IRCBot extends PircBot {
 			sendMessage(connectedChannel, "URL: " + out);
 			
 		} else if (message.toLowerCase().startsWith("!slap ")) {
-			// !slap <username>
-			// <bot has slapped <target> with a raw fish!>
 			String target = message.substring(message.indexOf(" ") + 1);
-//			sendMessage(connectedChannel, (char)1 + "ACTION" + (char)1 " slapped " + target + " with a raw fish!");
 			sendAction(connectedChannel, "slaps " + target + " with a raw fish");
 			
 		} else if (message.toLowerCase().startsWith("!seen ")) {
-			// !seen <username>
-			// <bot>: <sender>, I last seen <target> in <channel> on <date>.
-			// <bot>: I'm sorry <sender>, I haven't seen <target>.
-			
 			String target = message.substring(message.indexOf(" ") + 1);
 			if(chatPostSeen.containsKey(target)) {
 				// they have a recent message in the chatPostSeen map
@@ -286,10 +277,11 @@ public class IRCBot extends PircBot {
 				sendMessage(connectedChannel, sender + ", I last saw " + target + " in " + tokens[0].substring(1) + " on " + tokens[1] + ".");
 			}
 			
-			else {// they haven't chatted  (They are not in the map)
+			else {
+				// they haven't chatted  (They are not in the map)
 				sendMessage(connectedChannel, "I'm sorry " + sender + ", I haven't seen " + message + ".");
 			}
-		}  else if(message.toLowerCase().startsWith("!votetokick ") /*&& isMod(sender)*/){
+		}  else if(message.toLowerCase().startsWith("!voteKick ") && !voteKickActive && isMod(sender)){
 		
 			message = message.substring(message.indexOf(" ") + 1);
 			voteKick(message);
