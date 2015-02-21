@@ -77,10 +77,13 @@ public class MyBotMain implements Runnable {
 		}
 		getConnectedChannels().get(getBotChannel())
 				.joinChannel(getBotChannel());
-		for(String s:TFileReader.readFile(new File("connectedChannel.txt"))) {
-			new MyBotMain(s);
+		File f=new File("connectedChannel.txt");
+		if(f.exists()) {
+			for(String s:TFileReader.readFile(f)) {
+				new MyBotMain(s);
+			}
+			new File("connectedChannel.txt").delete();
 		}
-		new File("connectedChannel.txt").delete();
 
 	}
 
