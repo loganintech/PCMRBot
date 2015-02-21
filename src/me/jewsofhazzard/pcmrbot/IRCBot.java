@@ -563,7 +563,7 @@ public class IRCBot extends PircBot {
 			keywords.append(cutUp[i] + ",");
 
 		}
-		keywords.append(cutUp.length - 2);
+		keywords.append(cutUp[cutUp.length - 2]);
 		String reply = cutUp[cutUp.length - 1];
 		Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
 				+ connectedChannel.substring(1) + "AutoReplies VALUES(\'"
