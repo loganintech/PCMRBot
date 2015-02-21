@@ -144,7 +144,12 @@ public class IRCBot extends PircBot {
 			String param=message.replace(' ', '+');
 			sendMessage(connectedChannel, "http://lmgtfy.com?q="+param);
 		} else if(message.toLowerCase().startsWith("!title ") && isMod(sender)) {
-			TwitchUtilities.updateTitle(connectedChannel.substring(1), message.substring(message.indexOf(' ')));
+			message=message.substring(message.indexOf(' '));
+			if(TwitchUtilities.updateTitle(connectedChannel.substring(1), message)) {
+				sendMessage(connectedChannel, "Successfully changed the stream title to \""+message+"\"!");
+			} else {
+				sendMessage(connectedChannel, "I am not authorized to do that visit http://pcmrbot.no-ip.info/authorize to allows me to do this and so much more!");
+			}
 		} else if(message.toLowerCase().startsWith("!game ") && isMod(sender)) {
 			TwitchUtilities.updateTitle(connectedChannel.substring(1), message.substring(message.indexOf(' ')));
 		} else if(message.equalsIgnoreCase("!clearAutoReplies")) {

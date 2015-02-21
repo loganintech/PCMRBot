@@ -47,19 +47,24 @@ public class TwitchUtilities {
 	 * @param channel - channel to change the title on
 	 * @param title - title to be changed to
 	 */
-	public static void updateTitle(String channel, String title) {
-		String url = BASE_URL+"channels/"+channel.substring(1)+"/";
+	public static boolean updateTitle(String channel, String title) {
+		String url = BASE_URL+"channels/"+channel+"/";
 		String _method="put";
-		String oauth_token=Database.getUserOAuth(channel.substring(1));
+		String oauth_token=Database.getUserOAuth(channel);
 		String query = null;
 		URLConnection connection = null;
+		if(oauth_token==null){
+			return false;
+		}
 		try {
 			query = String.format("channel[status]=%s&_method=%s&oauth_token=%s", URLEncoder.encode(title, CHARSET), URLEncoder.encode(_method, CHARSET), URLEncoder.encode(oauth_token, CHARSET));
 			connection = new URL(url + "?" + query).openConnection();
 			connection.setRequestProperty("Accept-Charset", CHARSET);
 			connection.getInputStream();
+			return true;
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "An error occurred updating the title for "+channel.substring(1), e);
+			return false;
 		}
 	}
 	
@@ -70,9 +75,9 @@ public class TwitchUtilities {
 	 * @param game - game to be changed to
 	 */
 	public static void updateGame(String channel, String game) {
-		String url = BASE_URL+"channels/"+channel.substring(1)+"/";
+		String url = BASE_URL+"channels/"+channel+"/";
 		String _method="put";
-		String oauth_token=Database.getUserOAuth(channel.substring(1));
+		String oauth_token=Database.getUserOAuth(channel);
 		String query = null;
 		URLConnection connection = null;
 		try {
