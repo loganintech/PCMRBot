@@ -272,7 +272,11 @@ public class IRCBot extends PircBot {
 
 			}
 			setVoteCall(true);
-			vote((long) Integer.valueOf(voteOptions[0]));
+			try {
+				vote((long) Integer.valueOf(voteOptions[0]));
+			} catch (NumberFormatException e) {
+				
+			}
 		} else if (message.toLowerCase().startsWith("!shorten ") && isMod(sender)) {
 			String out = shortenURL(message.substring(message.indexOf(" ") + 1));
 			if(out == null) {

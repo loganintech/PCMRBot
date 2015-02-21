@@ -19,12 +19,15 @@ package me.jewsofhazzard.pcmrbot.twitch;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import me.jewsofhazzard.pcmrbot.database.Database;
 
@@ -148,6 +151,29 @@ public class TwitchUtilities {
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
 			logger.log(Level.SEVERE, "An error occurred checking if "+sender+" is following "+channel.substring(1), e);
 		}
+		return false;
+	}
+	
+	public static boolean runCommercial(String channel) {
+		String USER_AGENT = "Mozilla/5.0";
+		String oauth_token=Database.getUserOAuth(channel.substring(1));
+		String url = BASE_URL+"channels/"+channel+"/commercial/?oauth_token="+oauth_token;
+		URL obj = null;
+		try {
+			obj = new URL(url);
+		} catch (MalformedURLException e) {
+			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channel, e);
+		}
+		
+		HttpsURLConnection con = null;
+		try {
+			con = (HttpsURLConnection) obj.openConnection();
+			con.setRequestMethod("POST");
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channel, e);
+		}
+		con.setRequestProperty("User-agent", USER_AGENT);
+		
 		return false;
 	}
 	
