@@ -29,6 +29,8 @@ import java.util.logging.Logger;
 //
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
+import me.jewsofhazzard.pcmrbot.util.TType;
+import me.jewsofhazzard.pcmrbot.util.Timeouts;
 import me.jewsofhazzard.pcmrbot.util.Timer;
 import net.swisstech.bitly.BitlyClient;
 import net.swisstech.bitly.model.Response;
