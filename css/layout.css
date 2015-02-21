@@ -1,0 +1,220 @@
+@charset "utf-8";
+/* Simple fluid media
+   Note: Fluid media requires that you remove the media's height and width attributes from the HTML
+   http://www.alistapart.com/articles/fluid-images/ 
+*/
+img, object, embed, video {
+	max-width: 100%;
+}
+
+/* IE 6 does not support max-width so default to width 100% */
+.ie6 img {
+	width:100%;
+}
+
+/*
+	Dreamweaver Fluid Grid Properties
+	----------------------------------
+	dw-num-cols-mobile:		5;
+	dw-num-cols-tablet:		8;
+	dw-num-cols-desktop:	12;
+	dw-gutter-percentage:	15;
+	
+	Inspiration from "Responsive Web Design" by Ethan Marcotte 
+	http://www.alistapart.com/articles/responsive-web-design
+	
+	and Golden Grid System by Joni Korpi
+	http://goldengridsystem.com/
+*/
+
+.fluid {
+	clear: both;
+	margin-left: 0;
+	width: 100%;
+	float: left;
+	display: block;
+}
+
+.fluidList {
+    list-style:none;
+    list-style-image:none;
+    margin:0;
+    padding:0;        
+}
+
+/* Mobile Layout: 480px and below. */
+  
+.gridContainer {
+	margin-left: auto;
+	margin-right: auto;
+	width: 88.626%;
+	padding-left: 1.1869%;
+	padding-right: 1.1869%;
+	clear: none;
+	float: none;
+}
+.container {
+}
+#content {
+width: 100%;
+margin-left: 0;
+clear: both;
+}
+#points {
+width: 58.9285%;
+margin-left: 20.5357%;
+}
+#reliability {
+width: 58.9285%;
+margin-left: 20.5357%;
+clear: both;
+}
+#ideas {
+width: 58.9285%;
+margin-left: 20.5357%;
+}
+#current-song {
+width: 58.9285%;
+margin-left: 20.5357%;
+clear: both;
+}
+#disclaimer {
+}
+.disclaimer {
+margin-left: 20.5357%;
+width: 58.9285%;
+}
+#cs {
+width: 100%;
+margin-left: 0;
+}
+#csg {
+width: 100%;
+margin-left: 0;
+}
+.zeroMargin_mobile {
+margin-left: 0;
+}
+.hide_mobile {
+display: none;
+}
+
+/* Tablet Layout: 481px to 768px. Inherits styles from: Mobile Layout. */
+
+@media only screen and (min-width: 481px) {
+
+.gridContainer {
+	width: 91.4836%;
+	padding-left: 0.7581%;
+	padding-right: 0.7581%;
+	clear: none;
+	float: none;
+	margin-left: auto;
+}
+.container {
+}
+#content {
+width: 74.5856%;
+clear: none;
+margin-left: 14.3646%;
+}
+#points {
+width: 65.9259%;
+margin-left: 17.037%;
+}
+#reliability {
+width: 65.9259%;
+clear: both;
+margin-left: 17.037%;
+}
+#ideas {
+width: 65.9259%;
+margin-left: 17.037%;
+}
+#current-song {
+width: 65.9259%;
+clear: both;
+margin-left: 17.037%;
+}
+#disclaimer {
+}
+.disclaimer {
+margin-left: 17.037%;
+width: 65.9259%;
+}
+#cs {
+width: 100%;
+margin-left: 0;
+}
+#csg {
+width: 100%;
+margin-left: 0;
+}
+.hide_tablet {
+display: none;
+}
+.zeroMargin_tablet {
+margin-left: 0;
+}
+}
+
+/* Desktop Layout: 769px to a max of 1232px.  Inherits styles from: Mobile Layout and Tablet Layout. */
+
+@media only screen and (min-width: 769px) {
+
+.gridContainer {
+	width: 89.0217%;
+	max-width: 1232px;
+	padding-left: 0.4891%;
+	padding-right: 0.4891%;
+	margin: auto;
+	clear: none;
+	float: none;
+	margin-left: auto;
+}
+.container {
+}
+#content {
+width: 83.1501%;
+clear: none;
+margin-left: 9.5238%;
+}
+#points {
+width: 39.207%;
+margin-left: 10.1321%;
+}
+#reliability {
+width: 39.207%;
+clear: none;
+margin-left: 1.3215%;
+}
+#ideas {
+width: 39.207%;
+margin-left: 10.1321%;
+}
+#current-song {
+width: 39.207%;
+clear: none;
+margin-left: 1.3215%;
+}
+#disclaimer {
+}
+.disclaimer {
+width: 79.7356%;
+margin-left: 10.1321%;
+}
+#cs {
+width: 79.7356%;
+margin-left: 10.1321%;
+}
+#csg {
+width: 79.7356%;
+margin-left: 10.1321%;
+}
+.zeroMargin_desktop {
+margin-left: 0;
+}
+.hide_desktop {
+display: none;
+}
+}
