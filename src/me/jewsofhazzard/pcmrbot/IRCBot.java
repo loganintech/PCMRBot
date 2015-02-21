@@ -77,10 +77,11 @@ public class IRCBot extends PircBot {
 																	// choices
 	private int optionCount;
 	private String connectedChannel;
-	private int paragraphLength = 250;
-	private int numSymbols = 15;
-	private int numEmotes = 10;
+	//private int paragraphLength = 250;
+	//private int numSymbols = 15;
+	//private int numEmotes = 10;
 	Random rand = new Random();
+	private boolean welcomeEnabled = true;
 
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
@@ -106,7 +107,10 @@ public class IRCBot extends PircBot {
 	@Override
 	public void onJoin(String channel, String sender, String login, String hostname){
 		
+		
+		if(welcomeEnabled){
 		sendMessage(connectedChannel, "Welcome " + sender + " to our channel, may you find it entertaining or flat out enjoyable.");
+		}
 		
 	}
 	
@@ -246,7 +250,15 @@ public class IRCBot extends PircBot {
 				
 			}
 				
-		}	else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
+		}   else if(message.equalsIgnoreCase("!disableWelcome")){	
+		
+				this.welcomeEnabled = false;
+			
+		}	else if(message.equalsIgnoreCase("!enableWelcome")){	
+		
+				this.welcomeEnabled = true;
+			
+		}   else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
 			
 			this.confirmationReplys = false;
 			sendMessage(connectedChannel, sender + " has disabled bot replies");
@@ -256,13 +268,13 @@ public class IRCBot extends PircBot {
 			this.confirmationReplys = true;
 			sendMessage(connectedChannel, sender + " has enabled bot replies");
 		
-		}   else if(message.toLowerCase().startsWith("!changeoption ")){
+		}  /* else if(message.toLowerCase().startsWith("!changeoption ")){
 		
 			message = message.substring(message.indexOf(" ") + 1);
 			String [] command = message.split("[|]");
 			changeOption(command);
 		
-		}   else if (message.toLowerCase().startsWith("!votestart ") && isMod(sender)) {
+		} */  else if (message.toLowerCase().startsWith("!votestart ") && isMod(sender)) {
 
 			voting = new ArrayList<>();
 			ringazinUsers = new ArrayList<>();
@@ -789,7 +801,7 @@ public class IRCBot extends PircBot {
 	}
 
 	
-	public void changeOption(String [] option){
+	/*public void changeOption(String [] option){
 		
 		if(option[0].equalsIgnoreCase("paragraph")){
 			
@@ -817,6 +829,7 @@ public class IRCBot extends PircBot {
 		}
 		
 	}
+	*/
 	
 
 }
