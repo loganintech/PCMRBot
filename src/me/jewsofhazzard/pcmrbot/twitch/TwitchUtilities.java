@@ -125,7 +125,7 @@ public class TwitchUtilities {
 	 */
 	public static boolean isSubscriber(String sender, String channel) {
 		try {
-			String userOAuth=Database.getUserOAuth(channel.substring(1));
+			String userOAuth="";
 			String nextUrl = "https://api.twitch.tv/kraken/channels/"+channel.substring(1)+"/subscriptions/?oauth_token="+userOAuth;
 			JsonObject obj = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
 			try {
@@ -229,6 +229,10 @@ public class TwitchUtilities {
 			logger.log(Level.SEVERE, "An error occurred getting the follower count for "+channel.substring(1), e);
 		}
 		return 0;
+	}
+	
+	private static String getUserOAuth(String user) {
+		return null;
 	}
 	
 }

@@ -126,7 +126,7 @@ public class IRCBot extends PircBot {
 			} else if (message
 					.matches("(([A-Za-z0-9_:/\\-@\\s.]+[\\s?\\.\\s?]?)+([\\s?\\.\\s?](c\\s?o\\s?m|n\\s?e\\s?t|o\\s?r\\s?g|c\\s?o|a\\s?u|u\\s?k|u\\s?s|m\\s?e|b\\s?z|i\\s?n\\s?t|e\\s?d\\s?u|g\\s?o\\s?v\\s?|m\\s?i\\s?l|a\\s?c)(\\s)?(/)?)+[A-Za-z0-9_:/\\-@\\s.]+)+")) {
 				new Timeouts(connectedChannel, sender, 1, TType.LINK);
-			} else if (message.matches("[\\W_]{" +numSymbols + "{15,}")) {
+			} else if (message.matches("[\\W_]{" +numSymbols + ",}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.SYMBOLS);
 			} else if (message.length() >= paragraphLength) {
 				new Timeouts(connectedChannel, sender, 1, TType.PARAGRAPH);
