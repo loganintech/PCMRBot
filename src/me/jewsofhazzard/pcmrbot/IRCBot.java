@@ -569,35 +569,35 @@ public class IRCBot extends PircBot {
 	public void joinRaffle(String sender, String raffleType){
 		boolean inRaffleAlready = false;
 		
-			if(inRaffle.contains(sender)){
-				
-				inRaffleAlready = true;
-				sendMessage(connectedChannel, sender + " is a dirty cheater and tried to join the raffle more than once, may he be smiten.");
-				
-				
-			}
+		if(inRaffle.contains(sender)){
+			
+			inRaffleAlready = true;
+			sendMessage(connectedChannel, sender + " is a dirty cheater and tried to join the raffle more than once, may he be smiten.");
+			
+			
+		}
 			
 		
-		if(raffleType.equalsIgnoreCase("follower") && isFollower(sender) && !inRaffleAlready){
+		if(raffleType.equalsIgnoreCase("follower") && isFollower(sender) && !inRaffleAlready) {
 			
 			inRaffle.add(sender);
 			sendMessage(connectedChannel, sender + " has joined the raffle.");
 			
 		}
-		else if(raffleType.equalsIgnoreCase("subscriber") && isSubscriber(sender) && !inRaffleAlready){
+		else if(raffleType.equalsIgnoreCase("subscriber") && isSubscriber(sender) && !inRaffleAlready) {
 			
 			inRaffle.add(sender);
 			sendMessage(connectedChannel, sender + " has joined the raffle.");
 			
 		}
-		else if(raffleType.equals("all") && !inRaffleAlready){
+		else if(raffleType.equals("all") && !inRaffleAlready) {
 			
 			inRaffle.add(sender);
 			sendMessage(connectedChannel, sender + " has joined the raffle.");
 			
 		}
-		else{
-		sendMessage(connectedChannel, "I am sorry "+ sender +" you are not allowed to join this raffle.");
+		else {
+			sendMessage(connectedChannel, "I am sorry "+ sender +" you are not allowed to join this raffle.");
 		}
 		
 	}
