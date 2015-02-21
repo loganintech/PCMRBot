@@ -26,9 +26,13 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+
 //
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
+import me.jewsofhazzard.pcmrbot.util.TType;
+import me.jewsofhazzard.pcmrbot.util.Timeouts;
 import me.jewsofhazzard.pcmrbot.util.Timer;
 import net.swisstech.bitly.BitlyClient;
 import net.swisstech.bitly.model.Response;
@@ -109,7 +113,7 @@ public class IRCBot extends PircBot {
 		Date date = new Date();
 		chatPostSeen.put(sender, channel + "|" + date.toString());
 			
-		/*	
+		
 		if (!isMod(sender)) {
 			if (message.matches("[A-Z]{20,}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.CAPS);
@@ -125,7 +129,7 @@ public class IRCBot extends PircBot {
 				new Timeouts(connectedChannel, sender, 1, TType.EMOTE);
 			}
 			ResultSet rs = Database
-					.executeQuery("SELECT * FROM " + Database.DEFAULT_SCHEMA
+					.executeQuery("SELECT * FROM " + Database.DATABASE
 							+ "." + connectedChannel.substring(1) + "Spam");
 			try {
 				while (rs.next()) {
@@ -138,7 +142,7 @@ public class IRCBot extends PircBot {
 						+ sender + "'s message has bad words", e);
 			}
 		}
-		*/
+		
 		if(message.startsWith("!lmgtfy ")) {
 			message=message.substring(message.indexOf(' '));
 			String param=message.replace(' ', '+');
