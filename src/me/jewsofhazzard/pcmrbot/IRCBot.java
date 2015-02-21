@@ -118,7 +118,6 @@ public class IRCBot extends PircBot {
 
 		Date date = new Date();
 		chatPostSeen.put(sender, channel + "|" + date.toString());
-			
 		
 		if (!isMod(sender)) {
 			if (message.matches("[A-Z]{20,}")) {
@@ -255,7 +254,7 @@ public class IRCBot extends PircBot {
 					
 				}
 		
-		}   else if(message.equalsIgnoreCase("!slow")){
+		}   else if(message.equalsIgnoreCase("!slow") && isMod(sender)){
 			
 			if(isMod("pcmrbot")){
 				sendMessage(connectedChannel, "/slowoff");
@@ -266,17 +265,20 @@ public class IRCBot extends PircBot {
 				
 			}
 				
-		}   else if(message.equalsIgnoreCase("!disableWelcome")){	
+		}   else if(message.equalsIgnoreCase("!disableWelcome") && isMod(sender)){	
 		
 				this.welcomeEnabled = false;
+				sendMessage(connectedChannel, "Welcome messages have been disabled.");
 			
-		}	else if(message.equalsIgnoreCase("!enableWelcome")){	
+		}	else if(message.equalsIgnoreCase("!enableWelcome") && isMod(sender)){	
 		
 				this.welcomeEnabled = true;
+				sendMessage(connectedChannel, "Welcome messages have been enabled.");
 			
-		}	else if(message.toLowerCase().startsWith("!changewelcome ")){
+		}	else if(message.toLowerCase().startsWith("!changewelcome ") && isMod(sender)){
 		
 			this.welcomeMessage = message.substring((message.indexOf(" ")+1));
+			sendMessage(connectedChannel, "The format has been changed to: " + sender + welcomeMessage);
 			
 		}	else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
 			
@@ -288,7 +290,7 @@ public class IRCBot extends PircBot {
 			this.confirmationReplys = true;
 			sendMessage(connectedChannel, sender + " has enabled bot replies");
 		
-		}   else if(message.toLowerCase().startsWith("!changeoption ")){
+		}   else if(message.toLowerCase().startsWith("!changeoption ") && isMod(sender)){
 		
 			message = message.substring(message.indexOf(" ") + 1);
 			String [] command = message.split("[|]");
@@ -355,14 +357,14 @@ public class IRCBot extends PircBot {
 				// the info of the message (channel & date)
 				String info = chatPostSeen.get(target);
 
-				String[] tokens = info.split("|");
+				String[] tokens = info.split("[|]");
 	
 				sendMessage(connectedChannel, sender + ", I last saw " + target + " in " + tokens[0].substring(1) + " on " + tokens[1] + ".");
 			}
 			
 			else {
 				// they haven't chatted  (They are not in the map)
-				sendMessage(connectedChannel, "I'm sorry " + sender + ", I haven't seen " + message + ".");
+				sendMessage(connectedChannel, "I'm sorry " + sender + ", I haven't seen " + target + ".");
 			}
 		}  else if(message.toLowerCase().startsWith("!votekick ") && !voteKickActive && isMod(sender)){
 		
