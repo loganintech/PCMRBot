@@ -218,11 +218,35 @@ public class IRCBot extends PircBot {
 			}
 			
 			
-		} else if(message.equalsIgnoreCase("!commercial")){
+		}   else if(message.equalsIgnoreCase("!commercial")){
 		
 			TwitchUtilities.runCommercial(connectedChannel);
 		
-		}   else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
+		}	else if(message.toLowerCase().startsWith("!slow ")){
+			
+			if(isMod("pcmrbot")){
+				
+				sendMessage(connectedChannel, "/slow " + message.substring(message.indexOf(" ")+1));
+				
+			}
+			else{
+				
+				sendMessage(connectedChannel, "I am sorry, the pcmrbot is not running as a moderator in the channel.");
+				
+			}
+		
+		}   else if(message.equalsIgnoreCase("!slow")){
+			
+			if(isMod("pcmrbot")){
+				sendMessage(connectedChannel, "/slowoff");
+			}
+			else{
+				
+				sendMessage(connectedChannel, "I am sorry, the pcmrbot is not running as a moderator in the channel.");
+				
+			}
+				
+		}	else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
 			
 			this.confirmationReplys = false;
 			sendMessage(connectedChannel, sender + " has disabled bot replies");
@@ -790,6 +814,5 @@ public class IRCBot extends PircBot {
 		
 	}
 	
-	//I needed to add this to make a new commit
 
 }
