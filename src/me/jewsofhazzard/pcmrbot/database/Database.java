@@ -91,7 +91,7 @@ public class Database {
 				stmt2.closeOnCompletion();
 				stmt2.executeUpdate("CREATE TABLE "
 						+ DATABASE
-						+ ".pcmrbotOptions(optionID varchar(25), value varchar(25), PRIMARY KEY (optionID))");
+						+ ".pcmrbotOptions(optionID varchar(25), value varchar(4000), PRIMARY KEY (optionID))");
 			} catch (SQLException ex) {
 				logger.log(
 						Level.SEVERE,
@@ -112,7 +112,7 @@ public class Database {
 				stmt4.closeOnCompletion();
 				stmt4.executeUpdate("CREATE TABLE "
 						+ DATABASE
-						+ ".pcmrbotAutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))");
+						+ ".pcmrbotAutoReplies(keyWord varchar(255), reply varchar(4000), PRIMARY KEY (keyWord))");
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE,
 						"Unable to create table pcmrbotAutoReplies!\n" + ex.toString());
@@ -157,7 +157,7 @@ public class Database {
 						+ DATABASE
 						+ "."
 						+ channel
-						+ "Options(optionID varchar(25), value varchar(255), PRIMARY KEY (optionID))");
+						+ "Options(optionID varchar(25), value varchar(4000), PRIMARY KEY (optionID))");
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE, "Unable to create table " + channel
 						+ "Options!\n" + ex.toString());
@@ -179,7 +179,7 @@ public class Database {
 						+ DATABASE
 						+ "."
 						+ channel
-						+ "AutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))");
+						+ "AutoReplies(keyWord varchar(255), reply varchar(4000), PRIMARY KEY (keyWord))");
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE, "Unable to create table " + channel
 						+ "AutoReplies!\n" + ex.toString());
