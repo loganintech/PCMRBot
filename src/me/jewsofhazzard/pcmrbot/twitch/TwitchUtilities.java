@@ -26,6 +26,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.jewsofhazzard.pcmrbot.database.Database;
+
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -48,7 +50,7 @@ public class TwitchUtilities {
 	public static void updateTitle(String channel, String title) {
 		String url = BASE_URL+"channels/"+channel.substring(1)+"/";
 		String _method="put";
-		String oauth_token="0waiocof76g654kpilbt83l3lhwxvn";
+		String oauth_token=Database.getUserOAuth(channel.substring(1));
 		String query = null;
 		URLConnection connection = null;
 		try {
@@ -70,7 +72,7 @@ public class TwitchUtilities {
 	public static void updateGame(String channel, String game) {
 		String url = BASE_URL+"channels/"+channel.substring(1)+"/";
 		String _method="put";
-		String oauth_token="0waiocof76g654kpilbt83l3lhwxvn";
+		String oauth_token=Database.getUserOAuth(channel.substring(1));
 		String query = null;
 		URLConnection connection = null;
 		try {
@@ -115,7 +117,7 @@ public class TwitchUtilities {
 	 */
 	public static boolean isSubscriber(String sender, String channel) {
 		try {
-			String userOAuth=""; //TODO: Store and access userOAuths
+			String userOAuth=Database.getUserOAuth(channel.substring(1));
 			String nextUrl = "https://api.twitch.tv/kraken/channels/"+channel.substring(1)+"/subscriptions/?oauth_token="+userOAuth;
 			JsonObject obj = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
 			try {
@@ -133,7 +135,7 @@ public class TwitchUtilities {
 							return true;
 						}
 					}
-					nextUrl =URLEncoder.encode(obj.getAsJsonArray("_links").get(1).getAsJsonPrimitive().getAsString(), CHARSET);
+					nextUrl =URLEncoder.encode(obj.getAsJsonArray("_links").get(1).getAsJsonPrimitive().getAsString()+"?oauth_token="+userOAuth, CHARSET);
 					obj = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
 				}
 				return false;

@@ -286,5 +286,17 @@ public class Database {
 					+ "AutoReplies!\n" + ex.toString());
 		}
 	}
+	
+	public static String getUserOAuth(String user) {
+		ResultSet rs=executeQuery("SELECT * FROM "+DEFAULT_SCHEMA+".userOAuth WHERE userID=\'"+user+"\'");
+		try {
+			if(rs.next()) {
+				return rs.getString("oAuth");
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "An error occurred getting "+user+"\'s OAuth from the database", e);
+		}
+		return null;
+	}
 
 }
