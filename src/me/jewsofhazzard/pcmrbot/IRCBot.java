@@ -157,7 +157,7 @@ public class IRCBot extends PircBot {
 				sendMessage(connectedChannel, channel.substring(1) + " has cleared the auto replies.");
 				Database.clearAutoRepliesTable(channel.substring(1));
 			}
-		} else if (message.equalsIgnoreCase("!helppcmr")) {
+		} else if (message.equalsIgnoreCase("!help")) {
 			sendMessage(
 					connectedChannel,
 					"http://pcmrbot.no-ip.info/commands");
