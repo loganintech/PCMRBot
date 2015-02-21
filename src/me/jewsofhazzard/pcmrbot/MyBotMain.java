@@ -42,6 +42,7 @@ public class MyBotMain implements Runnable {
 	public MyBotMain(String channel) {
 		this.channel = channel;
 		new Thread(this).start();
+		
 	}
 
 	/**

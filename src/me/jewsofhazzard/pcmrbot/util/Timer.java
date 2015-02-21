@@ -67,6 +67,12 @@ public class Timer implements Runnable {
 			MyBotMain.getConnectedChannel(channel).raffleCount();
 			
 		}
+		else if(type.equals("kick")){
+			
+			MyBotMain.getConnectedChannel(channel).setVoteKickActive(true);
+			MyBotMain.getConnectedChannel(channel).voteKickCount();
+			
+		}
 		
 	}
 	
