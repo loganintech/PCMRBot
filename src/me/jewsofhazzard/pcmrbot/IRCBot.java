@@ -116,7 +116,7 @@ public class IRCBot extends PircBot {
 		Date date = new Date();
 		chatPostSeen.put(sender, channel + "|" + date.toString());
 			
-		
+		/*
 		if (!isMod(sender)) {
 			if (message.matches("[A-Z]{20,}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.CAPS);
@@ -144,7 +144,7 @@ public class IRCBot extends PircBot {
 				logger.log(Level.SEVERE, "An error occurred checking if "
 						+ sender + "'s message has bad words", e);
 			}
-		}
+		} */
 		
 		if(message.startsWith("!lmgtfy ")) {
 			message=message.substring(message.indexOf(' '));
@@ -218,7 +218,11 @@ public class IRCBot extends PircBot {
 			}
 			
 			
-		} else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
+		} else if(message.equalsIgnoreCase("!commercial")){
+		
+			TwitchUtilities.runCommercial(connectedChannel);
+		
+		}   else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
 			
 			this.confirmationReplys = false;
 			sendMessage(connectedChannel, sender + " has disabled bot replies");
