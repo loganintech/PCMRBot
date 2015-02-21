@@ -88,7 +88,7 @@ public class MyBotMain implements Runnable {
 				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'donald10101\')");
 				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'angablade\')");
 				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'"+ channel.substring(1) +"\')");
-				Database.setWelcomeMessage(channel, "Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
+				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Options VALUES(\'welcomeMessage\', \'Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.\')");
 			}
 			getConnectedChannels().put(channel, new IRCBot(channel));
 
