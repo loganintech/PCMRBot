@@ -1018,7 +1018,7 @@ public class IRCBot extends PircBot {
 			if (message.matches("[A-Z\\s]{20,}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.CAPS);
 			} else if (message
-					.matches("([A-Za-z0-9_:/\\-@\\s\\.]+[\\s?\\.\\s?])+((c\\s?o\\s?m|n\\s?e\\s?t|o\\s?r\\s?g|c\\s?o|a\\s?u|u\\s?k|u\\s?s|m\\s?e|b\\s?z|i\\s?n\\s?t|e\\s?d\\s?u|g\\s?o\\s?v\\s?|m\\s?i\\s?l|a\\s?c))+([/]+[A-Za-z0-9_:/\\-@\\s\\.]*)*")) {
+					.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})") || message.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?")) {
 				new Timeouts(connectedChannel, sender, 1, TType.LINK);
 			} else if (message.matches("[\\W_\\s]{" + numSymbols + ",}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.SYMBOLS);
