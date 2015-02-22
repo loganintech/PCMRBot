@@ -94,6 +94,12 @@ public class MyBotMain implements Runnable {
 	 * Performs all of the setup for the bot in the channel specified, both on first run, and all subsequent runs.
 	 */
 	public void run() {
+		
+		if(connectedChannels.containsKey(channel)){
+			return;			
+		}
+		
+		
 		boolean firstTime=false;
 			if(Database.getChannelTables(channel.substring(1))) {
 				firstTime=true;
