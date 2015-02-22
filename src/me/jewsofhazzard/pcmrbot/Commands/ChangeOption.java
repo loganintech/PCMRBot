@@ -14,6 +14,11 @@ public class ChangeOption implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "changeoption";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String...parameters){
 		String[] options = parameters[0].split("[|]");
 		

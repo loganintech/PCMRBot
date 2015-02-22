@@ -13,6 +13,11 @@ public class Poll implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "poll";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		String[] voteOptions = parameters[0].split("[|]");
 		

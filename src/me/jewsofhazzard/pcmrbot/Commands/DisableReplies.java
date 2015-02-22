@@ -13,6 +13,11 @@ public class DisableReplies implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "disablereplies";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		MyBotMain.getBot().setConfirmationEnabled(channel, false);
 		return "%user% has disabled bot replies".replace("%user%", sender);

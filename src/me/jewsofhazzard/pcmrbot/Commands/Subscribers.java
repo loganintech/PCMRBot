@@ -15,6 +15,11 @@ public class Subscribers implements Command {
 		return level;
 	}
 	
+	@Override
+	public String getCommandText() {
+		return "subscribers";
+	}
+	
 	public Subscribers() {
 		subscriberModes=new HashMap<>();
 		for(String s:MyBotMain.getBot().getChannels()) {

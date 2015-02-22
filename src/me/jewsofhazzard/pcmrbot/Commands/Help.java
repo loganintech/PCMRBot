@@ -15,6 +15,11 @@ public class Help implements Command {
 		return level;
 	}
 	
+	@Override
+	public String getCommandText() {
+		return "help";
+	}
+	
 	public Help() {
 		replies=new HashMap<>();
 		replies.put("votestart", "The format of the votestart command is as follows: !votestart {time in seconds}|{question to ask}|{option 1}|{infinte more options}\nNote, you do not need { or } and you must not add spaces between |. For example, !votestart 30|What game should I play?|Bioshock|Minecraft|League. Is perfect.");

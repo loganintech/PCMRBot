@@ -12,6 +12,11 @@ public class LMGTFY implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "lmgtfy";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String...parameters) {
 		return "http://lmgtfy.com?q=" + parameters[0].replace(' ', '+');
 	}

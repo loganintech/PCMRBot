@@ -17,6 +17,11 @@ public class Shorten implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "shorten";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		String url = parameters[0];
 		BitlyClient client = new BitlyClient(

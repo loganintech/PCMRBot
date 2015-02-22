@@ -13,6 +13,11 @@ public class Seen implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "seen";
+	}
+		
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		String target = parameters[0];
 		String seen=MyBotMain.getBot().getChatPostSeen(target);
