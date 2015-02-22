@@ -8,6 +8,7 @@ public class LMGTFY implements Command {
 	
 	public LMGTFY(String... params) {
 		parameters=params;
+		execute();
 	}
 	
 	@Override

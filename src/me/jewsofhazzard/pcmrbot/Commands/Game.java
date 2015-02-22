@@ -2,13 +2,13 @@ package me.jewsofhazzard.pcmrbot.Commands;
 
 import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
 
-public class Title implements Command {
+public class Game implements Command {
 
 	private String[] parameters;
 	
 	private String reply;
 	
-	public Title(String... params) {
+	public Game(String... params) {
 		parameters=params;
 		execute();
 	}
@@ -20,9 +20,9 @@ public class Title implements Command {
 
 	@Override
 	public void execute() {
-		if (TwitchUtilities.updateTitle(parameters[0].substring(1),
+		if (TwitchUtilities.updateGame(parameters[0].substring(1),
 				parameters[1])) {
-			reply="Successfully changed the stream title to \""
+			reply="Successfully changed the stream game to \""
 							+ parameters[1] + "\"!";
 		} else {
 			reply = "I am not authorized to do that visit http://pcmrbot.no-ip.info/authorize to allows me to do this and so much more!";

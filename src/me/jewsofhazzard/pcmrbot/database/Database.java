@@ -256,10 +256,10 @@ public class Database {
 			stmt.executeUpdate("DROP TABLE "
 					+ DATABASE
 					+ "."
-					+ channel
+					+ channel.substring(1)
 					+ "AutoReplies");
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Unable to delete table " + channel
+			logger.log(Level.SEVERE, "Unable to delete table " + channel.substring(1)
 					+ "AutoReplies!\n" + ex.toString());
 		}
 		try {
@@ -268,10 +268,10 @@ public class Database {
 			stmt1.executeUpdate("CREATE TABLE "
 					+ DATABASE
 					+ "."
-					+ channel
+					+ channel.substring(1)
 					+ "AutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))");
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Unable to create table " + channel
+			logger.log(Level.SEVERE, "Unable to create table " + channel.substring(1)
 					+ "AutoReplies!\n" + ex.toString());
 		}
 	}

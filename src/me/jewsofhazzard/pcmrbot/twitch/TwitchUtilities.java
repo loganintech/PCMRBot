@@ -77,7 +77,7 @@ public class TwitchUtilities {
 	 * @param channel - channel to change the game on
 	 * @param game - game to be changed to
 	 */
-	public static void updateGame(String channel, String game) {
+	public static boolean updateGame(String channel, String game) {
 		String url = BASE_URL+"channels/"+channel+"/";
 		String _method="put";
 		String oauth_token=Database.getUserOAuth(channel);
@@ -88,9 +88,11 @@ public class TwitchUtilities {
 			connection = new URL(url + "?" + query).openConnection();
 			connection.setRequestProperty("Accept-Charset", CHARSET);
 			connection.getInputStream();
+			return true;
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "An error occurred updating the game for "+channel.substring(1), e);
 		}
+		return false;
 	}
 
 	/**

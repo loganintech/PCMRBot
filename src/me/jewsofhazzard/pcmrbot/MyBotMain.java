@@ -19,7 +19,6 @@ package me.jewsofhazzard.pcmrbot;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +31,7 @@ import org.jibble.pircbot.IrcException;
 public class MyBotMain implements Runnable {
 
 	private String channel;
-	private static final HashMap<String, IRCBot> connectedChannels = new HashMap<>();
+	private static IRCBot bot;
 	private static final String botChannel = "#pcmrbot";
 	private static String oAuth = "";
 	private static final Logger logger = Logger.getLogger(MyBotMain.class + "");
@@ -81,19 +80,18 @@ public class MyBotMain implements Runnable {
 			Database.setOption(getBotChannel().substring(1), Options.paragraphLength, "250");
 		}
 		oAuth = args[0];
-		getConnectedChannels().put(getBotChannel(),
-				new IRCBot(getBotChannel()));
+		bot = new IRCBot();
 
-		getConnectedChannels().get(getBotChannel()).setVerbose(true);
+		bot.setVerbose(true);
 		try {
-			getConnectedChannels().get(getBotChannel()).connect(
+			bot.connect(
 					"irc.twitch.tv", 6667, oAuth);
 		} catch (IOException | IrcException e) {
 			logger.log(Level.SEVERE, "An error occurred while connecting to "
 					+ getBotChannel(), e);
 		}
-		getConnectedChannels().get(getBotChannel())
-				.joinChannel(getBotChannel());
+		bot.joinChannel(getBotChannel());
+		
 		File f = new File("connectedChannels.txt");
 		if (f.exists()) {
 			for (String s : TFileReader.readFile(f)) {
@@ -110,9 +108,7 @@ public class MyBotMain implements Runnable {
 	 */
 	public void run() {
 
-		if (connectedChannels.containsKey(channel)) {
-			return;
-		}
+		bot.isWatchingChannel(channel);
 
 		boolean firstTime = false;
 		if (Database.getChannelTables(channel.substring(1))) {
@@ -137,48 +133,20 @@ public class MyBotMain implements Runnable {
 			Database.setOption(channel.substring(1), Options.numSymbols, "10");
 			Database.setOption(channel.substring(1), Options.paragraphLength, "250");
 		}
-		getConnectedChannels().put(channel, new IRCBot(channel));
-
-		getConnectedChannels().get(channel).setVerbose(true);
-		try {
-			getConnectedChannels().get(channel).connect("irc.twitch.tv", 6667,
-					oAuth);
-		} catch (IrcException | IOException e) {
-			logger.log(Level.SEVERE, "An error occurred while connecting to "
-					+ getBotChannel(), e);
-		}
-		getConnectedChannels().get(channel).joinChannel(channel);
+		
+		bot.joinChannel(channel);
 		if (firstTime) {
-			getConnectedChannels().get(channel).onFirstJoin();
+			bot.onFirstJoin(channel);
 		}
 
-	}
-
-	public static void broadcast(String message){
-		
-		for (IRCBot bot : connectedChannels.values()) {
-
-			if (!bot.getChannel().equalsIgnoreCase("#pcmrbot")) {
-				
-				bot.sendMessage(bot.getChannel(),
-						message);
-				
-			}
-
-		}
-		
 	}
 	
-	public static HashMap<String, IRCBot> getConnectedChannels() {
-		return connectedChannels;
+	public static IRCBot getBot() {
+		return bot;
 	}
 
 	public static String getBotChannel() {
 		return botChannel;
-	}
-
-	public static IRCBot getConnectedChannel(String channel) {
-		return connectedChannels.get(channel);
 	}
 
 
