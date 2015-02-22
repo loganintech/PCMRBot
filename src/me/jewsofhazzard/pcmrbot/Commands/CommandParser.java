@@ -27,9 +27,9 @@ public class CommandParser {
 		commands.put("gabe", new Gabe());
 		commands.put("game", new Game());
 		commands.put("help", new Help());
-		commands.put("joinme", new JoinMe());
+		commands.put("join", new JoinMe());
 		commands.put("ko", new KO());
-		commands.put("leaveme", new LeaveMe());
+		commands.put("leave", new LeaveMe());
 		commands.put("lmgtfy", new LMGTFY());
 		commands.put("me", new Me());
 		commands.put("pcmrbot", new PCMRBot());
@@ -52,7 +52,7 @@ public class CommandParser {
 	
 	public static String parse(String command, String sender, String channel, String parameters) {
 		Command c=commands.get(command);
-		if(hasAccess(c, sender, channel)) {
+		if(c != null && hasAccess(c, sender, channel)) {
 			return c.execute(channel, sender, parameters);
 		}
 		return null;

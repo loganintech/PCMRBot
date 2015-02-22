@@ -44,7 +44,6 @@ public class MyBotMain {
 	 */
 	public static void main(String[] args) {
 		Database.initDBConnection(args[1]);
-		CommandParser.init();
 		bot = new IRCBot();
 
 		bot.setVerbose(true);
@@ -64,7 +63,7 @@ public class MyBotMain {
 			}
 			f.delete();
 		}
-
+		CommandParser.init();
 	}
 
 	/**

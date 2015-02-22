@@ -119,12 +119,26 @@ public class IRCBot extends PircBot {
 			message=message.toLowerCase();
 
 			checkSpam(channel, message, sender);
+			
+			String params="";
+			try {
+				params = message.substring(message.indexOf(' ') + 1);
+			} catch(StringIndexOutOfBoundsException e) {
+				
+			}
+			
+			String command=message.substring(1, message.length()-1);
+			try {
+				params = message.substring(1, message.indexOf(' '));
+			} catch(StringIndexOutOfBoundsException e) {
+				
+			}
 
 			Date date = new Date();
 			chatPostSeen.put(sender,
 					channel.substring(1) + "|" + date.toString());
 
-			String reply = CommandParser.parse(message.substring(1, message.indexOf(' ')), sender, channel, message.substring(message.indexOf(' ') + 1));
+			String reply = CommandParser.parse(command, sender, channel, params);
 			if(reply != null) {
 				sendMessage(channel, reply);
 			}
