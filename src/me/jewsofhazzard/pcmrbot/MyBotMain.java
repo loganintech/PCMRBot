@@ -163,6 +163,21 @@ public class MyBotMain implements Runnable {
 		System.exit(0);
 	}
 
+	public static void broadcast(String message){
+		
+		for (IRCBot bot : connectedChannels.values()) {
+
+			if (!bot.getChannel().equalsIgnoreCase("#pcmrbot")) {
+				
+				bot.sendMessage(bot.getChannel(),
+						message);
+				
+			}
+
+		}
+		
+	}
+	
 	public static HashMap<String, IRCBot> getConnectedChannels() {
 		return connectedChannels;
 	}
@@ -174,5 +189,6 @@ public class MyBotMain implements Runnable {
 	public static IRCBot getConnectedChannel(String channel) {
 		return connectedChannels.get(channel);
 	}
+
 
 }

@@ -244,7 +244,7 @@ public class IRCBot extends PircBot {
 							connectedChannel,
 							"The syntax for this is !seen {user} and will tell you how long it has been since {user} has chatted.");
 
-				} else if (message.equalsIgnoreCase("slap")) {
+				}	else if (message.equalsIgnoreCase("slap")) {
 
 					sendMessage(connectedChannel,
 							"This slaps the targeted user. !slap {user}.");
@@ -260,6 +260,11 @@ public class IRCBot extends PircBot {
 
 				}
 
+			} else if (message.toLowerCase().startsWith("!broadcast ") && isMod(sender) && connectedChannel.equalsIgnoreCase("#pcmrbot")){
+				
+				sendMessage("#pcmrbot", "I have sent " + message.substring(message.indexOf(" ") + 1) + " to all channels.");
+				MyBotMain.broadcast(message.substring(message.indexOf(" ") + 1));
+			
 			} else if (message.equalsIgnoreCase("!commercial") && sender.equalsIgnoreCase(connectedChannel.substring(1))) {
 
 				TwitchUtilities.runCommercial(connectedChannel);
