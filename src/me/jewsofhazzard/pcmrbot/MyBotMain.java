@@ -36,7 +36,6 @@ public class MyBotMain implements Runnable {
 	private static final HashMap<String, IRCBot> connectedChannels = new HashMap<>();
 	private static final String botChannel = "#pcmrbot";
 	private static String oAuth = "";
-	public boolean forcedJoin;
 	private static final Logger logger = Logger.getLogger(MyBotMain.class + "");
 
 	/**
@@ -46,9 +45,8 @@ public class MyBotMain implements Runnable {
 	 * @param channel
 	 *            - the channel we are joining
 	 */
-	public MyBotMain(String channel, boolean forcedJoinToggle) {
+	public MyBotMain(String channel) {
 		this.channel = channel;
-		this.forcedJoin = forcedJoinToggle;
 		new Thread(this).start();
 
 	}
@@ -80,7 +78,7 @@ public class MyBotMain implements Runnable {
 		}
 		oAuth = args[0];
 		getConnectedChannels().put(getBotChannel(),
-				new IRCBot(getBotChannel(), false));
+				new IRCBot(getBotChannel()));
 
 		getConnectedChannels().get(getBotChannel()).setVerbose(true);
 		try {
@@ -95,12 +93,10 @@ public class MyBotMain implements Runnable {
 		File f = new File("connectedChannels.txt");
 		if (f.exists()) {
 			for (String s : TFileReader.readFile(f)) {
-				new MyBotMain(s, false);
+				new MyBotMain(s);
 			}
 			f.delete();
 		}
-
-		new MyBotMain("#Trick2g", true);
 
 	}
 
@@ -134,7 +130,7 @@ public class MyBotMain implements Runnable {
 					+ channel.substring(1)
 					+ "Options VALUES(\'welcomeMessage\', \'Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.\')");
 		}
-		getConnectedChannels().put(channel, new IRCBot(channel, forcedJoin));
+		getConnectedChannels().put(channel, new IRCBot(channel));
 
 		getConnectedChannels().get(channel).setVerbose(true);
 		try {
@@ -155,8 +151,7 @@ public class MyBotMain implements Runnable {
 		ArrayList<String> channels = new ArrayList<>();
 		for (IRCBot bot : connectedChannels.values()) {
 
-			if (!bot.getChannel().equalsIgnoreCase("#pcmrbot")
-					&& !bot.getForcedJoin()) {
+			if (!bot.getChannel().equalsIgnoreCase("#pcmrbot")) {
 				channels.add(bot.getChannel());
 				bot.sendMessage(bot.getChannel(),
 						"I am shutting down, I will automatically rejoin your channel when I restart!");
