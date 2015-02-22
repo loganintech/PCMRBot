@@ -20,32 +20,47 @@ package me.jewsofhazzard.pcmrbot.util;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.jewsofhazzard.pcmrbot.MyBotMain;
-
 /**
  *
  * @author Hazard
  */
 public class Timer implements Runnable {
 
+	@SuppressWarnings("unused")
 	private String channel;
 	private long time;
-	private String type;
+	private Object type;
 
 	private static final Logger logger = Logger.getLogger(Timer.class + "");
 
 	/**
 	 * Creates a new instance of the Timer class.
 	 * 
-	 * @param channel - The channel this timer is for
-	 * @param time - The time (in seconds) until this Timer will expire
+	 * @param channel
+	 *            - The channel this timer is for
+	 * @param time
+	 *            - The time (in seconds) until this Timer will expire
 	 */
-	public Timer(String channel, long time, String type) {
+	public Timer(String channel, long time, Poll p) {
 		this.time = time;
-		this.type = type;
+		this.type = p;
 		this.channel = channel;
 		new Thread(this).start();
 	}
+
+	public Timer(String channel, int time, Raffle r) {
+		this.time = time;
+		this.type = r;
+		this.channel = channel;
+		new Thread(this).start();
+	}
+
+	// public Timer(String channel, int time, String k) {
+	// this.time = time;
+	// this.type = k;
+	// this.channel = channel;
+	// new Thread(this).start();
+	// }
 
 	/**
 	 * Sleeps for time seconds then tells the IRCBot to tally the votes.
@@ -57,23 +72,14 @@ public class Timer implements Runnable {
 		} catch (InterruptedException ex) {
 			logger.log(Level.SEVERE, "An error occurred while sleping!", ex);
 		}
-		if(type.equals("vote")){
-		MyBotMain.getBot().setVoteCall(false);
-		MyBotMain.getBot().voteCounter(channel);
-		}
-		else if(type.equals("raffle")){
-			
-			MyBotMain.getBot().setRaffle(false);
-			MyBotMain.getBot().raffleCount(channel);
-			
-		}
-		else if(type.equals("kick")){
-			
-			MyBotMain.getBot().setVoteKickActive(true);
-			MyBotMain.getBot().voteKickCount(channel);
-			
-		}
-		
+		if (type instanceof Poll) {
+			((Poll) type).countVotes();
+		} else if (type instanceof Raffle) {
+			((Raffle) type).selectWinner();
+		} /*else if (type instanceof String) {
+			MyBotMain.getBot().getVoteKick(channel).voteKickCount();
+		}*/
+
 	}
-	
+
 }

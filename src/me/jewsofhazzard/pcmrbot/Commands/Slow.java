@@ -2,40 +2,25 @@ package me.jewsofhazzard.pcmrbot.Commands;
 
 public class Slow implements Command {
 
-	private String[] parameters;
-
-	private String reply;
-
-	public Slow(String... params) {
-
-		parameters = params;
-		execute();
-
-	}
-
 	private boolean isSlow = false;
 
-	public String getReply() {
-		return reply;
-	}
-
 	@Override
-	public void execute() {
+	public String execute(String...parameters) {
 		if (parameters[0].equalsIgnoreCase("true")) {
 
 			if (!isSlow) {
 
-				reply = "/slow";
+				return "/slow";
 
 			} else {
 
-				reply = "/slowoff";
+				return "/slowoff";
 
 			}
 
 		} else {
 
-			reply = "I am sorry but the bot is not moderator in your channel and cannot run slowmode.";
+			return "I am sorry but the bot is not moderator in your channel and cannot run slowmode.";
 
 		}
 	}

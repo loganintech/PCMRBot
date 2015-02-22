@@ -2,22 +2,10 @@ package me.jewsofhazzard.pcmrbot.Commands;
 
 import me.jewsofhazzard.pcmrbot.database.Database;
 
-public class AddAutoReply {
-
-	String [] p;
-	String reply;
+public class AddAutoReply implements Command{
 	
-	public AddAutoReply(String... params){
-		
-		p = params;
-		execute();
-		
-	}
-	
-	public void execute(){
-		
-		p[0] = p[0].substring(p[0].indexOf(" ") + 1);
-		String[] cutUp = p[0].split("[|]");
+	public String execute(String... parameters){
+		String[] cutUp = parameters[0].split("[|]");
 		StringBuilder keywords = new StringBuilder();
 		for (int i = 0; i < cutUp.length - 2; i++) {
 
@@ -26,23 +14,9 @@ public class AddAutoReply {
 		}
 		keywords.append(cutUp[cutUp.length - 2]);
 		String reply = cutUp[cutUp.length - 1];
-		Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
-				+ p[1].substring(1) + "AutoReplies VALUES(\'"
-				+ keywords.toString() + "\' , '" + reply + "\')");
-
-		
-				reply = "Added auto reply: "
-						+ reply
-						+ " When all of the following key words are said in a p[0]: "
-						+ keywords.toString();
-		
-		
-	}
-	
-	public String getReply(){
-		
-		return reply;
-		
+		String channel = parameters[1];
+		Database.addAutoReply(channel.substring(1), keywords.toString(), reply);
+		return String.format("Added auto reply: \"%s\"! Which will be said when all of the following key words are said in %s: %s", reply, channel.substring(1), keywords.toString());
 	}
 	
 }

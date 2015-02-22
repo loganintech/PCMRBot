@@ -1,68 +1,25 @@
 package me.jewsofhazzard.pcmrbot.Commands;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import me.jewsofhazzard.pcmrbot.database.Database;
 
-public class AddModerator {
-	
-	private static final Logger logger = Logger.getLogger(AddModerator.class + "");
-	String [] p;
-	String reply;
-	
-	public AddModerator(String... params){
-		
-		p = params;
-		execute();
-		
-	}
+public class AddModerator implements Command {
 
 
 	/**
-	 * <p>
-	 * Does one of two things.
-	 * </p>
+	 * Add's a moderator to the channel's Mod's table in the database if they are not already in it.
 	 * 
-	 * <p>
-	 * 1. Add's a moderator to the channel's Mod's table in the database and
-	 * notifies the channel
-	 * </p>
-	 * <p>
-	 * 2. Notifies the channel that the user is already a moderator
-	 * </p>
-	 * 
-	 * @param moderator
+	 * @return a formatted message with the results of the method
 	 */
-	public void execute(){
+	public String execute(String...parameters){
 		
-		ResultSet rs = Database.executeQuery("SELECT * FROM "
-				+ Database.DATABASE + "." + p[1].substring(1)
-				+ "Mods WHERE userID=\'" + p[0] + "\'");
-		try {
-			if (rs.next()) {
-				reply= p[0]
-						+ " is already a moderator!";
-			} else {
-				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
-						+ p[1].substring(1) + "Mods VALUES(\'"
-						+ p[0] + "\')");
-				reply = "Successfully added " + p[0]
-						+ " to the bots mod list!";
-			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "An error occurred adding " + p[0]
-					+ " to " + p[1]
-					+ "'s Mod List. This can probably be ignored!", e);
+		String moderator=parameters[0];
+		String channel=parameters[1];
+		if (Database.isMod(moderator, channel.substring(1))) {
+			return "%mod% is already a moderator!".replace("%mod%", moderator);
+		} else {
+			Database.addMod(moderator, channel.substring(1));
+			return String.format("Successfully added %s to the bots mod list for %s!", moderator, channel);
 		}
-		
-	}
-	
-	public String getReply(){
-		
-		return reply;
 		
 	}
 	

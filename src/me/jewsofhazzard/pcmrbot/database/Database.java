@@ -300,11 +300,30 @@ public class Database {
 		return null;
 	}
 
-	public static void setOption(String channel, Options option, String value) {
+	public static boolean setOption(String channel, Options option, String value) {
 		executeUpdate("UPDATE "+DATABASE+"."+channel.substring(1)+"Options SET "
 				+ "optionID=\'"+option.getOptionID()+"\'," +
 				"value=\'"+value+"\'"
 				+"WHERE optionID=\'welcomeMessage\'");
+		return true;
+	}
+
+	public static boolean isMod(String moderator, String channel) {
+		ResultSet rs = executeQuery(String.format("SELECT * FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channel, moderator));
+		try {
+			return rs.next();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, String.format("An error occurred adding %s to %s's Mod List. This can probably be ignored!", moderator, channel), e);
+		}
+		return false;
+	}
+	
+	public static void addMod(String moderator, String channel) {
+		executeUpdate(String.format("INSERT INTO %s.%sMods VALUES(\'%s\')", DATABASE, channel, moderator));
+	}
+	
+	public static void addAutoReply(String channel, String keywords, String reply) {
+		Database.executeUpdate(String.format("INSERT INTO %s.%sAutoReplies VALUES(\'%s\' , '%s\')", DATABASE, channel, keywords, reply));
 	}
 
 }

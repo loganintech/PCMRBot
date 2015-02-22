@@ -2,7 +2,5 @@ package me.jewsofhazzard.pcmrbot.Commands;
 
 public interface Command {
 	
-	public abstract String getReply();
-	
-	public abstract void execute();
+	public abstract String execute(String... parameters);
 }

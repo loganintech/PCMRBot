@@ -2,34 +2,16 @@ package me.jewsofhazzard.pcmrbot.Commands;
 
 import me.jewsofhazzard.pcmrbot.MyBotMain;
 
-public class JoinMe {
-
-	private String [] p;
+public class JoinMe implements Command{
 	
-	public JoinMe(String... params){
+	public String execute(String... parameters){
 		
-		p = params;
-		execute();
-		
-	}
-	
-
-
-
-	public void execute(){
-		
-		if(p[1].equalsIgnoreCase("true")){
-			
-			new MyBotMain("#" + p[0]);
-			
-			
+		String user=parameters[0];
+		if(parameters[1].equalsIgnoreCase(MyBotMain.getBotChannel())){
+			MyBotMain.joinChannel("#" + user);
+			return "I have joined %user%'s channel.".replace("%user%", user);
 		}
-		
-	}
-		
-	public String getReply(){
-		
-		return "I have joined " + p[0] + "'s channel.";
+		return "Sorry %user%, but I can't join your channel from here! Visit http://twitch.tv/pcmrbot and try again!".replace("%user%", user);
 		
 	}
 }
