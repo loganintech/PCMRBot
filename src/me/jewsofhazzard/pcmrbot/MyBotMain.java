@@ -19,7 +19,6 @@ package me.jewsofhazzard.pcmrbot;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +26,6 @@ import java.util.logging.Logger;
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.util.Options;
 import me.jewsofhazzard.pcmrbot.util.TFileReader;
-import me.jewsofhazzard.pcmrbot.util.TFileWriter;
 
 import org.jibble.pircbot.IrcException;
 
@@ -154,21 +152,6 @@ public class MyBotMain implements Runnable {
 			getConnectedChannels().get(channel).onFirstJoin();
 		}
 
-	}
-
-	public static void shutdown() {
-		ArrayList<String> channels = new ArrayList<>();
-		for (IRCBot bot : connectedChannels.values()) {
-
-			if (!bot.getChannel().equalsIgnoreCase("#pcmrbot")) {
-				channels.add(bot.getChannel());
-				bot.sendMessage(bot.getChannel(),
-						"I am shutting down, I will automatically rejoin your channel when I restart!");
-			}
-
-		}
-		TFileWriter.overWriteFile(new File("connectedChannels.txt"), channels);
-		System.exit(0);
 	}
 
 	public static void broadcast(String message){

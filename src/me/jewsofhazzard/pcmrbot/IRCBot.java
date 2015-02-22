@@ -27,7 +27,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.jewsofhazzard.pcmrbot.Commands.LMGTFY;
-//
+import me.jewsofhazzard.pcmrbot.Commands.Shutdown;
+import me.jewsofhazzard.pcmrbot.Commands.Title;
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
 import me.jewsofhazzard.pcmrbot.util.Options;
@@ -165,21 +166,11 @@ public class IRCBot extends PircBot {
 				if (connectedChannel.equalsIgnoreCase("#pcmrbot")
 						&& (isMod(sender) || sender
 								.equalsIgnoreCase("j3wsofhazard"))) {
-					MyBotMain.shutdown();
+					new Shutdown().execute();
 				}
 			} else if (message.toLowerCase().startsWith("!title ")
 					&& isMod(sender)) {
-				message = message.substring(message.indexOf(' '));
-				if (TwitchUtilities.updateTitle(connectedChannel.substring(1),
-						message)) {
-					sendMessage(connectedChannel,
-							"Successfully changed the stream title to \""
-									+ message + "\"!");
-				} else {
-					sendMessage(
-							connectedChannel,
-							"I am not authorized to do that visit http://pcmrbot.no-ip.info/authorize to allows me to do this and so much more!");
-				}
+				sendMessage(connectedChannel, new Title(connectedChannel, message.substring(message.indexOf(' '))).getReply());
 			} else if (message.toLowerCase().startsWith("!game ")
 					&& isMod(sender)) {
 				TwitchUtilities.updateTitle(connectedChannel.substring(1),

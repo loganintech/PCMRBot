@@ -4,14 +4,20 @@ public class LMGTFY implements Command {
 
 	private String[] parameters;
 	
+	private String reply;
+	
 	public LMGTFY(String... params) {
 		parameters=params;
 	}
 	
 	@Override
 	public String getReply() {
-		parameters[0] = parameters[0].replace(' ', '+');
-		return "http://lmgtfy.com?q=" + parameters[0];
+		return reply;
+	}
+
+	@Override
+	public void execute() {
+		reply = "http://lmgtfy.com?q=" + parameters[0].replace(' ', '+');
 	}
 
 }
