@@ -80,8 +80,9 @@ public class IRCBot extends PircBot {
 	private int optionCount;
 	private String connectedChannel;
 	private int paragraphLength = 250;
-	private int numSymbols = 15;
+	private int numSymbols = 10;
 	private int numEmotes = 10;
+	private int numCaps = 10;
 	Random rand = new Random();
 	private boolean welcomeEnabled = true;
 
@@ -1025,7 +1026,7 @@ public class IRCBot extends PircBot {
 	public void checkSpam(String message, String sender) {
 
 		if (!isMod(sender)) {
-			if (message.matches("[A-Z\\s]{20,}")) {
+			if (message.matches("[A-Z\\s]{"+numCaps+",}")) {
 				new Timeouts(connectedChannel, sender, 1, TType.CAPS);
 			} else if (message
 					.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})") || message.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?")) {
