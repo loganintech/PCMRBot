@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 //
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
+import me.jewsofhazzard.pcmrbot.util.Options;
 import me.jewsofhazzard.pcmrbot.util.TType;
 import me.jewsofhazzard.pcmrbot.util.Timeouts;
 import me.jewsofhazzard.pcmrbot.util.Timer;
@@ -122,7 +123,7 @@ public class IRCBot extends PircBot {
 			try {
 				if (welcomeEnabled) {
 					sendMessage(connectedChannel,
-							Database.getWelcomeMessage(connectedChannel)
+							Database.getOption(connectedChannel, Options.welcomeMessage.getOptionID())
 									.replace("%user%", sender));
 				}
 			} catch (Exception e) {
@@ -368,7 +369,7 @@ public class IRCBot extends PircBot {
 			} else if (message.toLowerCase().startsWith("!changewelcome ")
 					&& isMod(sender)) {
 
-				Database.setWelcomeMessage(connectedChannel,
+				Database.setOption(connectedChannel, Options.welcomeMessage.getOptionID(),
 						message.substring((message.indexOf(" ") + 1)));
 				sendMessage(
 						connectedChannel,
@@ -992,7 +993,7 @@ public class IRCBot extends PircBot {
 				String[] keyword = rs.getString(1).split("[,]");
 				boolean matches = true;
 				for (int i = 0; i < keyword.length - 1; i++) {
-					if(!message.toLowerCase().contains(keyword[i])) {
+					if(!message.toLowerCase().contains(keyword[i].toLowerCase())) {
 						matches=false;
 						break;
 					}

@@ -287,8 +287,8 @@ public class Database {
 		return null;
 	}
 
-	public static String getWelcomeMessage(String channel) {
-		ResultSet rs=executeQuery("SELECT * FROM "+DATABASE+"."+channel.substring(1)+"Options WHERE optionID=\'welcomeMessage\'");
+	public static String getOption(String channel, String option) {
+		ResultSet rs=executeQuery("SELECT * FROM "+DATABASE+"."+channel.substring(1)+"Options WHERE optionID=\'"+option+"\'");
 		try {
 			rs.next();
 			return rs.getString("value");
@@ -298,10 +298,10 @@ public class Database {
 		return null;
 	}
 
-	public static void setWelcomeMessage(String channel, String message) {
+	public static void setOption(String channel, String option, String value) {
 		executeUpdate("UPDATE "+DATABASE+"."+channel.substring(1)+"Options SET "
-				+ "optionID=\'welcomeMessage\'," +
-				"value=\'"+message+"\'"
+				+ "optionID=\'"+option+"\'," +
+				"value=\'"+value+"\'"
 				+"WHERE optionID=\'welcomeMessage\'");
 	}
 

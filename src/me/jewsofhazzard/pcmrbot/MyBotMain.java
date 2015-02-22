@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.jewsofhazzard.pcmrbot.database.Database;
+import me.jewsofhazzard.pcmrbot.util.Options;
 import me.jewsofhazzard.pcmrbot.util.TFileReader;
 import me.jewsofhazzard.pcmrbot.util.TFileWriter;
 
@@ -72,8 +73,9 @@ public class MyBotMain implements Runnable {
 			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
 					+ getBotChannel().substring(1)
 					+ "Mods VALUES(\'angablade\')");
-			Database.setWelcomeMessage(
+			Database.setOption(
 					getBotChannel(),
+					Options.welcomeMessage.getOptionID(),
 					"Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
 		}
 		oAuth = args[0];
@@ -124,11 +126,10 @@ public class MyBotMain implements Runnable {
 			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
 					+ channel.substring(1) + "Mods VALUES(\'"
 					+ channel.substring(1) + "\')");
-			Database.executeUpdate("INSERT INTO "
-					+ Database.DATABASE
-					+ "."
-					+ channel.substring(1)
-					+ "Options VALUES(\'welcomeMessage\', \'Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.\')");
+			Database.setOption(
+					channel.substring(1),
+					Options.welcomeMessage.getOptionID(),
+					"Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
 		}
 		getConnectedChannels().put(channel, new IRCBot(channel));
 
