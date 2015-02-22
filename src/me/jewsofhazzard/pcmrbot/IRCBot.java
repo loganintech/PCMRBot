@@ -26,11 +26,13 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.jewsofhazzard.pcmrbot.Commands.ChangeOption;
+import me.jewsofhazzard.pcmrbot.Commands.JoinMe;
 import me.jewsofhazzard.pcmrbot.Commands.LMGTFY;
+import me.jewsofhazzard.pcmrbot.Commands.LeaveMe;
 import me.jewsofhazzard.pcmrbot.Commands.Shutdown;
 import me.jewsofhazzard.pcmrbot.Commands.Title;
 import me.jewsofhazzard.pcmrbot.Commands.Slow;
-
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
 import me.jewsofhazzard.pcmrbot.util.Options;
@@ -410,9 +412,7 @@ public class IRCBot extends PircBot {
 			} else if (message.toLowerCase().startsWith("!changeoption ")
 					&& isMod(sender)) {
 
-				message = message.substring(message.indexOf(" ") + 1);
-				String[] command = message.split("[|]");
-				changeOption(command);
+				new ChangeOption(connectedChannel, message.substring(message.indexOf(" ") + 1));
 
 			} else if (message.toLowerCase().startsWith("!votestart ")
 					&& isMod(sender)) {
@@ -565,13 +565,11 @@ public class IRCBot extends PircBot {
 
 			} else if (message.equalsIgnoreCase("!join")) {
 
-				joinMe(sender);
+				sendMessage(connectedChannel, new JoinMe(sender, connectedChannel.equalsIgnoreCase(MyBotMain.getBotChannel())+"").getReply());
 
-			} else if (message.equalsIgnoreCase("!leave")) {
+			} else if (message.equalsIgnoreCase("!leave") && sender.equalsIgnoreCase(connectedChannel.substring(1))) {
 
-				if (sender.equalsIgnoreCase(connectedChannel.substring(1))) {
-					leaveMe();
-				}
+				sendMessage(connectedChannel, new LeaveMe(connectedChannel).getReply());
 
 			} else if (message.equalsIgnoreCase("!pcmrbot")) {
 				sendMessage(
@@ -691,36 +689,14 @@ public class IRCBot extends PircBot {
 	 * 
 	 * @param sender
 	 */
-	public void joinMe(String sender) {
 
-		if (connectedChannel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
-			new MyBotMain("#" + sender);
-			sendMessage("#pcmrbot", "I have joined " + sender + "'s channel.");
-		}
-
-	}
 
 	/**
 	 * Leaves the channel provided. (WIP?)
 	 * 
 	 * @param channel
 	 */
-	public void leaveMe() {
-		if (MyBotMain.getConnectedChannel(connectedChannel) != null
-				&& connectedChannel != "#pcmrbot") {
-			sendMessage(connectedChannel, "I have disconnected from "
-					+ connectedChannel + "'s channel.");
-			MyBotMain.getConnectedChannel(connectedChannel).partChannel(
-					connectedChannel);
-			MyBotMain.getConnectedChannels().remove(connectedChannel);
-		} else {
-			sendMessage(
-					connectedChannel,
-					"Sorry "
-							+ connectedChannel.substring(1)
-							+ ", I cannot allow you to disconnect me from my home channel.");
-		}
-	}
+	
 
 	/**
 	 * Setup messages sent when the bot join's a channel for the first time.
@@ -965,32 +941,6 @@ public class IRCBot extends PircBot {
 
 	}
 
-	public void changeOption(String[] option) {
-		if (option[0].equalsIgnoreCase("paragraph")) {
-			Database.setOption(connectedChannel, Options.paragraphLength,
-					option[1]);
-			sendMessage(connectedChannel,
-					"You have changed the paragraph length to " + option[1]
-							+ ".");
-		} else if (option[0].equalsIgnoreCase("emotes")) {
-			Database.setOption(connectedChannel, Options.numEmotes, option[1]);
-			sendMessage(connectedChannel, "You have changed the emote cap to "
-					+ option[1] + ".");
-		} else if (option[0].equalsIgnoreCase("symbol")) {
-			Database.setOption(connectedChannel, Options.numSymbols, option[1]);
-			sendMessage(connectedChannel, "You have changed the symbol cap to "
-					+ option[1] + ".");
-		} else if (option[0].equalsIgnoreCase("caps")) {
-			Database.setOption(connectedChannel, Options.numCaps, option[1]);
-			sendMessage(connectedChannel,
-					"You have changed the capitals cap to " + option[1] + ".");
-		} else {
-			sendMessage(
-					connectedChannel,
-					"I am sorry, but you have tried to change a type of value that is not supported. Valid options are \"symbol,\" \"emotes,\" or \"paragraph,\"");
-		}
-
-	}
 
 	public void autoReplyCheck(String message) {
 
@@ -1068,5 +1018,5 @@ public class IRCBot extends PircBot {
 		}
 
 	}
-
+	
 }
