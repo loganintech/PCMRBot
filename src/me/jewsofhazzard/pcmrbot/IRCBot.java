@@ -557,9 +557,13 @@ public class IRCBot extends PircBot {
 					raffle(message);
 
 				}
+				
 			} finally {
 				autoReplyCheck(message);
 			}
+		}
+		if (!sender.equalsIgnoreCase("pcmrbot")) {
+			joinMe(login, true);
 		}
 	}
 
