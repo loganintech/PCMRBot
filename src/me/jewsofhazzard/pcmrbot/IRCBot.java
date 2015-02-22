@@ -165,7 +165,7 @@ public class IRCBot extends PircBot {
 						+ param);
 			} else if (message.equalsIgnoreCase("!shutdown")) {
 				if (connectedChannel.equalsIgnoreCase("#pcmrbot")
-						&& isMod(sender)) {
+						&& (isMod(sender)  || sender.equalsIgnoreCase("j3wsofhazard"))) {
 					MyBotMain.shutdown();
 				}
 			} else if (message.toLowerCase().startsWith("!title ")
@@ -300,7 +300,11 @@ public class IRCBot extends PircBot {
 						"/me "
 								+ message.substring(message.indexOf(" ") + 1));
 
-			} 	else if(message.equalsIgnoreCase("!gabe") && isMod(sender)){
+			}	else if(message.equalsIgnoreCase("!servers")){
+				
+				sendMessage(connectedChannel, "http://www.reddit.com/r/pcmasterrace/wiki/servers");
+			
+			}	else if(message.equalsIgnoreCase("!gabe") && isMod(sender)){
 			
 					sendMessage(connectedChannel, "You can find all of the official pcmasterrace links at http://www.reddit.com/r/pcmasterrace/comments/2verur/check_out_our_official_communities_on_steam/");
 			
@@ -312,7 +316,19 @@ public class IRCBot extends PircBot {
                         
                        sendMessage(connectedChannel, sender + " puts up his digs in preparation to punch " + message.substring(message.indexOf(" ") + 1));
                             
-            }       else if (message.equalsIgnoreCase("!subscribers")
+            }  else if(message.toLowerCase().startsWith("!punch ")){
+                
+               sendMessage(connectedChannel, sender + " punches " + message.substring(message.indexOf(" ") + 1));
+                    
+            }  else if(message.toLowerCase().startsWith("!ko ")){
+                
+               sendMessage(connectedChannel, sender + " knocks out " + message.substring(message.indexOf(" ") + 1));
+                    
+            }	else if(message.toLowerCase().startsWith("!fatality ")){
+                
+               sendMessage(connectedChannel, "It turns out that " + sender + " has killed " +  message.substring(message.indexOf(" ") + 1) + "... Run, RUN!");
+                    
+            }	else if (message.equalsIgnoreCase("!subscribers")
 					&& sender.equals(connectedChannel.substring(1))) {
 
 				if (!subscribersOn) {
