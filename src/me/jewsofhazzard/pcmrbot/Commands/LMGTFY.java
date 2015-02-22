@@ -1,10 +1,11 @@
 package me.jewsofhazzard.pcmrbot.Commands;
 
-public class LMGTFY extends Command {
+public class LMGTFY implements Command {
 
+	private String[] parameters;
+	
 	public LMGTFY(String... params) {
-		super(params);
-		command="lmgtfy";
+		parameters=params;
 	}
 	
 	@Override
