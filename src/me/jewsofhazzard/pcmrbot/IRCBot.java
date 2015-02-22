@@ -296,8 +296,16 @@ public class IRCBot extends PircBot {
 			}	else if(message.equalsIgnoreCase("!steamsales")){
 
 				sendMessage(connectedChannel, "You can find the recent steam sales by heading to https://steamdb.info/sales/");
-
-			}	else if (message.equalsIgnoreCase("!subscribers")
+                                
+			}       else if(message.equalsIgnoreCase("Kappa")){	
+                        
+                                sendMessage(connectedChannel, "Keepo");
+                        
+                        }       else if(message.toLowerCase().startsWith("!fight ")){
+                        
+                                sendMessage(connectedChannel, sender + " puts up his digs in preparation to punch " + message.substring(message.indexOf(" ") + 1));
+                            
+                        }       else if (message.equalsIgnoreCase("!subscribers")
 					&& sender.equals(connectedChannel.substring(1))) {
 
 				if (!subscribersOn) {
