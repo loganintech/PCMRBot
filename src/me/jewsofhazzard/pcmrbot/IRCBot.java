@@ -565,7 +565,7 @@ public class IRCBot extends PircBot {
 			} else if (message.toLowerCase().startsWith("!addautoreply ")
 					&& isMod(sender)) {
 
-				autoReply(message);
+				addAutoReply(message);
 
 			} else if (message.toLowerCase().startsWith("!raffle ")
 					&& isMod(sender)) {
@@ -737,7 +737,7 @@ public class IRCBot extends PircBot {
 	 * 
 	 * @param message
 	 */
-	public void autoReply(String message) {
+	public void addAutoReply(String message) {
 
 		message = message.substring(message.indexOf(" ") + 1);
 		String[] cutUp = message.split("[|]");
@@ -989,18 +989,17 @@ public class IRCBot extends PircBot {
 				+ connectedChannel.substring(1) + "AutoReplies");
 		try {
 			while (rs.next()) {
-				String[] keyword = rs.getString("keyword").split(",");
-				StringBuilder matchMe = new StringBuilder();
-
+				String[] keyword = rs.getString(1).split("[,]");
+				boolean matches = true;
 				for (int i = 0; i < keyword.length - 1; i++) {
-					matchMe.append("([\\s]*" + keyword[i] + "[\\s]*)+");
+					if(!message.toLowerCase().contains(keyword[i])) {
+						matches=false;
+						break;
+					}
 				}
-				if (message.matches(matchMe.toString())) {
-
+				if (matches) {
 					sendMessage(connectedChannel, rs.getString("reply"));
-
 				}
-
 			}
 		} catch (SQLException e) {
 

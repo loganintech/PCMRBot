@@ -1,9 +1,6 @@
 # Eclipse
 /bin/
 /target/
-/.settings/
-.classpath
-.project
 
 #Netbeans
 /dist/
