@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.jewsofhazzard.pcmrbot.Commands.LMGTFY;
+import me.jewsofhazzard.pcmrbot.Commands.Slow;
 //
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
@@ -161,6 +162,10 @@ public class IRCBot extends PircBot {
 
 			if (message.startsWith("!lmgtfy ")) {
 				sendMessage(connectedChannel, new LMGTFY(message.substring(message.indexOf(' '))).getReply());
+			} else if(message.toLowerCase().startsWith("!slow ") && isMod(sender)){
+				
+				sendMessage(connectedChannel, new Slow(isMod("pcmrbot")+"", message.substring(message.indexOf(" ") + 1)).getReply());
+				
 			} else if (message.equalsIgnoreCase("!shutdown")) {
 				if (connectedChannel.equalsIgnoreCase("#pcmrbot")
 						&& (isMod(sender) || sender
@@ -372,35 +377,7 @@ public class IRCBot extends PircBot {
 
 				sendMessage(connectedChannel, "/clear");
 
-			} else if (message.toLowerCase().startsWith("!slow ")
-					&& isMod(sender)) {
-
-				if (isMod("pcmrbot")) {
-
-					sendMessage(
-							connectedChannel,
-							"/slow "
-									+ message.substring(message.indexOf(" ") + 1));
-
-				} else {
-
-					sendMessage(connectedChannel,
-							"I am sorry, the pcmrbot is not running as a moderator in the channel.");
-
-				}
-
-			} else if (message.equalsIgnoreCase("!slow") && isMod(sender)) {
-
-				if (isMod("pcmrbot")) {
-					sendMessage(connectedChannel, "/slowoff");
-				} else {
-
-					sendMessage(connectedChannel,
-							"I am sorry, the pcmrbot is not running as a moderator in the channel.");
-
-				}
-
-			} else if (message.equalsIgnoreCase("!disableWelcome")
+			}  else if (message.equalsIgnoreCase("!disableWelcome")
 					&& isMod(sender)) {
 
 				this.welcomeEnabled = false;
