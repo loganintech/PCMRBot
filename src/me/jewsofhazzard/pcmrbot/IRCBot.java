@@ -75,6 +75,7 @@ public class IRCBot extends PircBot {
 																	// the
 																	// choices
 	private int optionCount;
+	public boolean forcedJoin;
 	private String connectedChannel;
 	private int paragraphLength = 250;
 	private int numSymbols = 15;
@@ -90,33 +91,41 @@ public class IRCBot extends PircBot {
 	 * @param channel
 	 *            - The IRC Channel we are connecting to.
 	 */
-	public IRCBot(String channel) {
+	public IRCBot(String channel, boolean forcedJoinToggle) {
 		connectedChannel = channel;
+		this.forcedJoin = forcedJoinToggle;
 		this.setName(MyBotMain.getBotChannel().substring(1));
 	}
 
 	@Override
 	protected void onOp(String channel, String sourceNick, String sourceLogin,
 			String sourceHostname, String recipient) {
-		try {
-		if (channel.equalsIgnoreCase(connectedChannel)) {
-			addModerator(recipient);
-		}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "An error occurred while executing onOP()", e);
+		if(!forcedJoin){
+			try {
+			if (channel.equalsIgnoreCase(connectedChannel)) {
+				addModerator(recipient);
+			}
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, "An error occurred while executing onOP()", e);
+			}
 		}
 	}
 	
 	@Override
 	public void onJoin(String channel, String sender, String login, String hostname){
 		
-		try {
-		if(welcomeEnabled){
-			sendMessage(connectedChannel, Database.getWelcomeMessage(connectedChannel).replace("%user%", sender));
+		if(!forcedJoin){
+			try {
+			if(welcomeEnabled){
+				sendMessage(connectedChannel, Database.getWelcomeMessage(connectedChannel).replace("%user%", sender));
+			}
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, "An error occurred while executing onJoin()", e);
+			}
 		}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "An error occurred while executing onJoin()", e);
-		}
+		
+		joinMe(sender, true);
+		MyBotMain.getConnectedChannel("#pcmrbot").sendMessage("#pcmrbot", "Joined " + sender);
 		
 	}
 	
@@ -124,345 +133,348 @@ public class IRCBot extends PircBot {
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message) {
 
-		try {
-			Date date = new Date();
-			chatPostSeen.put(sender, channel.substring(1) + "|" + date.toString());
-			
-			 checkSpam(message, sender);
-			
-			if(message.startsWith("!lmgtfy ")) {
-				message=message.substring(message.indexOf(' '));
-				String param=message.replace(' ', '+');
-				sendMessage(connectedChannel, "http://lmgtfy.com?q="+param);
-			} else if(message.equalsIgnoreCase("!shutdown")) {
-				if(connectedChannel.equalsIgnoreCase("#pcmrbot") && isMod(sender)) {
-					MyBotMain.shutdown();
-				}
-			} else if(message.toLowerCase().startsWith("!title ") && isMod(sender)) {
-				message=message.substring(message.indexOf(' '));
-				if(TwitchUtilities.updateTitle(connectedChannel.substring(1), message)) {
-					sendMessage(connectedChannel, "Successfully changed the stream title to \""+message+"\"!");
-				} else {
-					sendMessage(connectedChannel, "I am not authorized to do that visit http://pcmrbot.no-ip.info/authorize to allows me to do this and so much more!");
-				}
-			} else if(message.toLowerCase().startsWith("!game ") && isMod(sender)) {
-				TwitchUtilities.updateTitle(connectedChannel.substring(1), message.substring(message.indexOf(' ')));
-			} else if(message.equalsIgnoreCase("!clearAutoReplies")) {
-				if(sender.equalsIgnoreCase(channel.substring(1))) {		//This makes sure ONLY the channel admin can run this
-					sendMessage(connectedChannel, channel.substring(1) + " has cleared the auto replies.");
-					Database.clearAutoRepliesTable(channel.substring(1));
-				}
-			} else if (message.equalsIgnoreCase("!help")) {
-				sendMessage(
-						connectedChannel,
-						"http://pcmrbot.no-ip.info/commands");
-			} else if (message.startsWith("!help ")){
-				
-				message = message.substring(message.indexOf(" ") + 1);
-				
-				if(message.equalsIgnoreCase("votestart")){
-					
-					sendMessage(connectedChannel, "The format of the votestart command is as follows:"
-							+ " !votestart {time in seconds}|{question to ask}|{option 1}|{infinte more options}");
-					sendMessage(connectedChannel, "Note, you do not need { or } and you must not add spaces "
-							+ "between |."
-							+ " For example, !votestart 30|What game should I play?|Bioshock|Minecraft|League. Is perfect.");
-				}
-				else if(message.equalsIgnoreCase("addautoreply")){
-					
-					sendMessage(connectedChannel, "Autoreply is formated similarly to starting votes. All you need is to type"
-							+ " !addautoreply {keyword}|{keyword}|{reply}. Note: again, there can be no spaces between pipes ( | )"
-							+ ". The difference is that you may add as many keywords as you like as long as the reply is last.");
-					
-				}
-				else if(message.equalsIgnoreCase("raffle")){
-					
-					sendMessage(connectedChannel, "A raffle's context is simply !raffle {type} where type could be (all, follower or follwers,"
-							+ " subscriber or subscribers.");
-					
-				}
-				else if(message.equalsIgnoreCase("shorten")){
-					
-					sendMessage(connectedChannel,
-							"This is simply !shorten {link} to make it a bit.ly link.");
-					
-				}
-				else if(message.equalsIgnoreCase("seen")){
-					
-					sendMessage(connectedChannel,
-							"The syntax for this is !seen {user} and will tell you how long it has been since {user} has chatted.");
-					
-				}
-				else if(message.equalsIgnoreCase("slap")){
-					
-					sendMessage(connectedChannel, "This slaps the targeted user. !slap {user}.");
-					
-				}
-				else{
-					
-					sendMessage(connectedChannel, "I am sorry " + sender + " we have not added command-specific help for that command yet. Please proceed to "
-							+ "http://pcmrbot.no-ip.info/commands for more information.");
-					
-				}
-				
-				
-			}   else if(message.equalsIgnoreCase("!commercial")){
-			
-					TwitchUtilities.runCommercial(connectedChannel);
-			
-			}   else if(message.equalsIgnoreCase("!commercial ")){
-				int time = 0;
-				try {	
-					time=Integer.valueOf(message.substring(message.indexOf(' ')));
-				} catch (NumberFormatException e) {
-					sendMessage(connectedChannel, message.substring(message.indexOf(' '))+" is not a valid time. Running a default length commercial!");
-					TwitchUtilities.runCommercial(connectedChannel);
-					return;
-				}
-				if (time<=180 && time%30 == 0) {
-					TwitchUtilities.runCommercial(connectedChannel, time);
-				} else {
-					sendMessage(connectedChannel, message.substring(message.indexOf(' '))+" is not a valid time. Running a default length commercial!");
-					TwitchUtilities.runCommercial(connectedChannel);
-					return;
-				}
+		if(!forcedJoin){
 		
-			}	else if(message.toLowerCase().startsWith("!me ") && isMod(sender)){
+			try {
+				Date date = new Date();
+				chatPostSeen.put(sender, channel.substring(1) + "|" + date.toString());
 				
-				sendMessage(connectedChannel, "/me " + message.substring(message.indexOf(" ") + 1));
+				 checkSpam(message, sender);
+				
+				if(message.startsWith("!lmgtfy ")) {
+					message=message.substring(message.indexOf(' '));
+					String param=message.replace(' ', '+');
+					sendMessage(connectedChannel, "http://lmgtfy.com?q="+param);
+				} else if(message.equalsIgnoreCase("!shutdown")) {
+					if(connectedChannel.equalsIgnoreCase("#pcmrbot") && isMod(sender)) {
+						MyBotMain.shutdown();
+					}
+				} else if(message.toLowerCase().startsWith("!title ") && isMod(sender)) {
+					message=message.substring(message.indexOf(' '));
+					if(TwitchUtilities.updateTitle(connectedChannel.substring(1), message)) {
+						sendMessage(connectedChannel, "Successfully changed the stream title to \""+message+"\"!");
+					} else {
+						sendMessage(connectedChannel, "I am not authorized to do that visit http://pcmrbot.no-ip.info/authorize to allows me to do this and so much more!");
+					}
+				} else if(message.toLowerCase().startsWith("!game ") && isMod(sender)) {
+					TwitchUtilities.updateTitle(connectedChannel.substring(1), message.substring(message.indexOf(' ')));
+				} else if(message.equalsIgnoreCase("!clearAutoReplies")) {
+					if(sender.equalsIgnoreCase(channel.substring(1))) {		//This makes sure ONLY the channel admin can run this
+						sendMessage(connectedChannel, channel.substring(1) + " has cleared the auto replies.");
+						Database.clearAutoRepliesTable(channel.substring(1));
+					}
+				} else if (message.equalsIgnoreCase("!help")) {
+					sendMessage(
+							connectedChannel,
+							"http://pcmrbot.no-ip.info/commands");
+				} else if (message.startsWith("!help ")){
+					
+					message = message.substring(message.indexOf(" ") + 1);
+					
+					if(message.equalsIgnoreCase("votestart")){
+						
+						sendMessage(connectedChannel, "The format of the votestart command is as follows:"
+								+ " !votestart {time in seconds}|{question to ask}|{option 1}|{infinte more options}");
+						sendMessage(connectedChannel, "Note, you do not need { or } and you must not add spaces "
+								+ "between |."
+								+ " For example, !votestart 30|What game should I play?|Bioshock|Minecraft|League. Is perfect.");
+					}
+					else if(message.equalsIgnoreCase("addautoreply")){
+						
+						sendMessage(connectedChannel, "Autoreply is formated similarly to starting votes. All you need is to type"
+								+ " !addautoreply {keyword}|{keyword}|{reply}. Note: again, there can be no spaces between pipes ( | )"
+								+ ". The difference is that you may add as many keywords as you like as long as the reply is last.");
+						
+					}
+					else if(message.equalsIgnoreCase("raffle")){
+						
+						sendMessage(connectedChannel, "A raffle's context is simply !raffle {type} where type could be (all, follower or follwers,"
+								+ " subscriber or subscribers.");
+						
+					}
+					else if(message.equalsIgnoreCase("shorten")){
+						
+						sendMessage(connectedChannel,
+								"This is simply !shorten {link} to make it a bit.ly link.");
+						
+					}
+					else if(message.equalsIgnoreCase("seen")){
+						
+						sendMessage(connectedChannel,
+								"The syntax for this is !seen {user} and will tell you how long it has been since {user} has chatted.");
+						
+					}
+					else if(message.equalsIgnoreCase("slap")){
+						
+						sendMessage(connectedChannel, "This slaps the targeted user. !slap {user}.");
+						
+					}
+					else{
+						
+						sendMessage(connectedChannel, "I am sorry " + sender + " we have not added command-specific help for that command yet. Please proceed to "
+								+ "http://pcmrbot.no-ip.info/commands for more information.");
+						
+					}
+					
+					
+				}   else if(message.equalsIgnoreCase("!commercial")){
+				
+						TwitchUtilities.runCommercial(connectedChannel);
+				
+				}   else if(message.equalsIgnoreCase("!commercial ")){
+					int time = 0;
+					try {	
+						time=Integer.valueOf(message.substring(message.indexOf(' ')));
+					} catch (NumberFormatException e) {
+						sendMessage(connectedChannel, message.substring(message.indexOf(' '))+" is not a valid time. Running a default length commercial!");
+						TwitchUtilities.runCommercial(connectedChannel);
+						return;
+					}
+					if (time<=180 && time%30 == 0) {
+						TwitchUtilities.runCommercial(connectedChannel, time);
+					} else {
+						sendMessage(connectedChannel, message.substring(message.indexOf(' '))+" is not a valid time. Running a default length commercial!");
+						TwitchUtilities.runCommercial(connectedChannel);
+						return;
+					}
 			
-			}	else if(message.equalsIgnoreCase("!subscribers") && sender.equals(connectedChannel.substring(1))){
+				}	else if(message.toLowerCase().startsWith("!me ") && isMod(sender)){
+					
+					sendMessage(connectedChannel, "/me " + message.substring(message.indexOf(" ") + 1));
 				
-				if(!subscribersOn){
+				}	else if(message.equalsIgnoreCase("!subscribers") && sender.equals(connectedChannel.substring(1))){
+					
+					if(!subscribersOn){
+					
+						sendMessage(connectedChannel, "/subscribers");
+					
+					}
+					else if(subscribersOn){
+					
+						sendMessage(connectedChannel, "/subscribersoff");
+					
+					}
+					
+				}	else if(message.equalsIgnoreCase("!clear") && isMod(sender)){
+					
+					sendMessage(connectedChannel, "/clear");
 				
-					sendMessage(connectedChannel, "/subscribers");
+				}	else if(message.toLowerCase().startsWith("!slow ") && isMod(sender)){
+					
+						if(isMod("pcmrbot")){
+							
+							sendMessage(connectedChannel, "/slow " + message.substring(message.indexOf(" ")+1));
+							
+						}
+						else{
+							
+							sendMessage(connectedChannel, "I am sorry, the pcmrbot is not running as a moderator in the channel.");
+							
+						}
 				
-				}
-				else if(subscribersOn){
-				
-					sendMessage(connectedChannel, "/subscribersoff");
-				
-				}
-				
-			}	else if(message.equalsIgnoreCase("!clear") && isMod(sender)){
-				
-				sendMessage(connectedChannel, "/clear");
-			
-			}	else if(message.toLowerCase().startsWith("!slow ") && isMod(sender)){
-				
+				}   else if(message.equalsIgnoreCase("!slow") && isMod(sender)){
+					
 					if(isMod("pcmrbot")){
-						
-						sendMessage(connectedChannel, "/slow " + message.substring(message.indexOf(" ")+1));
-						
+						sendMessage(connectedChannel, "/slowoff");
 					}
 					else{
 						
 						sendMessage(connectedChannel, "I am sorry, the pcmrbot is not running as a moderator in the channel.");
 						
 					}
-			
-			}   else if(message.equalsIgnoreCase("!slow") && isMod(sender)){
+						
+				}   else if(message.equalsIgnoreCase("!disableWelcome") && isMod(sender)){	
 				
-				if(isMod("pcmrbot")){
-					sendMessage(connectedChannel, "/slowoff");
-				}
-				else{
+						this.welcomeEnabled = false;
+						sendMessage(connectedChannel, "Welcome messages have been disabled.");
 					
-					sendMessage(connectedChannel, "I am sorry, the pcmrbot is not running as a moderator in the channel.");
+				}	else if(message.equalsIgnoreCase("!enableWelcome") && isMod(sender)){	
+				
+						this.welcomeEnabled = true;
+						sendMessage(connectedChannel, "Welcome messages have been enabled.");
 					
-				}
+				}	else if(message.toLowerCase().startsWith("!changewelcome ") && isMod(sender)){
+				
+					Database.setWelcomeMessage(connectedChannel, message.substring((message.indexOf(" ")+1)));
+					sendMessage(connectedChannel, "The format has been changed to: " + message.substring((message.indexOf(" ")+1)));
 					
-			}   else if(message.equalsIgnoreCase("!disableWelcome") && isMod(sender)){	
-			
-					this.welcomeEnabled = false;
-					sendMessage(connectedChannel, "Welcome messages have been disabled.");
-				
-			}	else if(message.equalsIgnoreCase("!enableWelcome") && isMod(sender)){	
-			
-					this.welcomeEnabled = true;
-					sendMessage(connectedChannel, "Welcome messages have been enabled.");
-				
-			}	else if(message.toLowerCase().startsWith("!changewelcome ") && isMod(sender)){
-			
-				Database.setWelcomeMessage(connectedChannel, message.substring((message.indexOf(" ")+1)));
-				sendMessage(connectedChannel, "The format has been changed to: " + message.substring((message.indexOf(" ")+1)));
-				
-			}	else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
-				
-				this.confirmationReplys = false;
-				sendMessage(connectedChannel, sender + " has disabled bot replies");
-			
-			}	else if(message.equalsIgnoreCase("!enablereplies") && isMod(sender)){
-				
-				this.confirmationReplys = true;
-				sendMessage(connectedChannel, sender + " has enabled bot replies");
-			
-			}   else if(message.toLowerCase().startsWith("!changeoption ") && isMod(sender)){
-			
-				message = message.substring(message.indexOf(" ") + 1);
-				String [] command = message.split("[|]");
-				changeOption(command);
-			
-			}   else if (message.toLowerCase().startsWith("!votestart ") && isMod(sender)) {
-	
-				voting = new ArrayList<>();
-				ringazinUsers = new ArrayList<>();
-				optionCount = 0;
-	
-				message = message.substring(message.indexOf(" ") + 1);
-				String[] voteOptions = message.split("[|]");
-				String[] answers = new String[voteOptions.length - 2];
-				if(answers.length<2) {
-					sendMessage(connectedChannel, "You must provide at least two answers!");
-					return;
-				}
-				for (int i = 2; i < voteOptions.length; i++) {
-					answers[i - 2] = voteOptions[i];
-					optionCount++;
-				}
-				sendMessage(connectedChannel, voteOptions[1]);
-	
-				for (int i = 0; i < answers.length; i++) {
-	
-					sendMessage(connectedChannel, (i + 1) + ": " +  answers[i]);
-					voting.add(new ArrayList<String>());
-					voting.get(i).add(answers[i]);
-	
-				}
-	
-				sendMessage(
-						connectedChannel,
-						"Please input your choice by typing !vote {vote number}. Note, if you choose a number higher or lower than required, your vote will be discarded and you will be prohibited from voting this round.");
-	
-				for (int i = 0; i < answers.length; i++) {
-	
-					voting.add(new ArrayList<String>());
-					voting.get(i).add(voteOptions[i]);
-	
-				}
-				setVoteCall(true);
-				try {
-					vote((long) Integer.valueOf(voteOptions[0]));
-				} catch (NumberFormatException e) {
+				}	else if(message.equalsIgnoreCase("!disablereplies") && isMod(sender)){
 					
-				}
-			} else if (message.toLowerCase().startsWith("!shorten ") && isMod(sender)) {
-				String out = shortenURL(message.substring(message.indexOf(" ") + 1));
-				if(out == null) {
-					sendMessage(connectedChannel, message.substring(message.indexOf(' ')+1) + " is an invalid url! Make sure you include http(s)://.");
-				}
-				sendMessage(connectedChannel, "URL: " + out);
+					this.confirmationReplys = false;
+					sendMessage(connectedChannel, sender + " has disabled bot replies");
 				
-			} else if (message.toLowerCase().startsWith("!slap ")) {
-				String target = message.substring(message.indexOf(" ") + 1);
-				sendAction(connectedChannel, "slaps " + target + " with a raw fish");
+				}	else if(message.equalsIgnoreCase("!enablereplies") && isMod(sender)){
+					
+					this.confirmationReplys = true;
+					sendMessage(connectedChannel, sender + " has enabled bot replies");
 				
-			} else if (message.toLowerCase().startsWith("!seen ")) {
-				String target = message.substring(message.indexOf(" ") + 1);
-				if(chatPostSeen.containsKey(target)) {
-					// they have a recent message in the chatPostSeen map
-					// the info of the message (channel & date)
-					String info = chatPostSeen.get(target);
-	
-					String[] tokens = info.split("[|]");
+				}   else if(message.toLowerCase().startsWith("!changeoption ") && isMod(sender)){
+				
+					message = message.substring(message.indexOf(" ") + 1);
+					String [] command = message.split("[|]");
+					changeOption(command);
+				
+				}   else if (message.toLowerCase().startsWith("!votestart ") && isMod(sender)) {
 		
-					sendMessage(connectedChannel, sender + ", I last saw " + target + " in " + tokens[0] + " on " + tokens[1] + ".");
-				} else {
-					// they haven't chatted  (They are not in the map)
-					sendMessage(connectedChannel, "I'm sorry " + sender + ", I haven't seen " + target + ".");
-				}
-			}  else if(message.toLowerCase().startsWith("!votekick ") && !voteKickActive && isMod(sender)){
+					voting = new ArrayList<>();
+					ringazinUsers = new ArrayList<>();
+					optionCount = 0;
+		
+					message = message.substring(message.indexOf(" ") + 1);
+					String[] voteOptions = message.split("[|]");
+					String[] answers = new String[voteOptions.length - 2];
+					if(answers.length<2) {
+						sendMessage(connectedChannel, "You must provide at least two answers!");
+						return;
+					}
+					for (int i = 2; i < voteOptions.length; i++) {
+						answers[i - 2] = voteOptions[i];
+						optionCount++;
+					}
+					sendMessage(connectedChannel, voteOptions[1]);
+		
+					for (int i = 0; i < answers.length; i++) {
+		
+						sendMessage(connectedChannel, (i + 1) + ": " +  answers[i]);
+						voting.add(new ArrayList<String>());
+						voting.get(i).add(answers[i]);
+		
+					}
+		
+					sendMessage(
+							connectedChannel,
+							"Please input your choice by typing !vote {vote number}. Note, if you choose a number higher or lower than required, your vote will be discarded and you will be prohibited from voting this round.");
+		
+					for (int i = 0; i < answers.length; i++) {
+		
+						voting.add(new ArrayList<String>());
+						voting.get(i).add(voteOptions[i]);
+		
+					}
+					setVoteCall(true);
+					try {
+						vote((long) Integer.valueOf(voteOptions[0]));
+					} catch (NumberFormatException e) {
+						
+					}
+				} else if (message.toLowerCase().startsWith("!shorten ") && isMod(sender)) {
+					String out = shortenURL(message.substring(message.indexOf(" ") + 1));
+					if(out == null) {
+						sendMessage(connectedChannel, message.substring(message.indexOf(' ')+1) + " is an invalid url! Make sure you include http(s)://.");
+					}
+					sendMessage(connectedChannel, "URL: " + out);
+					
+				} else if (message.toLowerCase().startsWith("!slap ")) {
+					String target = message.substring(message.indexOf(" ") + 1);
+					sendAction(connectedChannel, "slaps " + target + " with a raw fish");
+					
+				} else if (message.toLowerCase().startsWith("!seen ")) {
+					String target = message.substring(message.indexOf(" ") + 1);
+					if(chatPostSeen.containsKey(target)) {
+						// they have a recent message in the chatPostSeen map
+						// the info of the message (channel & date)
+						String info = chatPostSeen.get(target);
+		
+						String[] tokens = info.split("[|]");
 			
-				message = message.substring(message.indexOf(" ") + 1);
-				voteKick(message);
-			
-			}  else if(message.equalsIgnoreCase("!votekick") && voteKickActive){
+						sendMessage(connectedChannel, sender + ", I last saw " + target + " in " + tokens[0] + " on " + tokens[1] + ".");
+					} else {
+						// they haven't chatted  (They are not in the map)
+						sendMessage(connectedChannel, "I'm sorry " + sender + ", I haven't seen " + target + ".");
+					}
+				}  else if(message.toLowerCase().startsWith("!votekick ") && !voteKickActive && isMod(sender)){
 				
-				addToVoteKickCount(sender);
-			
-			}  else if (message.toLowerCase().startsWith("!vote ") && voteCall) {
-	
-				boolean canVote = true;
-	
-				for (int i = 0; i < voting.size(); i++) {
-	
-					if (voting.get(i).contains(sender)) {
-	
+					message = message.substring(message.indexOf(" ") + 1);
+					voteKick(message);
+				
+				}  else if(message.equalsIgnoreCase("!votekick") && voteKickActive){
+					
+					addToVoteKickCount(sender);
+				
+				}  else if (message.toLowerCase().startsWith("!vote ") && voteCall) {
+		
+					boolean canVote = true;
+		
+					for (int i = 0; i < voting.size(); i++) {
+		
+						if (voting.get(i).contains(sender)) {
+		
+							sendMessage(connectedChannel, "I am sorry " + sender
+									+ " you cannot vote more than once.");
+							canVote = false;
+						}
+		
+					}
+		
+					if (ringazinUsers.contains(sender)) {
+		
 						sendMessage(connectedChannel, "I am sorry " + sender
 								+ " you cannot vote more than once.");
 						canVote = false;
 					}
-	
-				}
-	
-				if (ringazinUsers.contains(sender)) {
-	
-					sendMessage(connectedChannel, "I am sorry " + sender
-							+ " you cannot vote more than once.");
-					canVote = false;
-				}
-	
-				if (canVote) {
-					int vote = Integer.valueOf(message.substring(message.indexOf(" ")+ 1));
-					if(message.substring(message.indexOf(" ")+1).equalsIgnoreCase("random")){
-						vote = rand.nextInt(optionCount);
-					}		
-						
-					if (vote < optionCount + 1) {
-						voting.get(vote - 1).add(sender);
-					} else {
-						sendMessage(
-								connectedChannel,
-								sender
-										+ " tried to break me, may hell forever reign upon him! (You cannot participate in this vote.)");
-						ringazinUsers.add(sender);
-						return;
+		
+					if (canVote) {
+						int vote = Integer.valueOf(message.substring(message.indexOf(" ")+ 1));
+						if(message.substring(message.indexOf(" ")+1).equalsIgnoreCase("random")){
+							vote = rand.nextInt(optionCount);
+						}		
+							
+						if (vote < optionCount + 1) {
+							voting.get(vote - 1).add(sender);
+						} else {
+							sendMessage(
+									connectedChannel,
+									sender
+											+ " tried to break me, may hell forever reign upon him! (You cannot participate in this vote.)");
+							ringazinUsers.add(sender);
+							return;
+						}
+						if(confirmationReplys){
+						sendMessage(connectedChannel, sender + " has voted for "
+								+ voting.get(vote - 1).get(0));
+						}
+		
 					}
-					if(confirmationReplys){
-					sendMessage(connectedChannel, sender + " has voted for "
-							+ voting.get(vote - 1).get(0));
+		
+				} else if (message.toLowerCase().startsWith("!enter") && raffleActive){
+					
+					joinRaffle(sender, raffleType);
+					
+				} else if (message.toLowerCase().startsWith("!addmod ") && sender.equals(connectedChannel.substring(1))) {
+		
+					message = message.substring(message.indexOf(" ") + 1);
+					addModerator(message);
+		
+				} else if (message.equalsIgnoreCase("!join")) {
+		
+					joinMe(sender, false);
+		
+				} else if (message.equalsIgnoreCase("!leave")) {
+		
+					if(sender.equalsIgnoreCase(connectedChannel.substring(1))) {
+						leaveMe();
 					}
-	
+		
+				} else if (message.equalsIgnoreCase("!pcmrbot")) {
+					sendMessage(
+							connectedChannel,
+							"I was made by J3wsOfHazard, Donald10101, and Angablade. Source at: http://github.com/jwolff52/PCMRBot");
+				} else if (message.toLowerCase().startsWith("!addautoreply ") && isMod(sender)) {
+		
+					autoReply(message);
+					
+				} else if(message.toLowerCase().startsWith("!raffle ") && isMod(sender)){
+					
+					message = message.substring(message.indexOf(" ") + 1);
+					sendMessage(connectedChannel, "The raffle has begun for " + message);
+					raffle(message);
+					
 				}
-	
-			} else if (message.toLowerCase().startsWith("!enter") && raffleActive){
-				
-				joinRaffle(sender, raffleType);
-				
-			} else if (message.toLowerCase().startsWith("!addmod ") && sender.equals(connectedChannel.substring(1))) {
-	
-				message = message.substring(message.indexOf(" ") + 1);
-				addModerator(message);
-	
-			} else if (message.equalsIgnoreCase("!join")) {
-	
-				joinMe(sender);
-	
-			} else if (message.equalsIgnoreCase("!leave")) {
-	
-				if(sender.equalsIgnoreCase(connectedChannel.substring(1))) {
-					leaveMe();
-				}
-	
-			} else if (message.equalsIgnoreCase("!pcmrbot")) {
-				sendMessage(
-						connectedChannel,
-						"I was made by J3wsOfHazard, Donald10101, and Angablade. Source at: http://github.com/jwolff52/PCMRBot");
-			} else if (message.toLowerCase().startsWith("!addautoreply ") && isMod(sender)) {
-	
-				autoReply(message);
-				
-			} else if(message.toLowerCase().startsWith("!raffle ") && isMod(sender)){
-				
-				message = message.substring(message.indexOf(" ") + 1);
-				sendMessage(connectedChannel, "The raffle has begun for " + message);
-				raffle(message);
-				
 			}
+				finally {autoReplyCheck(message);}
 		}
-			finally {autoReplyCheck(message);}
 	}
-
+	
 	/**
 	 * Sends a message to the channel telling them how long they have to vote
 	 * and sets up the timer
@@ -555,10 +567,10 @@ public class IRCBot extends PircBot {
 	 * 
 	 * @param sender
 	 */
-	public void joinMe(String sender) {
+	public void joinMe(String sender, boolean forced) {
 
 		if (connectedChannel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
-			new MyBotMain("#" + sender);
+			new MyBotMain("#" + sender, forced);
 			sendMessage(connectedChannel, "I have joined " + sender
 					+ "'s channel.");
 		}
@@ -592,26 +604,27 @@ public class IRCBot extends PircBot {
 	 * (WIP)
 	 */
 	public void onFirstJoin() {
-		sendMessage(
-				connectedChannel,
-				"Hello, this appears to be the first time you have invited me to join your channel. We just have a few preliminary manners to attend to.");
-		
-		sendMessage(
-				connectedChannel,
-				"To begin with, we use a three-part system to define a few options. Let's begin with timeing out a user.");
-		sendMessage(
-				connectedChannel,
-				"Users are timed out for excessive caps or symbols, an excessive or exclusive message of emoticons, links, repeated messages (spam), and messages longer than 250 characters.");
-		sendMessage(
-				connectedChannel,
-				"We would like you to configure the ammount of emoticons(default 15), capital letters(default 20), and paragraphs(defaults to 250 characters) allowed in a message.");
-		sendMessage(
-				connectedChannel,
-				"To change this, please run !changeOption {type (emotes, paragraph, symbols}|{new value}. Note: If you make paragraph to short users may not be able to post proper sentences. Think of it like twitter messages.");
-		sendMessage(
-				connectedChannel,
-				"Also, if you are partnered and would wish to use subscriber raffles or change the stream title and game, please go to http://162.212.1.135/authorize to allow your chat.");
-		
+		if(!forcedJoin){
+			sendMessage(
+					connectedChannel,
+					"Hello, this appears to be the first time you have invited me to join your channel. We just have a few preliminary manners to attend to.");
+			
+			sendMessage(
+					connectedChannel,
+					"To begin with, we use a three-part system to define a few options. Let's begin with timeing out a user.");
+			sendMessage(
+					connectedChannel,
+					"Users are timed out for excessive caps or symbols, an excessive or exclusive message of emoticons, links, repeated messages (spam), and messages longer than 250 characters.");
+			sendMessage(
+					connectedChannel,
+					"We would like you to configure the ammount of emoticons(default 15), capital letters(default 20), and paragraphs(defaults to 250 characters) allowed in a message.");
+			sendMessage(
+					connectedChannel,
+					"To change this, please run !changeOption {type (emotes, paragraph, symbols}|{new value}. Note: If you make paragraph to short users may not be able to post proper sentences. Think of it like twitter messages.");
+			sendMessage(
+					connectedChannel,
+					"Also, if you are partnered and would wish to use subscriber raffles or change the stream title and game, please go to http://162.212.1.135/authorize to allow your chat.");
+		}
 	}
 
 	/**
@@ -901,5 +914,10 @@ public class IRCBot extends PircBot {
 	
 	}
 	
+	public boolean getForcedJoin(){
+		
+		return forcedJoin;
+				
+	}
 
 }
