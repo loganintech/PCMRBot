@@ -3,10 +3,17 @@ package me.jewsofhazzard.pcmrbot.Commands;
 import java.util.HashMap;
 
 import me.jewsofhazzard.pcmrbot.MyBotMain;
+import me.jewsofhazzard.pcmrbot.util.CommandLevel;
 
 public class Subscribers implements Command {
 	
 	private HashMap<String, Boolean> subscriberModes;
+	private CommandLevel level=CommandLevel.Mod;
+
+	@Override
+	public CommandLevel getCommandLevel() {
+		return level;
+	}
 	
 	public Subscribers() {
 		subscriberModes=new HashMap<>();
@@ -18,7 +25,7 @@ public class Subscribers implements Command {
 	
 	@SuppressWarnings("unused")
 	@Override
-	public String execute(String... parameters) {
+	public String execute(String channel, String sender, String... parameters) {
 		if (true) {
 
 			return "/subscribers";
@@ -29,7 +36,7 @@ public class Subscribers implements Command {
 
 		}
 		
-		return "There was a problem switching the subscriber mode in %channel%!".replace("%channel%", parameters[0]);
+		return "There was a problem switching the subscriber mode in %channel%!".replace("%channel%", channel);
 
 	}
 

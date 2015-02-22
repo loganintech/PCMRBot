@@ -3,10 +3,18 @@ package me.jewsofhazzard.pcmrbot.Commands;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.jewsofhazzard.pcmrbot.util.CommandLevel;
+
 public class Help implements Command {
 
 	private Map<String, String> replies;
+	private CommandLevel level=CommandLevel.Normal;
 
+	@Override
+	public CommandLevel getCommandLevel() {
+		return level;
+	}
+	
 	public Help() {
 		replies=new HashMap<>();
 		replies.put("votestart", "The format of the votestart command is as follows: !votestart {time in seconds}|{question to ask}|{option 1}|{infinte more options}\nNote, you do not need { or } and you must not add spaces between |. For example, !votestart 30|What game should I play?|Bioshock|Minecraft|League. Is perfect.");
@@ -18,16 +26,16 @@ public class Help implements Command {
 	}
 
 	@Override
-	public String execute(String...parameters) {
-		if (parameters.length == 1) {
-			return "I am sorry %user% we have not added command-specific help for that command yet. Please proceed to http://pcmrbot.no-ip.info/commands for more information.".replace("%user%", parameters[0]);
+	public String execute(String channel, String sender, String...parameters) {
+		if (parameters.length == 0) {
+			return "I am sorry %user% we have not added command-specific help for that command yet. Please proceed to http://pcmrbot.no-ip.info/commands for more information.".replace("%user%", sender);
 		}
 		String command = parameters[0];
 		
 		String reply = replies.get(command);
 		
 		if(reply==null) {
-			return "I am sorry %user% we have not added command-specific help for that command yet. Please proceed to http://pcmrbot.no-ip.info/commands for more information.".replace("%user%", parameters[1]);
+			return "I am sorry %user% we have not added command-specific help for that command yet. Please proceed to http://pcmrbot.no-ip.info/commands for more information.".replace("%user%", sender);
 		}
 		return reply;
 	}

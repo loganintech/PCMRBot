@@ -24,45 +24,8 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.jewsofhazzard.pcmrbot.Commands.AddAutoReply;
 import me.jewsofhazzard.pcmrbot.Commands.AddModerator;
-import me.jewsofhazzard.pcmrbot.Commands.Broadcast;
-import me.jewsofhazzard.pcmrbot.Commands.ChangeOption;
-import me.jewsofhazzard.pcmrbot.Commands.ChangeWelcome;
-import me.jewsofhazzard.pcmrbot.Commands.Clear;
-import me.jewsofhazzard.pcmrbot.Commands.ClearAutoReplies;
-import me.jewsofhazzard.pcmrbot.Commands.Commercial;
-import me.jewsofhazzard.pcmrbot.Commands.DisableReplies;
-import me.jewsofhazzard.pcmrbot.Commands.DisableWelcome;
-import me.jewsofhazzard.pcmrbot.Commands.EnableReplies;
-import me.jewsofhazzard.pcmrbot.Commands.EnableWelcome;
-import me.jewsofhazzard.pcmrbot.Commands.Enter;
-import me.jewsofhazzard.pcmrbot.Commands.Fatality;
-import me.jewsofhazzard.pcmrbot.Commands.Fight;
-import me.jewsofhazzard.pcmrbot.Commands.Gabe;
-import me.jewsofhazzard.pcmrbot.Commands.Game;
-import me.jewsofhazzard.pcmrbot.Commands.Help;
-import me.jewsofhazzard.pcmrbot.Commands.JoinMe;
-import me.jewsofhazzard.pcmrbot.Commands.KO;
-import me.jewsofhazzard.pcmrbot.Commands.LMGTFY;
-import me.jewsofhazzard.pcmrbot.Commands.LeaveMe;
-import me.jewsofhazzard.pcmrbot.Commands.Me;
-import me.jewsofhazzard.pcmrbot.Commands.PCMRBot;
-import me.jewsofhazzard.pcmrbot.Commands.Poll;
-import me.jewsofhazzard.pcmrbot.Commands.Punch;
-import me.jewsofhazzard.pcmrbot.Commands.Raffle;
-import me.jewsofhazzard.pcmrbot.Commands.Seen;
-import me.jewsofhazzard.pcmrbot.Commands.Servers;
-import me.jewsofhazzard.pcmrbot.Commands.Shorten;
-import me.jewsofhazzard.pcmrbot.Commands.Shutdown;
-import me.jewsofhazzard.pcmrbot.Commands.Slap;
-import me.jewsofhazzard.pcmrbot.Commands.Slow;
-import me.jewsofhazzard.pcmrbot.Commands.SlowClap;
-import me.jewsofhazzard.pcmrbot.Commands.SteamSales;
-import me.jewsofhazzard.pcmrbot.Commands.Subscribers;
-import me.jewsofhazzard.pcmrbot.Commands.Teamspeak;
-import me.jewsofhazzard.pcmrbot.Commands.Title;
-import me.jewsofhazzard.pcmrbot.Commands.Vote;
+import me.jewsofhazzard.pcmrbot.Commands.CommandParser;
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.util.Options;
 import me.jewsofhazzard.pcmrbot.util.TType;
@@ -79,7 +42,6 @@ import org.jibble.pircbot.PircBot;
 
 public class IRCBot extends PircBot {
 	
-	private boolean raffleActive;
 	private static HashMap<String, String> chatPostSeen;
 	private static HashMap<String,Boolean> welcomeEnabled;
 	private static HashMap<String,Boolean> confirmationReplies;
@@ -162,111 +124,18 @@ public class IRCBot extends PircBot {
 			chatPostSeen.put(sender,
 					channel.substring(1) + "|" + date.toString());
 
-			if (message.startsWith("!lmgtfy ")) {
-				sendMessage(channel, new LMGTFY().execute(message.substring(message.indexOf(' ') + 1)));
-			} else if(message.startsWith("!slow ") && Database.isMod(sender, channel.substring(1))){
-				sendMessage(channel, new Slow().execute(channel, message.substring(message.indexOf(" ") + 1)));
-			} else if (message.equalsIgnoreCase("!shutdown")) {
-				if (channel.equalsIgnoreCase("#pcmrbot")
-						&& Database.isMod(sender, channel.substring(1))) {
-					new Shutdown().execute();
-				}
-			} else if (message.startsWith("!title ")
-					&& Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new Title().execute(channel, message.substring(message.indexOf(' ') + 1)));
-			} else if (message.startsWith("!game ")
-					&& Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new Game().execute(channel, message.substring(message.indexOf(' ') + 1)));
-			} else if (message.equalsIgnoreCase("!clearAutoReplies") && sender.equalsIgnoreCase(channel.substring(1))) {
-					sendMessage(channel, new ClearAutoReplies().execute(channel, sender));
-			} else if (message.equalsIgnoreCase("!help")) {
-				sendMessage(channel, new Help().execute(sender));
-			} else if (message.startsWith("!help ")) {
-				sendMessage(message.substring(message.indexOf(' ')), sender);
-			} else if (message.startsWith("!broadcast ") && Database.isMod(sender, channel.substring(1)) && channel.equalsIgnoreCase("#pcmrbot")){
-				sendMessage("#pcmrbot", new Broadcast().execute(message.substring(message.indexOf(" ") + 1)));
-			} else if (message.equalsIgnoreCase("!commercial") && sender.equalsIgnoreCase(channel.substring(1))) {
-				sendMessage(channel, new Commercial().execute(channel));
-			} else if (message.equalsIgnoreCase("!commercial ")
-					&& sender.equalsIgnoreCase(channel.substring(1))) {
-				sendMessage(channel, new Commercial().execute(channel, message.substring(message.indexOf(' ') + 1)));
-			} else if (message.equalsIgnoreCase("!teamspeak")) {
-				sendMessage(channel, new Teamspeak().execute());
-			} else if (message.startsWith("!me ")
-					&& Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new Me().execute(message.substring(message.indexOf(" ") + 1)));
-			} else if (message.equalsIgnoreCase("!servers")) {
-				sendMessage(channel, new Servers().execute());
-			} else if (message.equalsIgnoreCase("!gabe") && Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new Gabe().execute());
-			} else if (message.equalsIgnoreCase("!steamsales") && Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new SteamSales().execute());
-			} else if (message.startsWith("!fight ")) {
-				sendMessage(channel, new Fight().execute(sender, message.substring(message.indexOf(' '))));
-			} else if (message.startsWith("!punch ")) {
-				sendMessage(channel, new Punch().execute(sender, message.substring(message.indexOf(" ") + 1)));
-			} else if (message.startsWith("!ko ")) {
-				sendMessage(channel, new KO().execute(sender, message.substring(message.indexOf(" ") + 1)));
-			} else if (message.startsWith("!fatality ")) {
-				sendMessage(channel, new Fatality().execute(sender, message.substring(message.indexOf(" ") + 1)));
-			} else if (message.equalsIgnoreCase("!subscribers")
-					&& sender.equals(channel.substring(1))) {
-				sendMessage(channel, new Subscribers().execute(channel));
-			} else if (message.equalsIgnoreCase("!slowclap")) {
-				sendMessage(channel, new SlowClap().execute(sender));
-			} else if (message.equalsIgnoreCase("!clear") && Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new Clear().execute());
-			}  else if (message.equalsIgnoreCase("!disableWelcome")
-					&& Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new DisableWelcome().execute(channel));
-			} else if (message.equalsIgnoreCase("!enableWelcome")
-					&& Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new EnableWelcome().execute(channel));
-			} else if (message.startsWith("!changewelcome ")
-					&& Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel,new ChangeWelcome().execute(channel, message.substring(message.indexOf(' '))));
-			} else if (message.equalsIgnoreCase("!disablereplies")
-					&& Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new DisableReplies().execute(sender));
-			} else if (message.equalsIgnoreCase("!enablereplies")
-					&& Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new EnableReplies().execute(sender));
-			} else if (message.startsWith("!changeoption ")
-					&& Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new ChangeOption().execute(channel, message.substring(message.indexOf(" ") + 1)));
-			} else if (message.startsWith("!votestart ")
-					&& Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new Poll().execute(channel, message.substring(message.indexOf(' ') + 1)));
-			} else if (message.startsWith("!shorten ")
-					&& Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new Shorten().execute(message.substring(message.indexOf(' ') + 1)));
-			} else if (message.startsWith("!slap ")) {
-				sendAction(channel, new Slap().execute(message.substring(message.indexOf(" ") + 1)));
-			} else if (message.startsWith("!seen ")) {
-				sendMessage(channel, new Seen().execute(sender, message.substring(message.indexOf(" ") + 1)));
-			}else if (message.startsWith("!vote ") && hasPoll(channel)) {
-				new Vote().execute(channel, sender, message.substring(message.indexOf(' ') + 1));
-			} else if (message.startsWith("!enter")
-					&& raffleActive) {
-				String reply=new Enter().execute(channel, sender);
-				if(reply!=null) {
-					sendMessage(channel, reply);
-				}
-			} else if (message.startsWith("!addmod ")
-					&& sender.equalsIgnoreCase(channel.substring(1))) {
-				sendMessage(channel, new AddModerator().execute(message = message.substring(message.indexOf(" ") + 1), channel));
-			} else if (message.equalsIgnoreCase("!join")) {
-				sendMessage(channel, new JoinMe().execute(sender, channel));
-			} else if (message.equalsIgnoreCase("!leave") && sender.equalsIgnoreCase(channel.substring(1))) {
-				sendMessage(channel, new LeaveMe().execute(channel));
-			} else if (message.equalsIgnoreCase("!pcmrbot")) {
-				sendMessage(channel, new PCMRBot().execute());
-			} else if (message.toLowerCase().startsWith("!addautoreply ")&& Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new AddAutoReply().execute(message, channel));
-			} else if (message.startsWith("!raffle ")
-					&& Database.isMod(sender, channel.substring(1))) {
-				sendMessage(channel, new Raffle().execute(channel, message.substring(message.indexOf(' ') + 1)));
-			} /*else if (message.startsWith("!votekick ")
+			String reply = CommandParser.parse(message.substring(1, message.indexOf(' ')), sender, channel, message.substring(message.indexOf(' ') + 1));
+			if(reply != null) {
+				sendMessage(channel, reply);
+			}
+			autoReplyCheck(channel, message);
+			
+			
+			
+			
+			
+			
+			/*else if (message.startsWith("!votekick ")
 					&& !voteKickActive && Database.isMod(sender, channel.substring(1))) {
 
 				message = message.substring(message.indexOf(" ") + 1);
@@ -277,7 +146,6 @@ public class IRCBot extends PircBot {
 				addToVoteKickCount(channel, sender);
 
 			} */
-			autoReplyCheck(channel, message);
 		} catch (Exception e) {
 			logger.log(Level.WARNING,
 					"An error was thrown while executing onMessage() in "

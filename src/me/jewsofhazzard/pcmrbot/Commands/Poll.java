@@ -1,13 +1,20 @@
 package me.jewsofhazzard.pcmrbot.Commands;
 
 import me.jewsofhazzard.pcmrbot.MyBotMain;
+import me.jewsofhazzard.pcmrbot.util.CommandLevel;
 
 public class Poll implements Command {
 
+	private CommandLevel level=CommandLevel.Mod;
+
 	@Override
-	public String execute(String... parameters) {
-		String channel = parameters[0];
-		String[] voteOptions = parameters[1].split("[|]");
+	public CommandLevel getCommandLevel() {
+		return level;
+	}
+	
+	@Override
+	public String execute(String channel, String sender, String... parameters) {
+		String[] voteOptions = parameters[0].split("[|]");
 		
 		String[] answers = new String[voteOptions.length - 2];
 		if (answers.length < 2) {

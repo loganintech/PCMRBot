@@ -1,17 +1,24 @@
 package me.jewsofhazzard.pcmrbot.Commands;
 
 import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
+import me.jewsofhazzard.pcmrbot.util.CommandLevel;
 
 public class Commercial implements Command {
 
+	private CommandLevel level=CommandLevel.Owner;
+
 	@Override
-	public String execute(String... parameters) {
-		String channel=parameters[0];
+	public CommandLevel getCommandLevel() {
+		return level;
+	}
+	
+	@Override
+	public String execute(String channel, String sender, String... parameters) {
 		if(parameters.length<2) {
 			TwitchUtilities.runCommercial(channel.substring(1));
 			return "Running a default length commercial on %channel%".replace("%channel%", channel);
 		}
-		String length=parameters[1];
+		String length=parameters[0];
 		int time = 0;
 		try {
 			time = Integer.valueOf(length);

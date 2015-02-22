@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.jewsofhazzard.pcmrbot.Commands.CommandParser;
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.util.Options;
 import me.jewsofhazzard.pcmrbot.util.TFileReader;
@@ -43,6 +44,7 @@ public class MyBotMain {
 	 */
 	public static void main(String[] args) {
 		Database.initDBConnection(args[1]);
+		CommandParser.init();
 		bot = new IRCBot();
 
 		bot.setVerbose(true);

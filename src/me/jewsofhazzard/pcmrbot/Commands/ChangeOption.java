@@ -1,13 +1,21 @@
 package me.jewsofhazzard.pcmrbot.Commands;
 
 import me.jewsofhazzard.pcmrbot.database.Database;
+import me.jewsofhazzard.pcmrbot.util.CommandLevel;
 import me.jewsofhazzard.pcmrbot.util.Options;
 
 public class ChangeOption implements Command {
 	
-	public String execute(String...parameters){
-		String channel = parameters[0];
-		String[] options = parameters[1].split("[|]");
+	private CommandLevel level=CommandLevel.Mod;
+
+	@Override
+	public CommandLevel getCommandLevel() {
+		return level;
+	}
+	
+	@Override
+	public String execute(String channel, String sender, String...parameters){
+		String[] options = parameters[0].split("[|]");
 		
 		if (options[0].equalsIgnoreCase("paragraph")) {
 			Database.setOption(channel, Options.paragraphLength,
