@@ -108,7 +108,7 @@ public class IRCBot extends PircBot {
 		try {
 			try {
 				if (channel.equalsIgnoreCase(connectedChannel)) {
-					addModerator(recipient);
+					new AddModerator(recipient, connectedChannel);
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE,

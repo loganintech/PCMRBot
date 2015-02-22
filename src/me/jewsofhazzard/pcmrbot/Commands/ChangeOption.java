@@ -9,8 +9,7 @@ public class ChangeOption {
 	
 	public ChangeOption(String ... params){
 		
-		this.p[1] = params[1];
-		this.p[0] = params[0];
+		p = params;
 		execute();
 	}
 	
