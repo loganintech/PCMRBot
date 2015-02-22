@@ -26,6 +26,8 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.jewsofhazzard.pcmrbot.Commands.AddAutoReply;
+import me.jewsofhazzard.pcmrbot.Commands.AddModerator;
 import me.jewsofhazzard.pcmrbot.Commands.ChangeOption;
 import me.jewsofhazzard.pcmrbot.Commands.JoinMe;
 import me.jewsofhazzard.pcmrbot.Commands.LMGTFY;
@@ -560,8 +562,7 @@ public class IRCBot extends PircBot {
 			} else if (message.toLowerCase().startsWith("!addmod ")
 					&& sender.equalsIgnoreCase(connectedChannel.substring(1))) {
 
-				message = message.substring(message.indexOf(" ") + 1);
-				addModerator(message);
+				sendMessage(connectedChannel, new AddModerator(message = message.substring(message.indexOf(" ") + 1), connectedChannel).getReply());
 
 			} else if (message.equalsIgnoreCase("!join")) {
 
@@ -572,13 +573,14 @@ public class IRCBot extends PircBot {
 				sendMessage(connectedChannel, new LeaveMe(connectedChannel).getReply());
 
 			} else if (message.equalsIgnoreCase("!pcmrbot")) {
-				sendMessage(
-						connectedChannel,
-						"I was made by J3wsOfHazard, Donald10101, and Angablade. Source at: http://github.com/jwolff52/PCMRBot");
-			} else if (message.toLowerCase().startsWith("!addautoreply ")
-					&& isMod(sender)) {
+				
+				sendMessage(connectedChannel,"I was made by J3wsOfHazard, Donald10101, and Angablade. Source at: http://github.com/jwolff52/PCMRBot");
+			
+			} else if (message.toLowerCase().startsWith("!addautoreply ")&& isMod(sender)) {
 
-				addAutoReply(message);
+				sendMessage(connectedChannel, new AddAutoReply(message, connectedChannel).getReply());
+				
+				//addAutoReply(message);
 
 			} else if (message.toLowerCase().startsWith("!raffle ")
 					&& isMod(sender)) {
@@ -648,27 +650,6 @@ public class IRCBot extends PircBot {
 	 * 
 	 * @param moderator
 	 */
-	public void addModerator(String moderator) {
-		ResultSet rs = Database.executeQuery("SELECT * FROM "
-				+ Database.DATABASE + "." + connectedChannel.substring(1)
-				+ "Mods WHERE userID=\'" + moderator + "\'");
-		try {
-			if (rs.next()) {
-				sendMessage(connectedChannel, moderator
-						+ " is already a moderator!");
-			} else {
-				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
-						+ connectedChannel.substring(1) + "Mods VALUES(\'"
-						+ moderator + "\')");
-				sendMessage(connectedChannel, "Successfully added " + moderator
-						+ " to the bots mod list!");
-			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "An error occurred adding " + moderator
-					+ " to " + connectedChannel
-					+ "'s Mod List. This can probably be ignored!", e);
-		}
-	}
 
 	public boolean isMod(String sender) {
 
@@ -730,30 +711,6 @@ public class IRCBot extends PircBot {
 	 * 
 	 * @param message
 	 */
-	public void addAutoReply(String message) {
-
-		message = message.substring(message.indexOf(" ") + 1);
-		String[] cutUp = message.split("[|]");
-		StringBuilder keywords = new StringBuilder();
-		for (int i = 0; i < cutUp.length - 2; i++) {
-
-			keywords.append(cutUp[i] + ",");
-
-		}
-		keywords.append(cutUp[cutUp.length - 2]);
-		String reply = cutUp[cutUp.length - 1];
-		Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
-				+ connectedChannel.substring(1) + "AutoReplies VALUES(\'"
-				+ keywords.toString() + "\' , '" + reply + "\')");
-
-		sendMessage(
-				connectedChannel,
-				"Added auto reply: "
-						+ reply
-						+ " When all of the following key words are said in a message: "
-						+ keywords.toString());
-
-	}
 
 	public static String shortenURL(String link) {
 		BitlyClient client = new BitlyClient(
