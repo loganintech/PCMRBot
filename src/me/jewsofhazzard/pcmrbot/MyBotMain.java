@@ -36,15 +36,16 @@ public class MyBotMain implements Runnable {
 	private static final HashMap<String, IRCBot> connectedChannels = new HashMap<>();
 	private static final String botChannel = "#pcmrbot";
 	private static String oAuth = "";
-
+	public boolean forcedJoin;
 	private static final Logger logger = Logger.getLogger(MyBotMain.class + "");
 
 	/**
 	 * Creates a new instance of MyBotMain (called whenever the bot joins a new channel).
 	 * @param channel - the channel we are joining
 	 */
-	public MyBotMain(String channel) {
+	public MyBotMain(String channel, boolean forcedJoinToggle) {
 		this.channel = channel;
+		this.forcedJoin = forcedJoinToggle;
 		new Thread(this).start();
 		
 	}
@@ -65,7 +66,7 @@ public class MyBotMain implements Runnable {
 		}
 		oAuth = args[0];
 		getConnectedChannels()
-				.put(getBotChannel(), new IRCBot(getBotChannel()));
+				.put(getBotChannel(), new IRCBot(getBotChannel(), false));
 
 		getConnectedChannels().get(getBotChannel()).setVerbose(true);
 		try {
@@ -80,11 +81,13 @@ public class MyBotMain implements Runnable {
 		File f=new File("connectedChannels.txt");
 		if(f.exists()) {
 			for(String s:TFileReader.readFile(f)) {
-				new MyBotMain(s);
+				new MyBotMain(s, false);
 			}
 			f.delete();
 		}
 
+		new MyBotMain("#Trick2g", true);
+		
 	}
 
 	/**
@@ -101,7 +104,7 @@ public class MyBotMain implements Runnable {
 				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'"+ channel.substring(1) +"\')");
 				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Options VALUES(\'welcomeMessage\', \'Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.\')");
 			}
-			getConnectedChannels().put(channel, new IRCBot(channel));
+			getConnectedChannels().put(channel, new IRCBot(channel, forcedJoin));
 
 			getConnectedChannels().get(channel).setVerbose(true);
 			try {
@@ -123,7 +126,7 @@ public class MyBotMain implements Runnable {
 		ArrayList<String> channels=new ArrayList<>();
 		for(IRCBot bot : connectedChannels.values()) {
 		
-			if(!bot.getChannel().equalsIgnoreCase("#pcmrbot")){
+			if(!bot.getChannel().equalsIgnoreCase("#pcmrbot") && !bot.getForcedJoin()){
 			channels.add(bot.getChannel());
 			bot.sendMessage(bot.getChannel(), "I am shutting down, I will automatically rejoin your channel when I restart!");
 			}
