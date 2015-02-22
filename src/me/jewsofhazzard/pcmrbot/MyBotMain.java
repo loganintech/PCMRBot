@@ -159,6 +159,7 @@ public class MyBotMain implements Runnable {
 
 		}
 		TFileWriter.overWriteFile(new File("connectedChannels.txt"), channels);
+		sendMessage("#pcmrbot", "I have shut down succesfully.");
 		System.exit(0);
 	}
 
