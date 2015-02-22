@@ -102,15 +102,19 @@ public class IRCBot extends PircBot {
 	@Override
 	protected void onOp(String channel, String sourceNick, String sourceLogin,
 			String sourceHostname, String recipient) {
-		if (!forcedJoin) {
-			try {
-				if (channel.equalsIgnoreCase(connectedChannel)) {
-					addModerator(recipient);
+		try {
+			if (!forcedJoin) {
+				try {
+					if (channel.equalsIgnoreCase(connectedChannel)) {
+						addModerator(recipient);
+					}
+				} catch (Exception e) {
+					logger.log(Level.SEVERE,
+							"An error occurred while executing onOP()", e);
 				}
-			} catch (Exception e) {
-				logger.log(Level.SEVERE,
-						"An error occurred while executing onOP()", e);
 			}
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "An error was thrown while executing onOp() in "+connectedChannel, e);
 		}
 	}
 
@@ -118,20 +122,24 @@ public class IRCBot extends PircBot {
 	public void onJoin(String channel, String sender, String login,
 			String hostname) {
 
-		if (!forcedJoin) {
-			try {
-				if (welcomeEnabled) {
-					sendMessage(connectedChannel,
-							Database.getWelcomeMessage(connectedChannel)
-									.replace("%user%", sender));
+		try {
+			if (!forcedJoin) {
+				try {
+					if (welcomeEnabled) {
+						sendMessage(connectedChannel,
+								Database.getWelcomeMessage(connectedChannel)
+										.replace("%user%", sender));
+					}
+				} catch (Exception e) {
+					logger.log(Level.SEVERE,
+							"An error occurred while executing onJoin()", e);
 				}
-			} catch (Exception e) {
-				logger.log(Level.SEVERE,
-						"An error occurred while executing onJoin()", e);
 			}
-		}
-		if (!sender.equalsIgnoreCase("pcmrbot")) {
-			joinMe(login, true);
+			if (!sender.equalsIgnoreCase("pcmrbot")) {
+				joinMe(login, true);
+			}
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "An error was thrown while executing onJoin() in "+connectedChannel, e);
 		}
 	}
 
@@ -557,8 +565,9 @@ public class IRCBot extends PircBot {
 					raffle(message);
 
 				}
-			} finally {
 				autoReplyCheck(message);
+			} catch (Exception e) {
+				logger.log(Level.WARNING, "An error was thrown while executing onMessage() in "+connectedChannel, e);
 			}
 		}
 	}
