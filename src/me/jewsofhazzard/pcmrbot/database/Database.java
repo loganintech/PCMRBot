@@ -25,6 +25,8 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.jewsofhazzard.pcmrbot.util.Options;
+
 public class Database {
 
 	private static Connection conn;
@@ -287,8 +289,8 @@ public class Database {
 		return null;
 	}
 
-	public static String getOption(String channel, String option) {
-		ResultSet rs=executeQuery("SELECT * FROM "+DATABASE+"."+channel.substring(1)+"Options WHERE optionID=\'"+option+"\'");
+	public static String getOption(String channel, Options option) {
+		ResultSet rs=executeQuery("SELECT * FROM "+DATABASE+"."+channel.substring(1)+"Options WHERE optionID=\'"+option.getOptionID()+"\'");
 		try {
 			rs.next();
 			return rs.getString("value");
@@ -298,9 +300,9 @@ public class Database {
 		return null;
 	}
 
-	public static void setOption(String channel, String option, String value) {
+	public static void setOption(String channel, Options option, String value) {
 		executeUpdate("UPDATE "+DATABASE+"."+channel.substring(1)+"Options SET "
-				+ "optionID=\'"+option+"\'," +
+				+ "optionID=\'"+option.getOptionID()+"\'," +
 				"value=\'"+value+"\'"
 				+"WHERE optionID=\'welcomeMessage\'");
 	}

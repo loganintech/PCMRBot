@@ -124,7 +124,7 @@ public class IRCBot extends PircBot {
 				if (welcomeEnabled) {
 					if(!sender.equalsIgnoreCase("pcmrbot")){
 						sendMessage(connectedChannel,
-							Database.getOption(connectedChannel, Options.welcomeMessage.getOptionID())
+							Database.getOption(connectedChannel, Options.welcomeMessage)
 									.replace("%user%", sender));
 					} else {
 						
@@ -378,7 +378,7 @@ public class IRCBot extends PircBot {
 			} else if (message.toLowerCase().startsWith("!changewelcome ")
 					&& isMod(sender)) {
 
-				Database.setOption(connectedChannel, Options.welcomeMessage.getOptionID(),
+				Database.setOption(connectedChannel, Options.welcomeMessage,
 						message.substring((message.indexOf(" ") + 1)));
 				sendMessage(
 						connectedChannel,

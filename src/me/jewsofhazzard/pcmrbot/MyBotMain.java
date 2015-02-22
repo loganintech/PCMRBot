@@ -75,7 +75,7 @@ public class MyBotMain implements Runnable {
 					+ "Mods VALUES(\'angablade\')");
 			Database.setOption(
 					getBotChannel(),
-					Options.welcomeMessage.getOptionID(),
+					Options.welcomeMessage,
 					"Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
 		}
 		oAuth = args[0];
@@ -128,7 +128,7 @@ public class MyBotMain implements Runnable {
 					+ channel.substring(1) + "\')");
 			Database.setOption(
 					channel.substring(1),
-					Options.welcomeMessage.getOptionID(),
+					Options.welcomeMessage,
 					"Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
 		}
 		getConnectedChannels().put(channel, new IRCBot(channel));
