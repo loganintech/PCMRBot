@@ -40,33 +40,47 @@ public class MyBotMain implements Runnable {
 	private static final Logger logger = Logger.getLogger(MyBotMain.class + "");
 
 	/**
-	 * Creates a new instance of MyBotMain (called whenever the bot joins a new channel).
-	 * @param channel - the channel we are joining
+	 * Creates a new instance of MyBotMain (called whenever the bot joins a new
+	 * channel).
+	 * 
+	 * @param channel
+	 *            - the channel we are joining
 	 */
 	public MyBotMain(String channel, boolean forcedJoinToggle) {
 		this.channel = channel;
 		this.forcedJoin = forcedJoinToggle;
 		new Thread(this).start();
-		
+
 	}
 
 	/**
-	 * Performs all of the setup for the bot, both on first run, and all subsequent runs.
+	 * Performs all of the setup for the bot, both on first run, and all
+	 * subsequent runs.
 	 * 
-	 * @param args - the oAuth for the bot is passed on the command-line
+	 * @param args
+	 *            - the oAuth for the bot is passed on the command-line
 	 */
 	public static void main(String[] args) {
 		Database.initDBConnection(args[1]);
-		if(Database.getMainTables()) {
-			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + getBotChannel().substring(1) + "Mods VALUES(\'pcmrbot\')");
-			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + getBotChannel().substring(1) + "Mods VALUES(\'j3wsofhazard\')");
-			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + getBotChannel().substring(1) + "Mods VALUES(\'donald10101\')");
-			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + getBotChannel().substring(1) + "Mods VALUES(\'angablade\')");
-			Database.setWelcomeMessage(getBotChannel(), "Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
+		if (Database.getMainTables()) {
+			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
+					+ getBotChannel().substring(1) + "Mods VALUES(\'pcmrbot\')");
+			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
+					+ getBotChannel().substring(1)
+					+ "Mods VALUES(\'j3wsofhazard\')");
+			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
+					+ getBotChannel().substring(1)
+					+ "Mods VALUES(\'donald10101\')");
+			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
+					+ getBotChannel().substring(1)
+					+ "Mods VALUES(\'angablade\')");
+			Database.setWelcomeMessage(
+					getBotChannel(),
+					"Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
 		}
 		oAuth = args[0];
-		getConnectedChannels()
-				.put(getBotChannel(), new IRCBot(getBotChannel(), false));
+		getConnectedChannels().put(getBotChannel(),
+				new IRCBot(getBotChannel(), false));
 
 		getConnectedChannels().get(getBotChannel()).setVerbose(true);
 		try {
@@ -78,65 +92,76 @@ public class MyBotMain implements Runnable {
 		}
 		getConnectedChannels().get(getBotChannel())
 				.joinChannel(getBotChannel());
-		File f=new File("connectedChannels.txt");
-		if(f.exists()) {
-			for(String s:TFileReader.readFile(f)) {
+		File f = new File("connectedChannels.txt");
+		if (f.exists()) {
+			for (String s : TFileReader.readFile(f)) {
 				new MyBotMain(s, false);
 			}
 			f.delete();
 		}
 
 		new MyBotMain("#Trick2g", true);
-		
+
 	}
 
 	/**
-	 * Performs all of the setup for the bot in the channel specified, both on first run, and all subsequent runs.
+	 * Performs all of the setup for the bot in the channel specified, both on
+	 * first run, and all subsequent runs.
 	 */
 	public void run() {
-		
-		if(connectedChannels.containsKey(channel)){
-			return;			
-		}
-		
-		
-		boolean firstTime=false;
-			if(Database.getChannelTables(channel.substring(1))) {
-				firstTime=true;
-				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'pcmrbot\')");
-				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'j3wsofhazard\')");
-				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'donald10101\')");
-				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'angablade\')");
-				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Mods VALUES(\'"+ channel.substring(1) +"\')");
-				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "." + channel.substring(1) + "Options VALUES(\'welcomeMessage\', \'Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.\')");
-			}
-			getConnectedChannels().put(channel, new IRCBot(channel, forcedJoin));
 
-			getConnectedChannels().get(channel).setVerbose(true);
-			try {
-				getConnectedChannels().get(channel).connect("irc.twitch.tv",
-						6667, oAuth);
-			} catch (IrcException|IOException e) {
-				logger.log(Level.SEVERE,
-						"An error occurred while connecting to "
-								+ getBotChannel(), e);
-			}
-			getConnectedChannels().get(channel).joinChannel(channel);
-			if(firstTime) {
-				getConnectedChannels().get(channel).onFirstJoin();
-			}
+		if (connectedChannels.containsKey(channel)) {
+			return;
+		}
+
+		boolean firstTime = false;
+		if (Database.getChannelTables(channel.substring(1))) {
+			firstTime = true;
+			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
+					+ channel.substring(1) + "Mods VALUES(\'pcmrbot\')");
+			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
+					+ channel.substring(1) + "Mods VALUES(\'j3wsofhazard\')");
+			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
+					+ channel.substring(1) + "Mods VALUES(\'donald10101\')");
+			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
+					+ channel.substring(1) + "Mods VALUES(\'angablade\')");
+			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
+					+ channel.substring(1) + "Mods VALUES(\'"
+					+ channel.substring(1) + "\')");
+			Database.executeUpdate("INSERT INTO "
+					+ Database.DATABASE
+					+ "."
+					+ channel.substring(1)
+					+ "Options VALUES(\'welcomeMessage\', \'Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.\')");
+		}
+		getConnectedChannels().put(channel, new IRCBot(channel, forcedJoin));
+
+		getConnectedChannels().get(channel).setVerbose(true);
+		try {
+			getConnectedChannels().get(channel).connect("irc.twitch.tv", 6667,
+					oAuth);
+		} catch (IrcException | IOException e) {
+			logger.log(Level.SEVERE, "An error occurred while connecting to "
+					+ getBotChannel(), e);
+		}
+		getConnectedChannels().get(channel).joinChannel(channel);
+		if (firstTime) {
+			getConnectedChannels().get(channel).onFirstJoin();
+		}
 
 	}
-	
+
 	public static void shutdown() {
-		ArrayList<String> channels=new ArrayList<>();
-		for(IRCBot bot : connectedChannels.values()) {
-		
-			if(!bot.getChannel().equalsIgnoreCase("#pcmrbot") && !bot.getForcedJoin()){
-			channels.add(bot.getChannel());
-			bot.sendMessage(bot.getChannel(), "I am shutting down, I will automatically rejoin your channel when I restart!");
+		ArrayList<String> channels = new ArrayList<>();
+		for (IRCBot bot : connectedChannels.values()) {
+
+			if (!bot.getChannel().equalsIgnoreCase("#pcmrbot")
+					&& !bot.getForcedJoin()) {
+				channels.add(bot.getChannel());
+				bot.sendMessage(bot.getChannel(),
+						"I am shutting down, I will automatically rejoin your channel when I restart!");
 			}
-			
+
 		}
 		TFileWriter.overWriteFile(new File("connectedChannels.txt"), channels);
 		System.exit(0);
