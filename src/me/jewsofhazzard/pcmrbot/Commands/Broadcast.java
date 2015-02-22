@@ -13,6 +13,11 @@ public class Broadcast implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "broadcast";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		if(channel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
 			String message=parameters[0];

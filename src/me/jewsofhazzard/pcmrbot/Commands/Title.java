@@ -13,6 +13,11 @@ public class Title implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "title";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String...parameters) {
 		if (TwitchUtilities.updateTitle(channel.substring(1),
 				parameters[0])) {

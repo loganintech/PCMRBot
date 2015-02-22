@@ -13,6 +13,11 @@ public class AddModerator implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "addmoderator";
+	}
+	
+	@Override
 	/**
 	 * Add's a moderator to the channel's Mod's table in the database if they are not already in it.
 	 * 

@@ -13,6 +13,11 @@ public class Game implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "game";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String...parameters) {
 		if (TwitchUtilities.updateGame(channel.substring(1),
 				parameters[0])) {

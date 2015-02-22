@@ -13,6 +13,11 @@ public class Slow implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "slow";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String...parameters) {
 		if (parameters[0].equalsIgnoreCase("true")) {
 

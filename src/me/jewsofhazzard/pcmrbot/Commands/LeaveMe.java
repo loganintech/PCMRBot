@@ -13,6 +13,11 @@ public class LeaveMe implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "leaveme";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String...parameters){
 		if (!channel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
 			MyBotMain.getBot().partChannel(channel);

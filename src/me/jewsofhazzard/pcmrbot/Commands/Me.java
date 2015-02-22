@@ -12,6 +12,11 @@ public class Me implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "me";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		return "/me %message%".replace("%message%", parameters[0]);
 	}

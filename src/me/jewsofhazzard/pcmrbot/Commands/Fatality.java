@@ -12,6 +12,11 @@ public class Fatality implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "fatality";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		return String.format("It turns out that %s has killed %s... Run, RUN!", sender, parameters[0]);
 	}

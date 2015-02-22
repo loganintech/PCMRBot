@@ -14,6 +14,11 @@ public class Raffle implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "raffle";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		if(MyBotMain.getBot().getRaffle(channel) != null) {
 			return "There is already a raffle in progress!";

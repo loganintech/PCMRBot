@@ -17,6 +17,11 @@ public class Shutdown implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "shutdown";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String...parameters) {
 		if(channel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
 			ArrayList<String> channels = new ArrayList<>();
