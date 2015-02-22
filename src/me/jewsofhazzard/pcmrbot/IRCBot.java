@@ -121,9 +121,19 @@ public class IRCBot extends PircBot {
 		try {
 			try {
 				if (welcomeEnabled) {
-					sendMessage(connectedChannel,
+					if(!sender.equalsIgnoreCase("pcmrbot")){
+					
+						sendMessage(connectedChannel,
 							Database.getWelcomeMessage(connectedChannel)
 									.replace("%user%", sender));
+				
+					}
+					else{
+						
+						sendMessage(connectedChannel, "I have joined the channel and will stay with you unless you tell me to !leave or my creators do not"
+								+ " shut me down properly because they are cruel people with devious minds.");
+						
+					}
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE,
@@ -251,11 +261,11 @@ public class IRCBot extends PircBot {
 
 				}
 
-			} else if (message.equalsIgnoreCase("!commercial")) {
+			} else if (message.equalsIgnoreCase("!commercial") && sender.equalsIgnoreCase(connectedChannel.substring(1))) {
 
 				TwitchUtilities.runCommercial(connectedChannel);
 
-			} else if (message.equalsIgnoreCase("!commercial ")) {
+			} else if (message.equalsIgnoreCase("!commercial ") && sender.equalsIgnoreCase(connectedChannel.substring(1))) {
 				int time = 0;
 				try {
 					time = Integer.valueOf(message.substring(message
@@ -279,7 +289,11 @@ public class IRCBot extends PircBot {
 					return;
 				}
 
-			} else if (message.toLowerCase().startsWith("!me ")
+			}  else if(message.equalsIgnoreCase("!teamspeak")){
+				
+				sendMessage(connectedChannel, "You can download teamspeak here:  http://www.teamspeak.com/?page=downloads");
+			
+			}	else if (message.toLowerCase().startsWith("!me ")
 					&& isMod(sender)) {
 
 				sendMessage(
@@ -287,25 +301,19 @@ public class IRCBot extends PircBot {
 						"/me "
 								+ message.substring(message.indexOf(" ") + 1));
 
-			} 	else if(message.equalsIgnoreCase("!gabe") && (connectedChannel.equalsIgnoreCase("#officialpcmasterrace") 
-															|| connectedChannel.equalsIgnoreCase("#pcmrbot")
-															|| connectedChannel.equalsIgnoreCase("#j3wsofhazard"))){
+			} 	else if(message.equalsIgnoreCase("!gabe") && isMod(sender)){
 			
 					sendMessage(connectedChannel, "You can find all of the official pcmasterrace links at http://www.reddit.com/r/pcmasterrace/comments/2verur/check_out_our_official_communities_on_steam/");
 			
-			}	else if(message.equalsIgnoreCase("!steamsales")){
+			}	else if(message.equalsIgnoreCase("!steamsales") && isMod(sender)){
 
 				sendMessage(connectedChannel, "You can find the recent steam sales by heading to https://steamdb.info/sales/");
                                 
-			}       else if(message.equalsIgnoreCase("Kappa")){	
+			}   else if(message.toLowerCase().startsWith("!fight ")){
                         
-                                sendMessage(connectedChannel, "Keepo");
-                        
-                        }       else if(message.toLowerCase().startsWith("!fight ")){
-                        
-                                sendMessage(connectedChannel, sender + " puts up his digs in preparation to punch " + message.substring(message.indexOf(" ") + 1));
+                       sendMessage(connectedChannel, sender + " puts up his digs in preparation to punch " + message.substring(message.indexOf(" ") + 1));
                             
-                        }       else if (message.equalsIgnoreCase("!subscribers")
+            }       else if (message.equalsIgnoreCase("!subscribers")
 					&& sender.equals(connectedChannel.substring(1))) {
 
 				if (!subscribersOn) {
@@ -318,6 +326,10 @@ public class IRCBot extends PircBot {
 
 				}
 
+			} else if (message.equalsIgnoreCase("!slowclap")){
+				
+				sendMessage(connectedChannel, sender + " claps his hands slowly while walking off into the sunset.");
+            
 			} else if (message.equalsIgnoreCase("!clear") && isMod(sender)) {
 
 				sendMessage(connectedChannel, "/clear");
