@@ -123,10 +123,10 @@ public class IRCBot extends PircBot {
 				logger.log(Level.SEVERE, "An error occurred while executing onJoin()", e);
 			}
 		}
-		
-		joinMe(sender, true);
-		MyBotMain.getConnectedChannel("#pcmrbot").sendMessage("#pcmrbot", "Joined " + sender);
-		
+	if(!sender.equalsIgnoreCase("pcmrbot")){
+		joinMe(login, true);
+		sendMessage("#pcmrbot", "Joined " + sender);
+		}
 	}
 	
 	@Override
