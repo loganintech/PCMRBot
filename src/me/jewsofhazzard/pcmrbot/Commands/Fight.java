@@ -12,6 +12,11 @@ public class Fight implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "fight";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		return String.format("%s puts up his digs in preparation to punch %s.", sender, parameters[0]);
 	}

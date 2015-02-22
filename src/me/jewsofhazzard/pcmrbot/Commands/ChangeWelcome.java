@@ -14,6 +14,11 @@ public class ChangeWelcome implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "changewelcome";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		String message = parameters[0];
 		Database.setOption(channel, Options.welcomeMessage, message);

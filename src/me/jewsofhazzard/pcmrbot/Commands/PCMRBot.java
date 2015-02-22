@@ -12,6 +12,11 @@ public class PCMRBot implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "pcmrbot";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		return "I was made by J3wsOfHazard, Donald10101, and Angablade. Source at: http://github.com/jwolff52/PCMRBot";
 	}

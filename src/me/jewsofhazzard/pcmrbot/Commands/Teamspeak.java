@@ -12,6 +12,11 @@ public class Teamspeak implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "teamspeak";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		return "You can download teamspeak here:  http://www.teamspeak.com/?page=downloads";
 	}

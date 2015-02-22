@@ -13,6 +13,11 @@ public class ClearAutoReplies implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "clearautoreplies";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String...parameters) {
 		Database.clearAutoRepliesTable(channel);
 		return parameters[1] + " has cleared the auto replies.";

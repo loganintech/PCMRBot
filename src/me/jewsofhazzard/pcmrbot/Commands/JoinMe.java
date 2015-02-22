@@ -13,6 +13,11 @@ public class JoinMe implements Command{
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "joinme";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters){
 		if(channel.equalsIgnoreCase(MyBotMain.getBotChannel())){
 			MyBotMain.joinChannel("#" + sender);

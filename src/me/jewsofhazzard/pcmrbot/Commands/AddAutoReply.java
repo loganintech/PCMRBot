@@ -13,6 +13,11 @@ public class AddAutoReply implements Command{
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "addautoreply";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters){
 		String[] cutUp = parameters[0].split("[|]");
 		StringBuilder keywords = new StringBuilder();

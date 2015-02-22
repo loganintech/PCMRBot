@@ -13,6 +13,11 @@ public class Vote implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "vote";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		MyBotMain.getBot().getPoll(parameters[0]).vote(parameters[1], parameters[2]);
 		return null;

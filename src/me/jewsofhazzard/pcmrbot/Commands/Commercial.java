@@ -13,6 +13,11 @@ public class Commercial implements Command {
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "commercial";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		if(parameters.length<2) {
 			TwitchUtilities.runCommercial(channel.substring(1));

@@ -13,6 +13,11 @@ public class Enter implements Command{
 	}
 	
 	@Override
+	public String getCommandText() {
+		return "enter";
+	}
+	
+	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		try {
 			MyBotMain.getBot().getRaffle(channel).enter(sender);
