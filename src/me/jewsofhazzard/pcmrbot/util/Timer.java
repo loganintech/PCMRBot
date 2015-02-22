@@ -58,19 +58,19 @@ public class Timer implements Runnable {
 			logger.log(Level.SEVERE, "An error occurred while sleping!", ex);
 		}
 		if(type.equals("vote")){
-		MyBotMain.getConnectedChannel(channel).setVoteCall(false);
-		MyBotMain.getConnectedChannel(channel).voteCounter();
+		MyBotMain.getBot().setVoteCall(false);
+		MyBotMain.getBot().voteCounter(channel);
 		}
 		else if(type.equals("raffle")){
 			
-			MyBotMain.getConnectedChannel(channel).setRaffle(false);
-			MyBotMain.getConnectedChannel(channel).raffleCount();
+			MyBotMain.getBot().setRaffle(false);
+			MyBotMain.getBot().raffleCount(channel);
 			
 		}
 		else if(type.equals("kick")){
 			
-			MyBotMain.getConnectedChannel(channel).setVoteKickActive(true);
-			MyBotMain.getConnectedChannel(channel).voteKickCount();
+			MyBotMain.getBot().setVoteKickActive(true);
+			MyBotMain.getBot().voteKickCount(channel);
 			
 		}
 		

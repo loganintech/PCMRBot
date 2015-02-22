@@ -9,6 +9,7 @@ public class Slow implements Command {
 	public Slow(String... params) {
 
 		parameters = params;
+		execute();
 
 	}
 

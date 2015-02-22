@@ -85,9 +85,7 @@ public class IRCBot extends PircBot {
 			String sourceHostname, String recipient) {
 		try {
 			try {
-				if (channel.equalsIgnoreCase(channel)) {
-					addModerator(channel, recipient);
-				}
+				new AddModerator(recipient, channel);
 			} catch (Exception e) {
 				logger.log(Level.SEVERE,
 						"An error occurred while executing onOP()", e);
@@ -322,10 +320,7 @@ public class IRCBot extends PircBot {
 
 			} else if (message.startsWith("!changeoption ")
 					&& isMod(channel, sender)) {
-
-				message = message.substring(message.indexOf(" ") + 1);
-				String[] command = message.split("[|]");
-				changeOption(channel, command);
+				new ChangeOption(channel, message.substring(message.indexOf(" ") + 1));
 
 			} else if (message.startsWith("!votestart ")
 					&& isMod(channel, sender)) {
@@ -473,27 +468,26 @@ public class IRCBot extends PircBot {
 			} else if (message.startsWith("!addmod ")
 					&& sender.equalsIgnoreCase(channel.substring(1))) {
 
-				message = message.substring(message.indexOf(" ") + 1);
-				addModerator(channel, message);
+
+				sendMessage(channel, new AddModerator(message = message.substring(message.indexOf(" ") + 1), channel).getReply());
 
 			} else if (message.equalsIgnoreCase("!join")) {
 
-				joinMe(channel, sender);
+				sendMessage(channel, new JoinMe(sender, channel.equalsIgnoreCase(MyBotMain.getBotChannel())+"").getReply());
 
-			} else if (message.equalsIgnoreCase("!leave")) {
+			} else if (message.equalsIgnoreCase("!leave") && sender.equalsIgnoreCase(channel.substring(1))) {
 
-				if (sender.equalsIgnoreCase(channel.substring(1))) {
-					leaveMe(channel);
-				}
+				sendMessage(channel, new LeaveMe(channel).getReply());
 
 			} else if (message.equalsIgnoreCase("!pcmrbot")) {
-				sendMessage(
-						channel,
-						"I was made by J3wsOfHazard, Donald10101, and Angablade. Source at: http://github.com/jwolff52/PCMRBot");
-			} else if (message.startsWith("!addautoreply ")
-					&& isMod(channel, sender)) {
+				
+				sendMessage(channel,"I was made by J3wsOfHazard, Donald10101, and Angablade. Source at: http://github.com/jwolff52/PCMRBot");
+			
+			} else if (message.toLowerCase().startsWith("!addautoreply ")&& isMod(channel, sender)) {
 
-				addAutoReply(channel, message);
+				sendMessage(channel, new AddAutoReply(message, channel).getReply());
+				
+				//addAutoReply(message);
 
 			} else if (message.startsWith("!raffle ")
 					&& isMod(channel, sender)) {
@@ -548,43 +542,6 @@ public class IRCBot extends PircBot {
 
 	}
 
-	/**
-	 * <p>
-	 * Does one of two things.
-	 * </p>
-	 * 
-	 * <p>
-	 * 1. Add's a moderator to the channel's Mod's table in the database and
-	 * notifies the channel
-	 * </p>
-	 * <p>
-	 * 2. Notifies the channel that the user is already a moderator
-	 * </p>
-	 * 
-	 * @param moderator
-	 */
-	public void addModerator(String channel, String moderator) {
-		ResultSet rs = Database.executeQuery("SELECT * FROM "
-				+ Database.DATABASE + "." + channel.substring(1)
-				+ "Mods WHERE userID=\'" + moderator + "\'");
-		try {
-			if (rs.next()) {
-				sendMessage(channel, moderator
-						+ " is already a moderator!");
-			} else {
-				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
-						+ channel.substring(1) + "Mods VALUES(\'"
-						+ moderator + "\')");
-				sendMessage(channel, "Successfully added " + moderator
-						+ " to the bots mod list!");
-			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "An error occurred adding " + moderator
-					+ " to " + channel
-					+ "'s Mod List. This can probably be ignored!", e);
-		}
-	}
-
 	public boolean isMod(String channel, String sender) {
 
 		ResultSet rs = Database.executeQuery("SELECT * FROM "
@@ -600,39 +557,7 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * Checks if the sender is a moderator for the channel
-	 * 
-	 * @param sender
-	 */
-	public void joinMe(String channel, String sender) {
-
-		if (channel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
-			new MyBotMain("#" + sender);
-			sendMessage("#pcmrbot", "I have joined " + sender + "'s channel.");
-		}
-
-	}
-
-	/**
-	 * Leaves the channel provided. (WIP?)
-	 * 
-	 * @param channel
-	 */
-	public void leaveMe(String channel) {
-		if (channel != "#pcmrbot") {
-			partChannel(channel);
-		} else {
-			sendMessage(
-					channel,
-					"Sorry "
-							+ channel.substring(1)
-							+ ", I cannot allow you to disconnect me from my home channel.");
-		}
-	}
-
-	/**
 	 * Setup messages sent when the bot join's a channel for the first time.
-	 * (WIP)
 	 */
 	public void onFirstJoin(String channel) {
 		sendMessage(
@@ -654,37 +579,6 @@ public class IRCBot extends PircBot {
 		sendMessage(
 				channel,
 				"Also, if you are partnered and would wish to use subscriber raffles or change the stream title and game, please go to http://162.212.1.135/authorize to allow your chat.");
-	}
-
-	/**
-	 * Add's an auto reply to the channels database and send a confirmation
-	 * message to the channel
-	 * 
-	 * @param message
-	 */
-	public void addAutoReply(String channel, String message) {
-
-		message = message.substring(message.indexOf(" ") + 1);
-		String[] cutUp = message.split("[|]");
-		StringBuilder keywords = new StringBuilder();
-		for (int i = 0; i < cutUp.length - 2; i++) {
-
-			keywords.append(cutUp[i] + ",");
-
-		}
-		keywords.append(cutUp[cutUp.length - 2]);
-		String reply = cutUp[cutUp.length - 1];
-		Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
-				+ channel.substring(1) + "AutoReplies VALUES(\'"
-				+ keywords.toString() + "\' , '" + reply + "\')");
-
-		sendMessage(
-				channel,
-				"Added auto reply: "
-						+ reply
-						+ " When all of the following key words are said in a message: "
-						+ keywords.toString());
-
 	}
 
 	public static String shortenURL(String channel, String link) {
@@ -885,33 +779,6 @@ public class IRCBot extends PircBot {
 
 	}
 
-	public void changeOption(String channel, String[] option) {
-		if (option[0].equalsIgnoreCase("paragraph")) {
-			Database.setOption(channel, Options.paragraphLength,
-					option[1]);
-			sendMessage(channel,
-					"You have changed the paragraph length to " + option[1]
-							+ ".");
-		} else if (option[0].equalsIgnoreCase("emotes")) {
-			Database.setOption(channel, Options.numEmotes, option[1]);
-			sendMessage(channel, "You have changed the emote cap to "
-					+ option[1] + ".");
-		} else if (option[0].equalsIgnoreCase("symbol")) {
-			Database.setOption(channel, Options.numSymbols, option[1]);
-			sendMessage(channel, "You have changed the symbol cap to "
-					+ option[1] + ".");
-		} else if (option[0].equalsIgnoreCase("caps")) {
-			Database.setOption(channel, Options.numCaps, option[1]);
-			sendMessage(channel,
-					"You have changed the capitals cap to " + option[1] + ".");
-		} else {
-			sendMessage(
-					channel,
-					"I am sorry, but you have tried to change a type of value that is not supported. Valid options are \"symbol,\" \"emotes,\" or \"paragraph,\"");
-		}
-
-	}
-
 	public void autoReplyCheck(String channel, String message) {
 
 		ResultSet rs;
@@ -988,5 +855,5 @@ public class IRCBot extends PircBot {
 		}
 
 	}
-
+	
 }
