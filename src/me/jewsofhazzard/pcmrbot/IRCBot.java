@@ -49,6 +49,7 @@ import com.google.gson.JsonParser;
 public class IRCBot extends PircBot {
 
 	private boolean confirmationReplys = true;
+	private boolean subscribersOn = false;
 	private String toKick;
 	private boolean voteKickActive;
 	private boolean voteCall;
@@ -226,6 +227,27 @@ public class IRCBot extends PircBot {
 					return;
 				}
 		
+			}	else if(message.toLowerCase().startsWith("!me ") && isMod(sender)){
+				
+				sendMessage(connectedChannel, "/me " + message.substring(message.indexOf(" ") + 1));
+			
+			}	else if(message.equalsIgnoreCase("!subscribers") && sender.equals(connectedChannel.substring(1))){
+				
+				if(!subscribersOn){
+				
+					sendMessage(connectedChannel, "/subscribers");
+				
+				}
+				else if(subscribersOn){
+				
+					sendMessage(connectedChannel, "/subscribersoff");
+				
+				}
+				
+			}	else if(message.equalsIgnoreCase("!clear") && isMod(sender)){
+				
+				sendMessage(connectedChannel, "/clear");
+			
 			}	else if(message.toLowerCase().startsWith("!slow ") && isMod(sender)){
 				
 					if(isMod("pcmrbot")){
