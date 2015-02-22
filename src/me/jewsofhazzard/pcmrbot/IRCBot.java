@@ -26,6 +26,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.jewsofhazzard.pcmrbot.Commands.LMGTFY;
 //
 import me.jewsofhazzard.pcmrbot.database.Database;
 import me.jewsofhazzard.pcmrbot.twitch.TwitchUtilities;
@@ -159,9 +160,7 @@ public class IRCBot extends PircBot {
 					channel.substring(1) + "|" + date.toString());
 
 			if (message.startsWith("!lmgtfy ")) {
-				message = message.substring(message.indexOf(' '));
-				String param = message.replace(' ', '+');
-				sendMessage(connectedChannel, "http://lmgtfy.com?q=" + param);
+				sendMessage(connectedChannel, new LMGTFY(message.substring(message.indexOf(' '))).getReply());
 			} else if (message.equalsIgnoreCase("!shutdown")) {
 				if (connectedChannel.equalsIgnoreCase("#pcmrbot")
 						&& (isMod(sender) || sender
