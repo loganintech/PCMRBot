@@ -554,7 +554,7 @@ public class IRCBot extends PircBot {
 				joinRaffle(sender, raffleType);
 
 			} else if (message.toLowerCase().startsWith("!addmod ")
-					&& sender.equals(connectedChannel.substring(1))) {
+					&& sender.equalsIgnoreCase(connectedChannel.substring(1))) {
 
 				message = message.substring(message.indexOf(" ") + 1);
 				addModerator(message);
