@@ -36,6 +36,10 @@ public class MyBotMain implements Runnable{
 	private static String[] args;
 	private static final String botChannel = "#pcmrbot";
 	private static final Logger logger = Logger.getLogger(MyBotMain.class + "");
+	
+	public MyBotMain() {
+		new Thread(this).start();
+	}
 
 	/**
 	 * Performs all of the setup for the bot, both on first run, and all
