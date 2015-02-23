@@ -49,7 +49,7 @@ public class Poll {
 		return this;
 	}
 
-	public void countVotes() {
+	public void count() {
 		int chosen = 0;
 		for (int i = 0; i < voting.size(); i++) {
 			if (voting.get(i).size() > voting.get(chosen).size()) {

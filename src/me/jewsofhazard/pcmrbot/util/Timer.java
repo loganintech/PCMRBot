@@ -54,6 +54,15 @@ public class Timer implements Runnable {
 		this.channel = channel;
 		new Thread(this).start();
 	}
+	
+
+
+	public Timer(String channel, int time, VoteTimeOut v) {
+		this.time = time;
+		this.type = v;
+		this.channel = channel;
+		new Thread(this).start();
+	}
 
 	// public Timer(String channel, int time, String k) {
 	// this.time = time;
@@ -73,12 +82,12 @@ public class Timer implements Runnable {
 			logger.log(Level.SEVERE, "An error occurred while sleping!", ex);
 		}
 		if (type instanceof Poll) {
-			((Poll) type).countVotes();
+			((Poll) type).count();
 		} else if (type instanceof Raffle) {
 			((Raffle) type).selectWinner();
-		} /*else if (type instanceof String) {
-			MyBotMain.getBot().getVoteKick(channel).voteKickCount();
-		}*/
+		} else if (type instanceof VoteTimeOut) {
+			((VoteTimeOut) type).count();
+		}
 
 	}
 

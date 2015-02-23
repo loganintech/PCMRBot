@@ -49,6 +49,7 @@ public class IRCBot extends PircBot {
 	private static HashMap<String,Boolean> subMode;
 	private static HashMap<String,me.jewsofhazard.pcmrbot.util.Poll> polls;
 	private static HashMap<String,me.jewsofhazard.pcmrbot.util.Raffle> raffles;
+	private static HashMap<String,me.jewsofhazard.pcmrbot.util.VoteTimeOut> voteTimeOuts;
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
 	/**
@@ -256,54 +257,6 @@ public class IRCBot extends PircBot {
 		}
 
 	}
-
-	/*public void voteKickCount(String channel) {
-
-		if ((voteKickCount.size() / getUsers(channel).length) >= .55) {
-
-			sendMessage(channel, "The community has chosen to kick "
-					+ toKick + ".");
-
-		} else {
-
-			sendMessage(channel, "The community has chosen to spare "
-					+ toKick + ".");
-
-		}
-
-	}
-
-	public void voteKick(String channel, String toKick) {
-		this.toKick = toKick;
-		voteKickCount = new ArrayList<>();
-		sendMessage(channel, "The channel has begun a vote to kick "
-				+ toKick + ". Type !voteKick to place your vote. To vote no"
-				+ ", just do not vote.");
-		new Timer(channel, 180, "kick");
-
-	}
-
-	public void addToVoteKickCount(String channel, String sender) {
-
-		if (voteKickCount.contains(sender)) {
-
-			sendMessage(
-					channel,
-					sender
-							+ " tried to kick "
-							+ toKick
-							+ " twice. Do they have a personal vendetta? That is for me to know.");
-
-		} else {
-			if (confirmationReplies.get(channel)) {
-				sendMessage(channel, sender
-						+ " has has voted to kick " + toKick + ".");
-			}
-			voteKickCount.add(sender);
-
-		}
-
-	}*/
 	
 	public void setWelcomeEnabled(String channel, boolean value) {
 		welcomeEnabled.put(channel, value);
@@ -379,6 +332,14 @@ public class IRCBot extends PircBot {
 
 	public void removeSubMode(String channel) {
 		subMode.remove(channel);
+	}
+
+	public void addVoteTimeOut(String channel, me.jewsofhazard.pcmrbot.util.VoteTimeOut voteTimeOut) {
+		voteTimeOuts.put(channel, voteTimeOut);
+	}
+
+	public me.jewsofhazard.pcmrbot.util.VoteTimeOut getVoteTimeOut(String channel) {
+		return voteTimeOuts.get(channel);
 	}
 	
 }
