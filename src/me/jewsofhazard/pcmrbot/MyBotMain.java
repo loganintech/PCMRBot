@@ -78,11 +78,11 @@ public class MyBotMain {
 		boolean firstTime = false;
 		if (Database.getChannelTables(channel.substring(1))) {
 			firstTime = true;
-			Database.addMod("pcmrbot", getBotChannel().substring(1));
+			Database.addMod("pcmrbot", channel.substring(1));
 			Database.addMod("j3wsofhazard", channel.substring(1));
 			Database.addMod("donald10101", channel.substring(1));
 			Database.addMod("angablade", channel.substring(1));
-			if(!channel.equalsIgnoreCase(getBotChannel())) {
+			if(!Database.isMod(channel.substring(1), channel.substring(1))) {
 				Database.addMod(channel.substring(1), channel.substring(1));
 			}
 			Database.addOption(channel.substring(1), Options.welcomeMessage, "Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
