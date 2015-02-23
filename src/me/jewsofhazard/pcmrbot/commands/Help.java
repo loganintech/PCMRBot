@@ -34,14 +34,14 @@ public class Help extends Command  implements ICommand {
 	@Override
 	public String execute(String channel, String sender, String...parameters) {
 		if (parameters.length == 0) {
-			return "I am sorry %user% we have not added command-specific help for that command yet. Valid options are pol, addautoreply, raffle, shorten, seen, slap, and welcome. Please proceed to http://pcmrbot.no-ip.info/commands for more information.".replace("%user%", sender);
+			return "I am sorry %user% we have not added command-specific help for that command yet. Valid options are poll, addautoreply, raffle, shorten, seen, slap, and welcome. Please proceed to http://pcmrbot.no-ip.info/commands for more information.".replace("%user%", sender);
 		}
 		String command = parameters[0];
 		
 		String reply = replies.get(command);
 		
 		if(reply==null) {
-			return "I am sorry %user% we have not added command-specific help for that command yet. Valid options are pol, addautoreply, raffle, shorten, seen, slap, and welcome. Please proceed to http://pcmrbot.no-ip.info/commands for more information.".replace("%user%", sender);
+			return "I am sorry %user% we have not added command-specific help for that command yet. Valid options are poll, addautoreply, raffle, shorten, seen, slap, and welcome. Please proceed to http://pcmrbot.no-ip.info/commands for more information.".replace("%user%", sender);
 		}
 		return reply;
 	}
