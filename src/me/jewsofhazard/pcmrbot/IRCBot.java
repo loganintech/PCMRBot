@@ -190,9 +190,6 @@ public class IRCBot extends PircBot {
 		try {
 			while (rs.next()) {
 				String[] keyword = rs.getString(1).split(",");
-				for(String s:keyword) {
-					logger.info(s);
-				}
 				boolean matches = true;
 				for (int i = 0; i < keyword.length; i++) {
 					if (!message.contains(
