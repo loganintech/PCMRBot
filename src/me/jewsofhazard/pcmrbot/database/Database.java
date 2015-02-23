@@ -210,7 +210,7 @@ public class Database {
 	}
 	
 	public static boolean addOption(String channelNoHash, Options option, String value) {
-		return executeUpdate(String.format("INSER INTO %s.%sOptions VALUES(\'%s\' , \'%s\')", DATABASE, channelNoHash, option.getOptionID(), value));
+		return executeUpdate(String.format("INSERT INTO %s.%sOptions VALUES(\'%s\' , \'%s\')", DATABASE, channelNoHash, option.getOptionID(), value));
 	}
 
 	public static boolean isMod(String moderator, String channelNoHash) {
