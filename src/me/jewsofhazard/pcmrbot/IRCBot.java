@@ -190,9 +190,9 @@ public class IRCBot extends PircBot {
 		ResultSet rs = Database.getAutoReplies(channel.substring(1));
 		try {
 			while (rs.next()) {
-				String[] keyword = rs.getString(1).split("[,]");
-				for(String x:keyword) {
-					logger.info(x);
+				String[] keyword = rs.getString(1).split(",");
+				for(String s:keyword) {
+					logger.info(s);
 				}
 				if(keyword.length == 0) {
 					keyword=new String[1];
