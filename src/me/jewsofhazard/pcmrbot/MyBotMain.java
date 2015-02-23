@@ -78,7 +78,7 @@ public class MyBotMain {
 		boolean firstTime = false;
 		if (Database.getChannelTables(channel.substring(1))) {
 			firstTime = true;
-			Database.addMod("pcmrbot", channel.substring(1));
+			Database.addMod("pcmrbot", getBotChannel().substring(1));
 			Database.addMod("j3wsofhazard", channel.substring(1));
 			Database.addMod("donald10101", channel.substring(1));
 			Database.addMod("angablade", channel.substring(1));
