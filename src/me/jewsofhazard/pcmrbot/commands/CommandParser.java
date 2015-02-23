@@ -36,9 +36,6 @@ public class CommandParser {
 	}
 	
 	public static String parse(String command, String sender, String channel, String parameters) {
-		logger.info(command);
-		logger.info(parameters);
-		
 		Command c=commands.get(command);
 		
 		if(c != null && hasAccess(c, sender, channel)) {
