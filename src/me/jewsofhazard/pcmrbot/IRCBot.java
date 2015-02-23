@@ -198,10 +198,6 @@ public class IRCBot extends PircBot {
 					keyword=new String[1];
 					keyword[0]=rs.getString(1);
 				}
-				if(keyword.length == 0) {
-					keyword=new String[1];
-					keyword[0]=rs.getString(1);
-				}
 				boolean matches = true;
 				for (int i = 0; i < keyword.length - 1; i++) {
 					if (!message.contains(
