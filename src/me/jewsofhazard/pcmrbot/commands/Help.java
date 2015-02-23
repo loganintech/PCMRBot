@@ -28,19 +28,20 @@ public class Help extends Command  implements ICommand {
 		replies.put("shorten", "This is simply !shorten {link} to make it a bit.ly link.");
 		replies.put("seen", "The syntax for this is !seen {user} and will tell you how long it has been since {user} has chatted.");
 		replies.put("slap", "This slaps the targeted user. !slap {user}.");
+		replies.put("welcome", "You can use !enablewelcome and !disablewelcome to enable and disable welcome messages BUT it will not save that, it would only be that way while the bot is running. You can use !changewelcome to change it. If you change it to none you will recieve no welcome messages AND it will save that you recieve no messages.");
 	}
 
 	@Override
 	public String execute(String channel, String sender, String...parameters) {
 		if (parameters.length == 0) {
-			return "I am sorry %user% we have not added command-specific help for that command yet. Please proceed to http://pcmrbot.no-ip.info/commands for more information.".replace("%user%", sender);
+			return "I am sorry %user% we have not added command-specific help for that command yet. Valid options are pol, addautoreply, raffle, shorten, seen, slap, and welcome. Please proceed to http://pcmrbot.no-ip.info/commands for more information.".replace("%user%", sender);
 		}
 		String command = parameters[0];
 		
 		String reply = replies.get(command);
 		
 		if(reply==null) {
-			return "I am sorry %user% we have not added command-specific help for that command yet. Please proceed to http://pcmrbot.no-ip.info/commands for more information.".replace("%user%", sender);
+			return "I am sorry %user% we have not added command-specific help for that command yet. Valid options are pol, addautoreply, raffle, shorten, seen, slap, and welcome. Please proceed to http://pcmrbot.no-ip.info/commands for more information.".replace("%user%", sender);
 		}
 		return reply;
 	}
