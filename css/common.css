@@ -21,31 +21,24 @@ commandTable {
 }
 
 #twitch {
+	text-align: center;
 	padding: 15px;
 	margin: 5px auto;
 }
 
-#twitch:nth-child(1) {
-	width: 620px;
-	height: 378px;
-}
-
-#twitch:nth-child(2) {
-	width: 300px;
-	height: 378px;
-}
-
-/*#twitch-player {
+#twitch-player {
 	text-align: center;
 	height: 378px;
 	width: 620px;
+	display: inline-block;
 }
 
 #twitch-chat {
 	text-align: center;
 	height: 378px;
 	width: 300px;
-}*/
+	display: inline-block;
+}
 
 	/* Main marketing message and sign up button */
 .jumbotron {
