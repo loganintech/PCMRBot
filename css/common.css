@@ -77,6 +77,85 @@ commandTable {
 	display: inline-block;
 }
 
+@media (max-width: 880px) {
+	#twitch-player {
+		text-align: center;
+		height: 378px;
+		width: 56%;
+		display: inline-block;
+	}
+	
+	#twitch-chat {
+		text-align: center;
+		height: 378px;
+		width: 252px;
+		display: inline-block;
+	}
+}
+
+@media (max-width: 842px) {
+	#twitch-player {
+		text-align: center;
+		height: 378px;
+		width: 54%;
+		display: inline-block;
+	}
+	
+	#twitch-chat {
+		text-align: center;
+		height: 378px;
+		width: 252px;
+		display: inline-block;
+	}
+}
+
+@media (max-width: 808px) {
+	#twitch-player {
+		text-align: center;
+		height: 378px;
+		width: 52%;
+		display: inline-block;
+	}
+	
+	#twitch-chat {
+		text-align: center;
+		height: 378px;
+		width: 252px;
+		display: inline-block;
+	}
+}
+
+@media (max-width: 788px) {
+	#twitch-player {
+		text-align: center;
+		height: 378px;
+		width: 50%;
+		display: inline-block;
+	}
+	
+	#twitch-chat {
+		text-align: center;
+		height: 378px;
+		width: 252px;
+		display: inline-block;
+	}
+}
+
+@media (max-width: 772px) {
+	#twitch-player {
+		visibility: hidden;
+		width: 0;
+		height: 0;
+	}
+	
+	#twitch-chat {
+		text-align: center;
+		height: 378px;
+		width: 252px;
+		display: inline-block;
+	}
+}
+
 	/* Main marketing message and sign up button */
 .jumbotron {
 	margin: 60px 0;
