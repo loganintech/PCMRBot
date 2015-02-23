@@ -29,8 +29,9 @@ Do the following if you're using your customized build of modernizr (http://www.
 <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
 <script src="js/respond.min.js"></script>
+<script src="js/tabchat.js"></script>
 </head>
-<body>
+<body onload="loadtwitch()">
 	<div class="gridContainer clearfix">
 	  <div id="content" class="fluid  container-narrow">
         <div class="masthead">
@@ -51,10 +52,11 @@ Do the following if you're using your customized build of modernizr (http://www.
 		<hr>
 		<br />
 		<br />
-		<div id="twitch">
-			<div><iframe id="twitch-player" src="http://www.twitch.tv/j3wsofhazard/embed" frameborder="0" scrolling="no" height="100%" width="100%"></iframe>
-			<iframe id="twitch-chat" frameborder="0" scrolling="yes" id="chat_embed" src="http://www.twitch.tv/j3wsofhazard/chat" height="100%" width="100%"></iframe></div>
+		<b>
+		<div id="twitch" class="twitch" name="twitch">
+			<center>Loading.....</center>
 		</div>
+		</b>
 		<br />
 		<br />
         <hr>
