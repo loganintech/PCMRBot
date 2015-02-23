@@ -45,6 +45,8 @@ public class IRCBot extends PircBot {
 	private static HashMap<String, String> chatPostSeen;
 	private static HashMap<String,Boolean> welcomeEnabled;
 	private static HashMap<String,Boolean> confirmationReplies;
+	private static HashMap<String,Boolean> slowMode;
+	private static HashMap<String,Boolean> subMode;
 	private static HashMap<String,me.jewsofhazard.pcmrbot.util.Poll> polls;
 	private static HashMap<String,me.jewsofhazard.pcmrbot.util.Raffle> raffles;
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
@@ -64,6 +66,7 @@ public class IRCBot extends PircBot {
 		welcomeEnabled = new HashMap<>();
 		confirmationReplies = new HashMap<>();
 		chatPostSeen = new HashMap<>();
+		slowMode = new HashMap<>();
 		polls = new HashMap<>();
 		raffles = new HashMap<>();
 	}
@@ -351,6 +354,38 @@ public class IRCBot extends PircBot {
 
 	public me.jewsofhazard.pcmrbot.util.Raffle getRaffle(String string) {
 		return raffles.get(string);
+	}
+	
+	public void setSlowMode(String chanel, boolean slowMode) {
+		IRCBot.slowMode.put(chanel, slowMode);
+	}
+	
+	public boolean getSlowMode(String channel) {
+		return slowMode.get(channel);
+	}
+	
+	public void setSubscribersMode(String chanel, boolean subMode) {
+		IRCBot.slowMode.put(chanel, subMode);
+	}
+	
+	public boolean getSubscribersMode(String channel) {
+		return slowMode.get(channel);
+	}
+
+	public void removeWelcomeEnabled(String channel) {
+		welcomeEnabled.remove(channel);
+	}
+
+	public void removeConfirmationReplies(String channel) {
+		confirmationReplies.remove(channel);
+	}
+
+	public void removeSlowMode(String channel) {
+		slowMode.remove(channel);
+	}
+
+	public void removeSubMode(String channel) {
+		subMode.remove(channel);
 	}
 	
 }

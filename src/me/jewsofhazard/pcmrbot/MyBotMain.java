@@ -95,9 +95,19 @@ public class MyBotMain {
 		bot.joinChannel(channel);
 		bot.setWelcomeEnabled(channel, true);
 		bot.setConfirmationEnabled(channel, true);
+		bot.setSlowMode(channel, false);
+		bot.setSubscribersMode(channel, false);
 		if (firstTime) {
 			bot.onFirstJoin(channel);
 		}
+	}
+	
+	public static void partChannel(String channel) {
+		bot.partChannel(channel);
+		bot.removeWelcomeEnabled(channel);
+		bot.removeConfirmationReplies(channel);
+		bot.removeSlowMode(channel);
+		bot.removeSubMode(channel);
 	}
 	
 	public static IRCBot getBot() {
