@@ -191,9 +191,6 @@ public class IRCBot extends PircBot {
 		try {
 			while (rs.next()) {
 				String[] keyword = rs.getString(1).split(",");
-				for(String s:keyword) {
-					logger.info(s);
-				}
 				if(keyword.length == 0) {
 					keyword=new String[1];
 					keyword[0]=rs.getString(1);
@@ -205,6 +202,7 @@ public class IRCBot extends PircBot {
 						matches = false;
 						break;
 					}
+					//Ok there was a problem while commiting and I am really sorry but I think I broke auto replies but couldent reroll it. Pls no hurterino. Ill try to fix it after school.
 				}
 				if (matches) {
 					sendMessage(channel, rs.getString("reply"));
