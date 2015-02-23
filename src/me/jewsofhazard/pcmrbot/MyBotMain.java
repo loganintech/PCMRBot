@@ -19,6 +19,7 @@ package me.jewsofhazard.pcmrbot;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,12 +30,17 @@ import me.jewsofhazard.pcmrbot.util.TFileReader;
 
 import org.jibble.pircbot.IrcException;
 
-public class MyBotMain {
+public class MyBotMain implements Runnable{
 	
+	private static String[] args;
 	private static IRCBot bot;
 	private static final String botChannel = "#pcmrbot";
 	private static final Logger logger = Logger.getLogger(MyBotMain.class + "");
 
+	public MyBotMain() {
+		new Thread(this).start();
+	}
+	
 	/**
 	 * Performs all of the setup for the bot, both on first run, and all
 	 * subsequent runs.
@@ -43,6 +49,31 @@ public class MyBotMain {
 	 *            - the oAuth for the bot is passed on the command-line
 	 */
 	public static void main(String[] args) {
+		MyBotMain.args=args;
+		new MyBotMain();
+		try(Scanner scan=new Scanner(System.in)) {
+			while(true) {
+				String message=scan.nextLine();
+				String params="";
+				try {
+					params = message.substring(message.indexOf(' ') + 1);
+				} catch(StringIndexOutOfBoundsException e) {
+					
+				}
+				
+				String command=message.substring(1, message.length());
+				try {
+					command = message.substring(1, message.indexOf(' '));
+				} catch(StringIndexOutOfBoundsException e) {
+					
+				}
+				CommandParser.parse(command, "pcmrbot", "#pcmrbot", params);
+			}
+		}
+	}
+
+	@Override
+	public void run() {
 		Database.initDBConnection(args[1]);
 		bot = new IRCBot();
 
