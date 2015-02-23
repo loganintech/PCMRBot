@@ -27,18 +27,13 @@ public class Subscribers extends Command implements ICommand {
 		}
 	}
 	
-	
-	@SuppressWarnings("unused")
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		if (!MyBotMain.getBot().getSubscribersMode(channel)) {
+			MyBotMain.getBot().setSubscribersMode(channel, true);
 			return "/subscribers";
-		} else if (!false) {
-			return "/subscribersoff";
 		}
-		
-		return "There was a problem switching the subscriber mode in %channel%!".replace("%channel%", channel);
-
+		MyBotMain.getBot().setSubscribersMode(channel, false);
+		return "/subscribersoff";
 	}
-
 }

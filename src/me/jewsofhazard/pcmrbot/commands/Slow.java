@@ -20,6 +20,7 @@ public class Slow extends Command implements ICommand {
 	@Override
 	public String execute(String channel, String sender, String...parameters) {
 		if (!MyBotMain.getBot().getSlowMode(channel)) {
+			MyBotMain.getBot().setSlowMode(channel, true);
 			try {
 				int time = Integer.valueOf(parameters[0]);
 				return "/slow "+time;
@@ -27,6 +28,7 @@ public class Slow extends Command implements ICommand {
 				return "/slow";
 			}
 		} else {
+			MyBotMain.getBot().setSlowMode(channel, false);
 			return "/slowoff";
 		}
 	}
