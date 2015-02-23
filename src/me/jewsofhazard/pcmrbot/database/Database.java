@@ -88,7 +88,7 @@ public class Database {
 			try {
 				stmt2 = conn.createStatement();
 				stmt2.closeOnCompletion();
-				stmt2.executeUpdate(String.format("CREATE TABLE %s.%sOptions(optionID varchar(25), value varchar(4000), PRIMARY KEY (optionID))", DATABASE, channelNoHash));
+				stmt2.executeUpdate(String.format("CREATE TABLE %s.%sOptions(optionID varchar(50), value varchar(4000), PRIMARY KEY (optionID))", DATABASE, channelNoHash));
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE, String.format("Unable to create table %sOptions!", channelNoHash), ex );
 			}
