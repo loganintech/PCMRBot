@@ -139,7 +139,7 @@ public class IRCBot extends PircBot {
 			if(reply != null) {
 				sendMessage(channel, reply);
 			}
-			if(!sender.equalsIgnoreCase(MyBotMain.getBotChannel())) {
+			if(!sender.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
 				autoReplyCheck(channel, message);
 			}
 			
@@ -185,7 +185,6 @@ public class IRCBot extends PircBot {
 	}
 
 	public void autoReplyCheck(String channel, String message) {
-
 		message=message.toLowerCase();
 		ResultSet rs = Database.getAutoReplies(channel.substring(1));
 		try {
@@ -194,12 +193,8 @@ public class IRCBot extends PircBot {
 				for(String s:keyword) {
 					logger.info(s);
 				}
-				if(keyword.length == 0) {
-					keyword=new String[1];
-					keyword[0]=rs.getString(1);
-				}
 				boolean matches = true;
-				for (int i = 0; i < keyword.length - 1; i++) {
+				for (int i = 0; i < keyword.length; i++) {
 					if (!message.contains(
 							keyword[i].toLowerCase())) {
 						matches = false;
@@ -211,7 +206,6 @@ public class IRCBot extends PircBot {
 				}
 			}
 		} catch (SQLException e) {
-
 			logger.log(Level.SEVERE,
 					"An error occured while trying to access the database.", e);
 		} catch (Exception e) {
