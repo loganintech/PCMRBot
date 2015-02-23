@@ -239,4 +239,8 @@ public class Database {
 		return executeQuery(String.format("SELECT * FROM %s.%sSpam", DATABASE, channelNoHash));
 	}
 
+	public static boolean delModerator(String moderator, String channelNoHash) {
+		return executeUpdate(String.format("DELETE FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channelNoHash, moderator));
+	}
+
 }

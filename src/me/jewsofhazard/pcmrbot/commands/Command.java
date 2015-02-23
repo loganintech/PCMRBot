@@ -2,21 +2,17 @@ package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.util.CommandLevel;
 
-public class Command implements ICommand{
+public abstract class Command implements ICommand{
+
+	
 
 	@Override
-	public String execute(String channel, String sender, String... parameters) {
-		return null;
-	}
+	public abstract CommandLevel getCommandLevel();
 
 	@Override
-	public CommandLevel getCommandLevel() {
-		return null;
-	}
+	public abstract String getCommandText();
 
 	@Override
-	public String getCommandText() {
-		return null;
-	}
+	public abstract String execute(String channel, String sender, String... parameters);
 
 }

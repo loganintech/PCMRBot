@@ -5,7 +5,7 @@ import me.jewsofhazard.pcmrbot.util.CommandLevel;
 
 public class Title extends Command implements ICommand {
 
-	private CommandLevel level=CommandLevel.Normal;
+	private CommandLevel level=CommandLevel.Mod;
 
 	@Override
 	public CommandLevel getCommandLevel() {
