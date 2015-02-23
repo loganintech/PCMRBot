@@ -47,13 +47,13 @@ public class TwitchUtilities {
 	/**
 	 * Changes the title on streamers page
 	 * 
-	 * @param channel - channel to change the title on
+	 * @param channelNoHash - channel to change the title on
 	 * @param title - title to be changed to
 	 */
-	public static boolean updateTitle(String channel, String title) {
-		String url = BASE_URL+"channels/"+channel+"/";
+	public static boolean updateTitle(String channelNoHash, String title) {
+		String url = BASE_URL+"channels/"+channelNoHash+"/";
 		String _method="put";
-		String oauth_token=Database.getUserOAuth(channel);
+		String oauth_token=Database.getUserOAuth(channelNoHash);
 		String query = null;
 		URLConnection connection = null;
 		if(oauth_token==null){
@@ -66,7 +66,7 @@ public class TwitchUtilities {
 			connection.getInputStream();
 			return true;
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred updating the title for "+channel.substring(1), e);
+			logger.log(Level.SEVERE, "An error occurred updating the title for "+channelNoHash.substring(1), e);
 			return false;
 		}
 	}
@@ -74,13 +74,13 @@ public class TwitchUtilities {
 	/**
 	 * Changes the game on the streamers page
 	 * 
-	 * @param channel - channel to change the game on
+	 * @param channelNoHash - channel to change the game on
 	 * @param game - game to be changed to
 	 */
-	public static boolean updateGame(String channel, String game) {
-		String url = BASE_URL+"channels/"+channel+"/";
+	public static boolean updateGame(String channelNoHash, String game) {
+		String url = BASE_URL+"channels/"+channelNoHash+"/";
 		String _method="put";
-		String oauth_token=Database.getUserOAuth(channel);
+		String oauth_token=Database.getUserOAuth(channelNoHash);
 		String query = null;
 		URLConnection connection = null;
 		try {
@@ -90,7 +90,7 @@ public class TwitchUtilities {
 			connection.getInputStream();
 			return true;
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred updating the game for "+channel.substring(1), e);
+			logger.log(Level.SEVERE, "An error occurred updating the game for "+channelNoHash.substring(1), e);
 		}
 		return false;
 	}
@@ -156,15 +156,15 @@ public class TwitchUtilities {
 		return false;
 	}
 	
-	public static boolean runCommercial(String channel) {
+	public static boolean runCommercial(String channelNoHash) {
 		String USER_AGENT = "Mozilla/5.0";
-		String oauth_token=Database.getUserOAuth(channel);
-		String url = BASE_URL+"channels/"+channel+"/commercial/?oauth_token="+oauth_token;
+		String oauth_token=Database.getUserOAuth(channelNoHash);
+		String url = BASE_URL+"channels/"+channelNoHash+"/commercial/?oauth_token="+oauth_token;
 		URL obj = null;
 		try {
 			obj = new URL(url);
 		} catch (MalformedURLException e) {
-			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channel, e);
+			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channelNoHash, e);
 		}
 		
 		HttpsURLConnection con = null;
@@ -172,22 +172,22 @@ public class TwitchUtilities {
 			con = (HttpsURLConnection) obj.openConnection();
 			con.setRequestMethod("POST");
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channel, e);
+			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channelNoHash, e);
 		}
 		con.setRequestProperty("User-agent", USER_AGENT);
 		
 		return false;
 	}
 	
-	public static boolean runCommercial(String channel, int length) {
+	public static boolean runCommercial(String channelNoHash, int length) {
 		String USER_AGENT = "Mozilla/5.0";
-		String oauth_token=Database.getUserOAuth(channel);
-		String url = BASE_URL+"channels/"+channel+"/commercial/?oauth_token="+oauth_token+"&length="+length;
+		String oauth_token=Database.getUserOAuth(channelNoHash);
+		String url = BASE_URL+"channels/"+channelNoHash+"/commercial/?oauth_token="+oauth_token+"&length="+length;
 		URL obj = null;
 		try {
 			obj = new URL(url);
 		} catch (MalformedURLException e) {
-			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channel, e);
+			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channelNoHash, e);
 		}
 		
 		HttpsURLConnection con = null;
@@ -195,7 +195,7 @@ public class TwitchUtilities {
 			con = (HttpsURLConnection) obj.openConnection();
 			con.setRequestMethod("POST");
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channel, e);
+			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channelNoHash, e);
 		}
 		con.setRequestProperty("User-agent", USER_AGENT);
 		
