@@ -228,7 +228,7 @@ public class Database {
 	}
 	
 	public static void addAutoReply(String channelNoHash, String keywords, String reply) {
-		Database.executeUpdate(String.format("INSERT INTO %s.%sAutoReplies VALUES(\'%s\' , '%s\')", DATABASE, channelNoHash, keywords, reply));
+		executeUpdate(String.format("INSERT INTO %s.%sAutoReplies VALUES(\'%s\' , '%s\')", DATABASE, channelNoHash, keywords, reply));
 	}
 
 	public static ResultSet getAutoReplies(String channelNoHash) {

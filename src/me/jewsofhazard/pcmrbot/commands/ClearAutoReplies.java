@@ -19,7 +19,7 @@ public class ClearAutoReplies extends Command  implements ICommand {
 	
 	@Override
 	public String execute(String channel, String sender, String...parameters) {
-		Database.clearAutoRepliesTable(channel);
+		Database.clearAutoRepliesTable(channel.substring(1));
 		return sender + " has cleared the auto replies.";
 	}
 
