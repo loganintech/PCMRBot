@@ -22,7 +22,7 @@ public class Help extends Command  implements ICommand {
 	
 	public Help() {
 		replies=new HashMap<>();
-		replies.put("votestart", "The format of the votestart command is as follows: !votestart {time in seconds}|{question to ask}|{option 1}|{infinte more options}\nNote, you do not need { or } and you must not add spaces between |. For example, !votestart 30|What game should I play?|Bioshock|Minecraft|League. Is perfect.");
+		replies.put("poll", "The format of the poll command is as follows: !poll {time in seconds}|{question to ask}|{option 1}|{infinte more options}\nNote, you do not need { or } and you must not add spaces between |. For example, !poll 30|What game should I play?|Bioshock|Minecraft|League. Is perfect.");
 		replies.put("addautoreply", "Autoreply is formated similarly to starting votes. All you need is to type !addautoreply {keyword}|{keyword}|{reply}. Note: again, there can be no spaces between pipes ( | ). The difference is that you may add as many keywords as you like as long as the reply is last.");
 		replies.put("raffle", "A raffle's context is simply !raffle {type} where type could be (all, follower or follwers, subscriber or subscribers.");
 		replies.put("shorten", "This is simply !shorten {link} to make it a bit.ly link.");

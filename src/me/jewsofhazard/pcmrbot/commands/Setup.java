@@ -3,7 +3,7 @@ package me.jewsofhazard.pcmrbot.commands;
 import me.jewsofhazard.pcmrbot.MyBotMain;
 import me.jewsofhazard.pcmrbot.util.CommandLevel;
 
-public class Setup implements ICommand {
+public class Setup extends Command implements ICommand {
 
 	@Override
 	public String execute(String channel, String sender, String... parameters) {

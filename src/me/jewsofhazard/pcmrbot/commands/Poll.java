@@ -32,7 +32,7 @@ public class Poll extends Command implements ICommand {
 			answers[i - 2] = voteOptions[i];
 		}
 		
-		MyBotMain.getBot().addPoll(channel, new me.jewsofhazard.pcmrbot.util.Poll(voteOptions[1], answers, Integer.valueOf(voteOptions[0])).start());
+		MyBotMain.getBot().addPoll(channel, new me.jewsofhazard.pcmrbot.util.Poll(channel, answers, Integer.valueOf(voteOptions[0])).start());
 		if(MyBotMain.getBot().getConfirmationReplies(channel)) {
 			return voteOptions[1];
 		}
