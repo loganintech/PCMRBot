@@ -85,11 +85,11 @@ public class MyBotMain {
 			if(!channel.equalsIgnoreCase(getBotChannel())) {
 				Database.addMod(channel.substring(1), channel.substring(1));
 			}
-			Database.setOption(channel.substring(1), Options.welcomeMessage, "Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
-			Database.setOption(channel.substring(1), Options.numCaps, "10");
-			Database.setOption(channel.substring(1), Options.numEmotes, "10");
-			Database.setOption(channel.substring(1), Options.numSymbols, "10");
-			Database.setOption(channel.substring(1), Options.paragraphLength, "250");
+			Database.addOption(channel.substring(1), Options.welcomeMessage, "Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
+			Database.addOption(channel.substring(1), Options.numCaps, "10");
+			Database.addOption(channel.substring(1), Options.numEmotes, "10");
+			Database.addOption(channel.substring(1), Options.numSymbols, "10");
+			Database.addOption(channel.substring(1), Options.paragraphLength, "250");
 		}
 		
 		bot.joinChannel(channel);

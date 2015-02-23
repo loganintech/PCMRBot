@@ -208,6 +208,10 @@ public class Database {
 	public static boolean setOption(String channelNoHash, Options option, String value) {
 		return executeUpdate(String.format("UPDATE %s.%sOptions SET optionID=\'%s\',value=\'%s\' WHERE optionID=\'%s\'", DATABASE, channelNoHash, option.getOptionID(), value, option.getOptionID()));
 	}
+	
+	public static boolean addOption(String channelNoHash, Options option, String value) {
+		return executeUpdate(String.format("INSER INTO %s.%sOptions VALUES(\'%s\',\'%s\')", DATABASE, channelNoHash, option.getOptionID(), value));
+	}
 
 	public static boolean isMod(String moderator, String channelNoHash) {
 		ResultSet rs = executeQuery(String.format("SELECT * FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channelNoHash, moderator));
