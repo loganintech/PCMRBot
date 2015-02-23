@@ -243,4 +243,8 @@ public class Database {
 		return executeUpdate(String.format("DELETE FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channelNoHash, moderator));
 	}
 
+	public static boolean delAutoReply(String channelNoHash, String keywords) {
+		return executeUpdate(String.format("DELETE FROM %s.%sAutoReplies WHERE keyWord=\'%s\'", DATABASE, channelNoHash, keywords));
+	}
+
 }
