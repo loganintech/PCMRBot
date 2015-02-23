@@ -94,9 +94,7 @@ public class IRCBot extends PircBot {
 				if (!sender.equalsIgnoreCase("pcmrbot")) {
 					sendMessage(
 							channel,
-							Database.getOption(channel,
-									Options.welcomeMessage).replace(
-									"%user%", sender));
+							Database.getOption(channel.substring(1), Options.welcomeMessage).replace("%user%", sender));
 				} else {
 
 					sendMessage(
@@ -139,10 +137,8 @@ public class IRCBot extends PircBot {
 
 			String reply = CommandParser.parse(command.toLowerCase(), sender, channel, params);
 			if(reply != null) {
-				logger.info("NOT NULL");
 				sendMessage(channel, reply);
 			}
-			logger.info("NULL");
 			if(!sender.equalsIgnoreCase(MyBotMain.getBotChannel())) {
 				autoReplyCheck(channel, message);
 			}
@@ -176,23 +172,7 @@ public class IRCBot extends PircBot {
 	public void onFirstJoin(String channel) {
 		sendMessage(
 				channel,
-				"Hello, this appears to be the first time you have invited me to join your channel. We just have a few preliminary manners to attend to.");
-
-		sendMessage(
-				channel,
-				"To begin with, we use a three-part system to define a few options. Let's begin with timeing out a user.");
-		sendMessage(
-				channel,
-				"Users are timed out for excessive caps or symbols, an excessive or exclusive message of emoticons, links, repeated messages (spam), and messages longer than 250 characters.");
-		sendMessage(
-				channel,
-				"We would like you to configure the ammount of emoticons(default 15), capital letters(default 20), and paragraphs(defaults to 250 characters) allowed in a message.");
-		sendMessage(
-				channel,
-				"To change this, please run !changeOption {type (emotes, paragraph, symbols}|{new value}. Note: If you make paragraph to short users may not be able to post proper sentences. Think of it like twitter messages.");
-		sendMessage(
-				channel,
-				"Also, if you are partnered and would wish to use subscriber raffles or change the stream title and game, please go to http://162.212.1.135/authorize to allow your chat.");
+				"Hello, this appears to be the first time you have invited me to join your channel. We just have a few preliminary manners to attend to. First off make sure to mod me so I don't get timed out, then type !setup");
 	}
 	
 	public boolean isWatchingChannel(String channel) {
@@ -206,12 +186,14 @@ public class IRCBot extends PircBot {
 
 	public void autoReplyCheck(String channel, String message) {
 
-		ResultSet rs;
-		rs = Database.executeQuery("SELECT * FROM " + Database.DATABASE + "."
-				+ channel.substring(1) + "AutoReplies");
+		message=message.toLowerCase();
+		ResultSet rs = Database.getAutoReplies(channel.substring(1));
 		try {
 			while (rs.next()) {
-				String[] keyword = rs.getString(1).split("[,]");
+				String[] keyword = rs.getString(1).split(",");
+				for(String s:keyword) {
+					logger.info(s);
+				}
 				if(keyword.length == 0) {
 					keyword=new String[1];
 					keyword[0]=rs.getString(1);
@@ -264,9 +246,7 @@ public class IRCBot extends PircBot {
 									Options.numEmotes) + ",}")) {
 				new Timeouts(channel, sender, 1, TType.EMOTE);
 			}
-			ResultSet rs = Database.executeQuery("SELECT * FROM "
-					+ Database.DATABASE + "." + channel.substring(1)
-					+ "Spam");
+			ResultSet rs = Database.getSpam(channel.substring(1));
 			try {
 				while (rs.next()) {
 					if (message.matches("(" + rs.getString(1) + ")+")) {

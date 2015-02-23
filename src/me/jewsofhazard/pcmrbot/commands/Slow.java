@@ -32,7 +32,7 @@ public class Slow extends Command implements ICommand {
 			}
 
 		} else {
-
+			
 			return "I am sorry but the bot is not moderator in your channel and cannot run slowmode.";
 
 		}

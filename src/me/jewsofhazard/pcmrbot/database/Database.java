@@ -53,7 +53,7 @@ public class Database {
 							,e);
 		}
 		try {
-			conn = DriverManager.getConnection(URL+"user=bot&password="+pass);
+			conn = DriverManager.getConnection(String.format("%suser=bot&password=%s", URL, pass));
 		} catch (SQLException e) {
 			return false;
 		}
@@ -61,75 +61,12 @@ public class Database {
 	}
 
 	/**
-	 * Creates the tables and for the bot's channel. Also creates the Schema.
-	 * 
-	 * @return - true if it has to create the tables
-	 */
-	public static boolean getMainTables() {
-		Statement stmt;
-		Statement stmt1;
-		Statement stmt2;
-		Statement stmt3;
-		Statement stmt4;
-		try {
-			stmt = conn.createStatement();
-			stmt.closeOnCompletion();
-			stmt.executeQuery("SELECT * FROM " + DATABASE
-					+ ".pcmrbotMods");
-			return false;
-		} catch (SQLException e) {
-			try {
-				stmt1 = conn.createStatement();
-				stmt1.closeOnCompletion();
-				stmt1.executeUpdate("CREATE TABLE "
-						+ DATABASE
-						+ ".pcmrbotMods(userID varchar(25), PRIMARY KEY (userID))");
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE,
-						"Unable to create table pcmrbotMods!\n" + ex.toString());
-			}
-			try {
-				stmt2 = conn.createStatement();
-				stmt2.closeOnCompletion();
-				stmt2.executeUpdate("CREATE TABLE "
-						+ DATABASE
-						+ ".pcmrbotOptions(optionID varchar(25), value varchar(4000), PRIMARY KEY (optionID))");
-			} catch (SQLException ex) {
-				logger.log(
-						Level.SEVERE,
-						"Unable to create table pcmrbotOptions!\n"
-								+ ex.toString());
-			}
-			try {
-				stmt3 = conn.createStatement();
-				stmt3.closeOnCompletion();
-				stmt3.executeUpdate("CREATE TABLE " + DATABASE
-						+ ".pcmrbotSpam(word varchar(25), PRIMARY KEY (word))");
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE,
-						"Unable to create table pcmrbotSpam!\n" + ex.toString());
-			}
-			try {
-				stmt4 = conn.createStatement();
-				stmt4.closeOnCompletion();
-				stmt4.executeUpdate("CREATE TABLE "
-						+ DATABASE
-						+ ".pcmrbotAutoReplies(keyWord varchar(255), reply varchar(4000), PRIMARY KEY (keyWord))");
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE,
-						"Unable to create table pcmrbotAutoReplies!\n" + ex.toString());
-			}
-			return true;
-		}
-	}
-
-	/**
 	 * Creates the tables for the provided channel
 	 * 
-	 * @param channel - the channel we are connecting to.
+	 * @param channelNoHash - the channel we are connecting to.
 	 * @return - true if it has to create the tables
 	 */
-	public static boolean getChannelTables(String channel) {
+	public static boolean getChannelTables(String channelNoHash) {
 		Statement stmt;
 		Statement stmt1;
 		Statement stmt2;
@@ -138,53 +75,36 @@ public class Database {
 		try {
 			stmt = conn.createStatement();
 			stmt.closeOnCompletion();
-			stmt.executeQuery("SELECT * FROM " + DATABASE + "." + channel
-					+ "Mods");
+			stmt.executeQuery(String.format("SELECT * FROM %s.%sMods", DATABASE, channelNoHash));
 			return false;
 		} catch (SQLException e) {
 			try {
 				stmt1 = conn.createStatement();
 				stmt1.closeOnCompletion();
-				stmt1.executeUpdate("CREATE TABLE " + DATABASE + "."
-						+ channel
-						+ "Mods(userID varchar(25), PRIMARY KEY (userID))");
+				stmt1.executeUpdate(String.format("CREATE TABLE %s.%sMods(userID varchar(25), PRIMARY KEY (userID))", DATABASE, channelNoHash));
 			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "Unable to create table " + channel
-						+ "Mods!\n" + ex.toString());
+				logger.log(Level.SEVERE, String.format("Unable to create table %sMods!",DATABASE), ex);
 			}
 			try {
 				stmt2 = conn.createStatement();
 				stmt2.closeOnCompletion();
-				stmt2.executeUpdate("CREATE TABLE "
-						+ DATABASE
-						+ "."
-						+ channel
-						+ "Options(optionID varchar(25), value varchar(4000), PRIMARY KEY (optionID))");
+				stmt2.executeUpdate(String.format("CREATE TABLE %s.%sOptions(optionID varchar(25), value varchar(4000), PRIMARY KEY (optionID))", DATABASE, channelNoHash));
 			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "Unable to create table " + channel
-						+ "Options!\n" + ex.toString());
+				logger.log(Level.SEVERE, String.format("Unable to create table %sOptions!", channelNoHash), ex );
 			}
 			try {
 				stmt3 = conn.createStatement();
 				stmt3.closeOnCompletion();
-				stmt3.executeUpdate("CREATE TABLE " + DATABASE + "."
-						+ channel
-						+ "Spam(word varchar(25), PRIMARY KEY (word))");
+				stmt3.executeUpdate(String.format("CREATE TABLE %s.%sSpam(word varchar(25), PRIMARY KEY (word))", DATABASE, channelNoHash));
 			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "Unable to create table " + channel
-						+ "Spam!\n" + ex.toString());
+				logger.log(Level.SEVERE, String.format("Unable to create table %sSpam!", channelNoHash), ex);
 			}
 			try {
 				stmt4 = conn.createStatement();
 				stmt4.closeOnCompletion();
-				stmt4.executeUpdate("CREATE TABLE "
-						+ DATABASE
-						+ "."
-						+ channel
-						+ "AutoReplies(keyWord varchar(255), reply varchar(4000), PRIMARY KEY (keyWord))");
+				stmt4.executeUpdate(String.format("CREATE TABLE %s.%sAutoReplies(keyWord varchar(255), reply varchar(4000), PRIMARY KEY (keyWord))", DATABASE, channelNoHash));
 			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "Unable to create table " + channel
-						+ "AutoReplies!\n" + ex.toString());
+				logger.log(Level.SEVERE, String.format("Unable to create table %sAutoReplies!", channelNoHash), ex);
 			}
 			return true;
 		}
@@ -196,22 +116,19 @@ public class Database {
 	 * @param sqlCommand
 	 * @return - true if it successfully executes the update
 	 */
-	public static boolean executeUpdate(String sqlCommand) {
+	private static boolean executeUpdate(String sqlCommand) {
 		Statement stmt = null;
 		try {
 			stmt = conn.createStatement();
 			stmt.closeOnCompletion();
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE,
-					"Unable to create connection for SQLCommand: " + sqlCommand
-							+ "\n" + e.toString());
+			logger.log(Level.SEVERE, String.format("Unable to create connection for SQLCommand: %s", sqlCommand), e);
 			return false;
 		}
 		try {
 			stmt.executeUpdate(sqlCommand);
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Unable to execute statment: "
-					+ sqlCommand + "\n" + e.toString());
+			logger.log(Level.SEVERE, String.format("Unable to execute statment: %s", sqlCommand), e);
 			return false;
 		}
 		return true;
@@ -222,22 +139,19 @@ public class Database {
 	 * @param sqlQuery
 	 * @return
 	 */
-	public static ResultSet executeQuery(String sqlQuery) {
+	private static ResultSet executeQuery(String sqlQuery) {
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
 			stmt = conn.createStatement();
 			stmt.closeOnCompletion();
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE,
-					"Unable to create connection for SQLQuery: " + sqlQuery
-							+ "\n" + e.toString());
+			logger.log(Level.SEVERE, String.format("Unable to create connection for SQLQuery: %s", sqlQuery), e);
 		}
 		try {
 			rs = stmt.executeQuery(sqlQuery);
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Unable to execute query: " + sqlQuery
-					+ "\n" + e.toString());
+			logger.log(Level.SEVERE, String.format("Unable to execute query: %s", sqlQuery), e);
 		}
 		return rs;
 	}
@@ -245,85 +159,80 @@ public class Database {
 	/**
 	 * Clears the auto replies table for the channel provided.
 	 * 
-	 * @param channel - the channel to clear auto replies for
+	 * @param channelNoHash - the channel to clear auto replies for
 	 */
-	public static void clearAutoRepliesTable(String channel) {
+	public static void clearAutoRepliesTable(String channelNoHash) {
 		Statement stmt;
 		Statement stmt1;
 		try {
 			stmt = conn.createStatement();
 			stmt.closeOnCompletion();
-			stmt.executeUpdate("DROP TABLE "
-					+ DATABASE
-					+ "."
-					+ channel.substring(1)
-					+ "AutoReplies");
+			stmt.executeUpdate(String.format("DROP TABLE %s.%sAutoReplies", DATABASE, channelNoHash));
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Unable to delete table " + channel.substring(1)
-					+ "AutoReplies!\n" + ex.toString());
+			logger.log(Level.SEVERE, String.format("Unable to delete table %sAutoReplies!", channelNoHash), ex);
 		}
 		try {
 			stmt1 = conn.createStatement();
 			stmt1.closeOnCompletion();
-			stmt1.executeUpdate("CREATE TABLE "
-					+ DATABASE
-					+ "."
-					+ channel.substring(1)
-					+ "AutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))");
+			stmt1.executeUpdate(String.format("CREATE TABLE %s.%sAutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))", DATABASE, channelNoHash));
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Unable to create table " + channel.substring(1)
-					+ "AutoReplies!\n" + ex.toString());
+			logger.log(Level.SEVERE, String.format("Unable to create table %sAutoReplies!", channelNoHash), ex);
 		}
 	}
 	
 	public static String getUserOAuth(String user) {
-		ResultSet rs=executeQuery("SELECT * FROM "+DATABASE+".userOAuth WHERE userID=\'"+user+"\'");
+		ResultSet rs=executeQuery(String.format("SELECT * FROM "+DATABASE+".userOAuth WHERE userID=\'%s\'", user));
 		try {
 			if(rs.next()) {
-				logger.info("inside if");
 				return rs.getString("oAuth");
 			}
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "An error occurred getting "+user+"\'s OAuth from the database", e);
+			logger.log(Level.SEVERE, String.format("An error occurred getting %s\'s OAuth from the database", user), e);
 		}
 		return null;
 	}
 
-	public static String getOption(String channel, Options option) {
-		ResultSet rs=executeQuery("SELECT * FROM "+DATABASE+"."+channel.substring(1)+"Options WHERE optionID=\'"+option.getOptionID()+"\'");
+	public static String getOption(String channelNoHash, Options option) {
+		ResultSet rs=executeQuery(String.format("SELECT * FROM %s.%sOptions WHERE optionID=\'%s\'", DATABASE, channelNoHash, option.getOptionID()));
 		try {
-			rs.next();
-			return rs.getString("value");
+			if(rs.next()) {
+				return rs.getString(2);
+			}
+			return null;
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Unable to get welcome message for "+channel.substring(1), e);
+			logger.log(Level.SEVERE, String.format("Unable to get welcome message for %s", channelNoHash), e);
 		}
 		return null;
 	}
 
-	public static boolean setOption(String channel, Options option, String value) {
-		executeUpdate("UPDATE "+DATABASE+"."+channel.substring(1)+"Options SET "
-				+ "optionID=\'"+option.getOptionID()+"\'," +
-				"value=\'"+value+"\'"
-				+"WHERE optionID=\'welcomeMessage\'");
-		return true;
+	public static boolean setOption(String channelNoHash, Options option, String value) {
+		return executeUpdate(String.format("UPDATE %s.%sOptions SET optionID=\'%s\',value=\'%s\' WHERE optionID=\'%s\'", DATABASE, channelNoHash, option.getOptionID(), value, option.getOptionID()));
 	}
 
-	public static boolean isMod(String moderator, String channel) {
-		ResultSet rs = executeQuery(String.format("SELECT * FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channel, moderator));
+	public static boolean isMod(String moderator, String channelNoHash) {
+		ResultSet rs = executeQuery(String.format("SELECT * FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channelNoHash, moderator));
 		try {
 			return rs.next();
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, String.format("An error occurred adding %s to %s's Mod List. This can probably be ignored!", moderator, channel), e);
+			logger.log(Level.SEVERE, String.format("An error occurred adding %s to %s's Mod List. This can probably be ignored!", moderator, channelNoHash), e);
 		}
 		return false;
 	}
 	
-	public static void addMod(String moderator, String channel) {
-		executeUpdate(String.format("INSERT INTO %s.%sMods VALUES(\'%s\')", DATABASE, channel, moderator));
+	public static void addMod(String moderator, String channelNoHash) {
+		executeUpdate(String.format("INSERT INTO %s.%sMods VALUES(\'%s\')", DATABASE, channelNoHash, moderator));
 	}
 	
-	public static void addAutoReply(String channel, String keywords, String reply) {
-		Database.executeUpdate(String.format("INSERT INTO %s.%sAutoReplies VALUES(\'%s\' , '%s\')", DATABASE, channel, keywords, reply));
+	public static void addAutoReply(String channelNoHash, String keywords, String reply) {
+		Database.executeUpdate(String.format("INSERT INTO %s.%sAutoReplies VALUES(\'%s\' , '%s\')", DATABASE, channelNoHash, keywords, reply));
+	}
+
+	public static ResultSet getAutoReplies(String channelNoHash) {
+		return executeQuery(String.format("SELECT * FROM %s.%sAutoReplies", DATABASE, channelNoHash));
+	}
+	
+	public static ResultSet getSpam(String channelNoHash) {
+		return executeQuery(String.format("SELECT * FROM %s.%sSpam", DATABASE, channelNoHash));
 	}
 
 }

@@ -78,23 +78,14 @@ public class MyBotMain {
 		boolean firstTime = false;
 		if (Database.getChannelTables(channel.substring(1))) {
 			firstTime = true;
-			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
-					+ channel.substring(1) + "Mods VALUES(\'pcmrbot\')");
-			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
-					+ channel.substring(1) + "Mods VALUES(\'j3wsofhazard\')");
-			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
-					+ channel.substring(1) + "Mods VALUES(\'donald10101\')");
-			Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
-					+ channel.substring(1) + "Mods VALUES(\'angablade\')");
+			Database.addMod("pcmrbot", channel.substring(1));
+			Database.addMod("j3wsofhazard", channel.substring(1));
+			Database.addMod("donald10101", channel.substring(1));
+			Database.addMod("angablade", channel.substring(1));
 			if(!channel.equalsIgnoreCase(getBotChannel())) {
-				Database.executeUpdate("INSERT INTO " + Database.DATABASE + "."
-						+ channel.substring(1) + "Mods VALUES(\'"
-						+ channel.substring(1) + "\')");
+				Database.addMod(channel.substring(1), channel.substring(1));
 			}
-			Database.setOption(
-					channel.substring(1),
-					Options.welcomeMessage,
-					"Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
+			Database.setOption(channel.substring(1), Options.welcomeMessage, "Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
 			Database.setOption(channel.substring(1), Options.numCaps, "10");
 			Database.setOption(channel.substring(1), Options.numEmotes, "10");
 			Database.setOption(channel.substring(1), Options.numSymbols, "10");
@@ -107,7 +98,6 @@ public class MyBotMain {
 		if (firstTime) {
 			bot.onFirstJoin(channel);
 		}
-
 	}
 	
 	public static IRCBot getBot() {

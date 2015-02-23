@@ -21,16 +21,13 @@ public class CommandParser {
 		
 		// Find all commands
 		Set<Class<? extends Command>> commandClassList = r.getSubTypesOf(Command.class);
-		
+
 		// Add command instances to the commands hash map
 		for(Class<? extends Command> cClass: commandClassList){
 			
 			try {
-				
-				logger.info(cClass.getName());
 				Command c = cClass.newInstance();
 				commands.put(c.getCommandText(), c);
-				
 			} catch (Exception e) {
 				logger.log(Level.WARNING, "An error occurred initializing a command", e);
 			}
@@ -45,10 +42,8 @@ public class CommandParser {
 		Command c=commands.get(command);
 		
 		if(c != null && hasAccess(c, sender, channel)) {
-			logger.info("NOT NULL");
 			return c.execute(channel, sender, parameters);
 		}
-		logger.info("NULL");
 		return null;
 	}
 	
