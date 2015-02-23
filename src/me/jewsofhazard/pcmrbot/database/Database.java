@@ -88,7 +88,7 @@ public class Database {
 			try {
 				stmt2 = conn.createStatement();
 				stmt2.closeOnCompletion();
-				stmt2.executeUpdate(String.format("CREATE TABLE %s.%sOptions(optionID varchar(25), value varchar(4000), PRIMARY KEY (optionID))", DATABASE, channelNoHash));
+				stmt2.executeUpdate(String.format("CREATE TABLE %s.%sOptions(optionID varchar(50), value varchar(4000), PRIMARY KEY (optionID))", DATABASE, channelNoHash));
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE, String.format("Unable to create table %sOptions!", channelNoHash), ex );
 			}
@@ -210,7 +210,7 @@ public class Database {
 	}
 	
 	public static boolean addOption(String channelNoHash, Options option, String value) {
-		return executeUpdate(String.format("INSER INTO %s.%sOptions VALUES(\'%s\',\'%s\')", DATABASE, channelNoHash, option.getOptionID(), value));
+		return executeUpdate(String.format("INSER INTO %s.%sOptions VALUES(\'%s\' , \'%s\')", DATABASE, channelNoHash, option.getOptionID(), value));
 	}
 
 	public static boolean isMod(String moderator, String channelNoHash) {
