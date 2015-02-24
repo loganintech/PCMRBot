@@ -21,7 +21,7 @@ public class AddCommand extends Command implements ICommand {
 		try {
 			params[0].substring(0, params[0].indexOf('|'));
 		} catch (StringIndexOutOfBoundsException e) {}
-		Database.addAutoReply(channel, params[0], params[1]);
+		Database.addAutoReply(channel.substring(1), params[0], params[1]);
 		return String.format("Added command to the database. When a user says %s in chat I will say %s", params[0], params[1]);
 	}
 }

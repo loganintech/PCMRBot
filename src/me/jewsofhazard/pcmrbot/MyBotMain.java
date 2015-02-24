@@ -68,7 +68,7 @@ public class MyBotMain implements Runnable{
 				} catch(StringIndexOutOfBoundsException e) {
 					
 				}
-				CommandParser.parse(command, "pcmrbot", "#pcmrbot", params);
+				CommandParser.parse(command, getBotChannel().substring(1), getBotChannel(), params);
 			}
 		}
 	}

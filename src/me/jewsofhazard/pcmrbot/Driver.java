@@ -19,12 +19,10 @@ package me.jewsofhazard.pcmrbot;
 
 import java.io.IOException;
 
-import me.jewsofhazard.pcmrbot.tests.CommandParserTests;
-
 public class Driver {
 
 	public static void main(String[] args) throws IOException {
-		CommandParserTests.test();
+		System.out.println(System.getProperty("os.name"));
 	}
 
 }

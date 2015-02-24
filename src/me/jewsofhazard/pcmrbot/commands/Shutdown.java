@@ -30,7 +30,7 @@ public class Shutdown extends Command implements ICommand {
 					channels.add(s);
 				}
 			}
-			MyBotMain.getBot().sendMessage("#pcmrbot", new Broadcast().execute("#pcmrbot", "pcmrbot", "I am shutting down, I will automatically rejoin your channel when I restart!"));
+			MyBotMain.getBot().sendMessage(MyBotMain.getBotChannel(), new Broadcast().execute(MyBotMain.getBotChannel(), MyBotMain.getBotChannel().substring(1), "I am shutting down, I will automatically rejoin your channel when I restart!"));
 			TFileWriter.overWriteFile(new File("connectedChannels.txt"), channels);
 			System.exit(0);
 		}

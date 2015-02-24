@@ -248,7 +248,7 @@ public class Database {
 	}
 
 	public static ResultSet getCustomCommands(String channelNoHash) {
-		return executeQuery(String.format("SELECT * FROM %s.%sAutoReplies WHERE userID LIKE '!%'", DATABASE, channelNoHash));
+		return executeQuery(String.format("SELECT * FROM %s.%sAutoReplies WHERE keyWord LIKE '!%%'", DATABASE, channelNoHash));
 	}
 
 }

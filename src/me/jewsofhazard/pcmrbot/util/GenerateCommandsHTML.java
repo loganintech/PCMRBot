@@ -10,8 +10,7 @@ import me.jewsofhazard.pcmrbot.database.Database;
 
 public class GenerateCommandsHTML {
 
-	private static final String nixTemplate = TFileReader.readFileAsString(new File("/var/www/commands/template.html"));
-	private static final String winTemplate = TFileReader.readFileAsString(new File("C:/Apache2/htdocs/commands/template.html"));
+	private static String template = getTemplate();
 	
 	private static final Logger logger = Logger.getLogger(GenerateCommandsHTML.class+"");
 	
@@ -19,13 +18,20 @@ public class GenerateCommandsHTML {
 		String tableBody = generateTableBodyHTML(channelNoHash);
 		if(tableBody != null) {
 			if(System.getProperty("os.name").toLowerCase().contains("win")) {
-				TFileWriter.overWriteFile(new File("C:/Apache2/htdocs/commands/%channel%.html".replace("%channel%", channelNoHash)), winTemplate.replace("$tablebody", tableBody));
+				TFileWriter.overWriteFile(new File("C:/Apache2/htdocs/commands/%channel%.html".replace("%channel%", channelNoHash)), template.replace("$tablebody", tableBody));
 			} else {
-				TFileWriter.overWriteFile(new File("/var/www/commands/%channel%.html".replace("%channel%", channelNoHash)), nixTemplate.replace("$tablebody", tableBody));
+				TFileWriter.overWriteFile(new File("/var/www/commands/%channel%.html".replace("%channel%", channelNoHash)), template.replace("$tablebody", tableBody));
 			}
 			return true;
 		}
 		return false;
+	}
+
+	private static String getTemplate() {
+		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+			return TFileReader.readFileAsString(new File("C:/Apache2/htdocs/commands/commandsTemplate.html"));
+		}
+		return TFileReader.readFileAsString(new File("/var/www/commands/commandsTemplate.html"));
 	}
 
 	private static String generateTableBodyHTML(String channelNoHash) {
