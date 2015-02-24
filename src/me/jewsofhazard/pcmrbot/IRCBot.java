@@ -59,7 +59,7 @@ public class IRCBot extends PircBot {
 	 *            - The IRC Channel we are connecting to.
 	 */
 	public IRCBot() {
-		this.setName("PCMRBot");
+		this.setName(MyBotMain.getBotChannel().substring(1));
 		initVariables();
 	}
 
@@ -95,7 +95,7 @@ public class IRCBot extends PircBot {
 
 		try {
 			if (welcomeEnabled.get(channel)) {
-				if (!sender.equalsIgnoreCase("pcmrbot")) {
+				if (!sender.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
 					sendMessage(
 							channel,
 							Database.getOption(channel.substring(1), Options.welcomeMessage).replace("%user%", sender));
@@ -143,7 +143,7 @@ public class IRCBot extends PircBot {
 			if(reply != null) {
 				sendMessage(channel, reply);
 			}
-			if(!sender.equalsIgnoreCase(MyBotMain.getBotChannel())) {
+			if(!sender.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
 				autoReplyCheck(channel, message);
 			}
 			
@@ -219,7 +219,6 @@ public class IRCBot extends PircBot {
 	}
 
 	public void checkSpam(String channel, String message, String sender) {
-
 		if (!Database.isMod(sender, channel.substring(1))) {
 			if (message.matches("[A-Z\\s]{"
 					+ Database.getOption(channel.substring(1), Options.numCaps)

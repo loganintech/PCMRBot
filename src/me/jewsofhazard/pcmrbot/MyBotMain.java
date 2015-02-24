@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
 import me.jewsofhazard.pcmrbot.database.Database;
+import me.jewsofhazard.pcmrbot.util.GenerateCommandsHTML;
 import me.jewsofhazard.pcmrbot.util.Options;
 import me.jewsofhazard.pcmrbot.util.TFileReader;
 
@@ -67,7 +68,7 @@ public class MyBotMain implements Runnable{
 				} catch(StringIndexOutOfBoundsException e) {
 					
 				}
-				CommandParser.parse(command, "pcmrbot", "#pcmrbot", params);
+				CommandParser.parse(command, getBotChannel().substring(1), getBotChannel(), params);
 			}
 		}
 	}
@@ -128,6 +129,7 @@ public class MyBotMain implements Runnable{
 		bot.setConfirmationEnabled(channel, true);
 		bot.setSlowMode(channel, false);
 		bot.setSubscribersMode(channel, false);
+		GenerateCommandsHTML.createCommandsHTML(channel.substring(1));
 		if (firstTime) {
 			bot.onFirstJoin(channel);
 		}
