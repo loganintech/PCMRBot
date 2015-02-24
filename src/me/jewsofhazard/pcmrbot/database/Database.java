@@ -247,4 +247,8 @@ public class Database {
 		return executeUpdate(String.format("DELETE FROM %s.%sAutoReplies WHERE keyWord=\'%s\'", DATABASE, channelNoHash, keywords));
 	}
 
+	public static ResultSet getCustomCommands(String channelNoHash) {
+		return executeQuery(String.format("SELECT * FROM %s.%sAutoReplies WHERE userID LIKE '!%'", DATABASE, channelNoHash));
+	}
+
 }
