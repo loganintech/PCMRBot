@@ -59,7 +59,7 @@ public class IRCBot extends PircBot {
 	 *            - The IRC Channel we are connecting to.
 	 */
 	public IRCBot() {
-		this.setName(MyBotMain.getBotChannel().substring(1));
+		this.setName("PCMRBot");
 		initVariables();
 	}
 
