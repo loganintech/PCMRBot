@@ -81,7 +81,7 @@ public class Timeouts implements Runnable {
 				type.updateOffender(user, 5);
 			} else {
 				MyBotMain.getBot().sendMessage(channel,
-						"/timeout " + user + " 3600");
+						"/timeout " + user + " 7200");
 				MyBotMain
 						.getBot()
 						.sendMessage(

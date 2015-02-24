@@ -61,7 +61,7 @@ public class MyBotMain implements Runnable{
 					
 				}
 				
-				String command=message.substring(1);
+				String command=message.substring(1, message.length());
 				try {
 					command = message.substring(1, message.indexOf(' '));
 				} catch(StringIndexOutOfBoundsException e) {
