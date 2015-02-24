@@ -17,7 +17,7 @@ public class GenerateCommandsHTML {
 	public static boolean createCommandsHTML(String channelNoHash) {
 		String tableBody = generateTableBodyHTML(channelNoHash);
 		if(tableBody != null) {
-			TFileWriter.writeFile(new File("/var/www/commands/%channel%.html".replace("%channel%", channelNoHash)), template.replace("$tablebody", tableBody));
+			TFileWriter.overWriteFile(new File("/var/www/commands/%channel%.html".replace("%channel%", channelNoHash)), template.replace("$tablebody", tableBody));
 			return true;
 		}
 		return false;
