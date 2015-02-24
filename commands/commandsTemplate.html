@@ -1,0 +1,76 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="ie6 oldie"> <![endif]-->
+<!--[if IE 7]>    <html class="ie7 oldie"> <![endif]-->
+<!--[if IE 8]>    <html class="ie8 oldie"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="">
+<!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PCMRBot | Commands</title>
+<link href="../css/boilerplate.css" rel="stylesheet" type="text/css">
+<link href="../css/filtergrid.css" rel="stylesheet" type="text/css">
+<link href="../css/layout.css" rel="stylesheet" type="text/css">
+<link href="../css/common.css" rel="stylesheet" type="text/css">
+<link href="../css/bootstrap.css" rel="stylesheet" type="text/css">
+<link href="../css/bootstrap-responsive.css" rel="stylesheet" type="text/css">
+<!-- 
+To learn more about the conditional comments around the html tags at the top of the file:
+paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/
+
+Do the following if you're using your customized build of modernizr (http://www.modernizr.com/):
+* insert the link to your js here
+* remove the link below to the html5shiv
+* add the "no-js" class to the html tags at the top
+* you can also remove the link to respond.min.js if you included the MQ Polyfill in your modernizr build 
+-->
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<script src="../js/respond.min.js"></script>
+<script src="../js/tablefilter.js"></script>
+</head>
+<body>
+	<div class="gridContainer clearfix">
+		<div id="content" class="fluid  container-narrow">
+        	<div class="masthead">
+            	<ul class="nav nav-pills pull-right">
+              		<li><a href="../">Home</a></li>
+              		<li class="active"><a href="../commands">Commands</a></li>
+              		<li><a href="../authorize">Authorize</a></li>
+            	</ul>
+        	</div>
+			<br />
+			<br />
+			<br />
+        	<hr>
+			<br />
+			<br />
+        	<div id="command-table">
+				<table id="commandTable" class="table table-responsive table-bordered">
+					<th>Command</th>
+					<th>Response</th>
+					<th>Userlevel</th>
+					$tablebody
+				</table>
+				<script language="javascript" type="text/javascript">
+				//<![CDATA[
+				var commandTableFilters= {
+					btn: false,
+					col_0: "none",
+					col_1: "none",
+					col_2: "select",
+					col_width: true,
+					display_all_text: "[Show All]",
+					loader: true,
+					on_change: true,
+					alternate_rows: true
+				}
+				setFilterGrid("commandTable",commandTableFilters);
+				//]]>
+				</script>
+           	<div class="fluid disclaimer">Note, all of these commands are case insensitive.</a>.</div>
+      	</div>
+	</div>
+</body>
+</html>
