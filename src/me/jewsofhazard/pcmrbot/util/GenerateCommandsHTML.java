@@ -10,14 +10,19 @@ import me.jewsofhazard.pcmrbot.database.Database;
 
 public class GenerateCommandsHTML {
 
-	private static final String template = TFileReader.readFileAsString(new File("/var/www/commands/template.html"));
+	private static final String nixTemplate = TFileReader.readFileAsString(new File("/var/www/commands/template.html"));
+	private static final String winTemplate = TFileReader.readFileAsString(new File("C:/Apache2/htdocs/commands/template.html"));
 	
 	private static final Logger logger = Logger.getLogger(GenerateCommandsHTML.class+"");
 	
 	public static boolean createCommandsHTML(String channelNoHash) {
 		String tableBody = generateTableBodyHTML(channelNoHash);
 		if(tableBody != null) {
-			TFileWriter.overWriteFile(new File("/var/www/commands/%channel%.html".replace("%channel%", channelNoHash)), template.replace("$tablebody", tableBody));
+			if(System.getProperty("os.name").toLowerCase().contains("win")) {
+				TFileWriter.overWriteFile(new File("C:/Apache2/htdocs/commands/%channel%.html".replace("%channel%", channelNoHash)), winTemplate.replace("$tablebody", tableBody));
+			} else {
+				TFileWriter.overWriteFile(new File("/var/www/commands/%channel%.html".replace("%channel%", channelNoHash)), nixTemplate.replace("$tablebody", tableBody));
+			}
 			return true;
 		}
 		return false;

@@ -35,7 +35,7 @@ public class Setup extends Command implements ICommand {
 				"If you would like to permanantely disable this feature type \"!changeWelcome none\" without the quotes!");
 			MyBotMain.getBot().sendMessage(
 				channel,
-				"Also, if you would like to use subscriber raffles or change the stream title and game, please go to http://pcmrbot.no-ip.com/authorize to authorize the bot!");
+				"Also, if you would like to use subscriber raffles or change the stream title and game, please go to http://pcmrbot.no-ip.info/authorize to authorize the bot!");
 		}
 		return null;
 	}

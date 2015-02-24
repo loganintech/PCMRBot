@@ -219,7 +219,6 @@ public class IRCBot extends PircBot {
 	}
 
 	public void checkSpam(String channel, String message, String sender) {
-
 		if (!Database.isMod(sender, channel.substring(1))) {
 			if (message.matches("[A-Z\\s]{"
 					+ Database.getOption(channel.substring(1), Options.numCaps)
