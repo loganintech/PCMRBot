@@ -1,5 +1,5 @@
 /*	  It's a Twitch bot, because we can.
- *    Copyright (C) 2015  Logan Ssaso, James Wolff, Angablade
+ *    Copyright (C) 2015  Logan Saso, James Wolff, Kyle Nabinger
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ package me.jewsofhazard.pcmrbot.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -152,7 +153,7 @@ public class Database {
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
-			stmt = conn.createStatement();
+			stmt=conn.createStatement();
 			stmt.closeOnCompletion();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, String.format("Unable to create connection for SQLQuery: %s", sqlQuery), e);
@@ -164,6 +165,49 @@ public class Database {
 		}
 		return rs;
 	}
+
+	/**
+	 * Sends an update to the database (eg. INSERT, DELETE, etc.)
+	 * 
+	 * @param stmt
+	 * @return - true if it successfully executes the update
+	 */
+	private static boolean executeUpdate(PreparedStatement stmt) {
+		try {
+			stmt.closeOnCompletion();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, String.format("Unable to create connection for SQLCommand"), e);
+			return false;
+		}
+		try {
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, String.format("Unable to execute statment"), e);
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Sends a query to the database (eg. SELECT, etc.)
+	 * @param stmt
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	private static ResultSet executeQuery(PreparedStatement stmt) {
+		ResultSet rs = null;
+		try {
+			stmt.closeOnCompletion();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, String.format("Unable to create connection for SQLQuery"), e);
+		}
+		try {
+			rs = stmt.executeQuery();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, String.format("Unable to execute query"), e);
+		}
+		return rs;
+	}
 	
 	/**
 	 * Clears the auto replies table for the channel provided.
@@ -171,22 +215,8 @@ public class Database {
 	 * @param channelNoHash - the channel to clear auto replies for
 	 */
 	public static void clearAutoRepliesTable(String channelNoHash) {
-		Statement stmt;
-		Statement stmt1;
-		try {
-			stmt = conn.createStatement();
-			stmt.closeOnCompletion();
-			stmt.executeUpdate(String.format("DROP TABLE %s.%sAutoReplies", DATABASE, channelNoHash));
-		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, String.format("Unable to delete table %sAutoReplies!", channelNoHash), ex);
-		}
-		try {
-			stmt1 = conn.createStatement();
-			stmt1.closeOnCompletion();
-			stmt1.executeUpdate(String.format("CREATE TABLE %s.%sAutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))", DATABASE, channelNoHash));
-		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, String.format("Unable to create table %sAutoReplies!", channelNoHash), ex);
-		}
+		executeUpdate(String.format("DROP TABLE %s.%sAutoReplies", DATABASE, channelNoHash));
+		executeUpdate(String.format("CREATE TABLE %s.%sAutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))", DATABASE, channelNoHash));
 	}
 	
 	public static String getUserOAuth(String user) {
@@ -228,15 +258,41 @@ public class Database {
 	}
 
 	public static boolean setWelcomeMessage(String channelNoHash, TOptions option, String value) {
-		return executeUpdate(String.format("UPDATE %s.%sOptions SET optionID=\'%s\',value=\'%s\' WHERE optionID=\'%s\'", DATABASE, channelNoHash, option.getOptionID(), value, option.getOptionID()));
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement(String.format("UPDATE %s.%sOptions SET optionID=?,value=? WHERE optionID=?", DATABASE, channelNoHash));
+			stmt.setString(1, option.getOptionID());
+			stmt.setString(2, value);
+			stmt.setString(3, option.getOptionID());
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "An error occurred setting the welcome message", e);
+		}
+		return executeUpdate(stmt);
 	}
 
 	public static boolean setOption(String channelNoHash, TOptions option, int value) {
-		return executeUpdate(String.format("UPDATE %s.%sOptions SET optionID=\'%s\',value=\'%d\' WHERE optionID=\'%s\'", DATABASE, channelNoHash, option.getOptionID(), value, option.getOptionID()));
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement(String.format("UPDATE %s.%sOptions SET optionID=?,value=? WHERE optionID=?", DATABASE, channelNoHash));
+			stmt.setString(1, option.getOptionID());
+			stmt.setString(2, value+"");
+			stmt.setString(3, option.getOptionID());
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Unable to set option", e);
+		}
+		return executeUpdate(stmt);
 	}
 	
 	public static boolean addOption(String channelNoHash, TOptions option, String value) {
-		return executeUpdate(String.format("INSERT INTO %s.%sOptions VALUES(\'%s\' , \'%s\')", DATABASE, channelNoHash, option.getOptionID(), value));
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement(String.format("INSERT INTO %s.%sOptions VALUES(? , ?)", DATABASE, channelNoHash));
+			stmt.setString(1, option.getOptionID());
+			stmt.setString(2, value+"");
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Unable to add option", e);
+		}
+		return executeUpdate(stmt);
 	}
 
 	public static boolean isMod(String moderator, String channelNoHash) {
@@ -244,7 +300,7 @@ public class Database {
 		try {
 			return rs.next();
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, String.format("An error occurred adding %s to %s's Mod List. This can probably be ignored!", moderator, channelNoHash), e);
+			logger.log(Level.SEVERE, String.format("An error occurred checking if %s is in %s's Mod List.", moderator, channelNoHash), e);
 		}
 		return false;
 	}
@@ -254,7 +310,15 @@ public class Database {
 	}
 	
 	public static void addAutoReply(String channelNoHash, String keywords, String reply) {
-		executeUpdate(String.format("INSERT INTO %s.%sAutoReplies VALUES(\'%s\' , '%s\')", DATABASE, channelNoHash, keywords, reply));
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement(String.format("INSERT INTO %s.%sAutoReplies VALUES(? , ?)", DATABASE, channelNoHash));
+			stmt.setString(1, keywords);
+			stmt.setString(2, reply);
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Unable to set option", e);
+		}
+		executeUpdate(stmt);
 	}
 
 	public static ResultSet getAutoReplies(String channelNoHash) {
@@ -266,14 +330,20 @@ public class Database {
 	}
 
 	public static boolean delModerator(String moderator, String channelNoHash) {
-		if(MyBotMain.isDefaultMod(moderator, channelNoHash)) {
+		if(!MyBotMain.isDefaultMod(moderator, channelNoHash)) {
 			return executeUpdate(String.format("DELETE FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channelNoHash, moderator));
 		}
 		return false;
 	}
 
-	public static boolean delAutoReply(String channelNoHash, String keywords) {
-		return executeUpdate(String.format("DELETE FROM %s.%sAutoReplies WHERE keyWord=\'%s\'", DATABASE, channelNoHash, keywords));
+	public static boolean delAutoReply(String channelNoHash, String keywords) {PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement(String.format("DELETE FROM %s.%sAutoReplies WHERE keyWord=?", DATABASE, channelNoHash));
+			stmt.setString(1, keywords);
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Unable to set option", e);
+		}
+		return executeUpdate(stmt);
 	}
 
 	public static ResultSet getCustomCommands(String channelNoHash) {
@@ -281,10 +351,24 @@ public class Database {
 	}
 
 	public static boolean addSpam(String channelNoHash, String word) {
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement(String.format("INSERT INTO %s.%sSpam VALUES(?)", DATABASE, channelNoHash));
+			stmt.setString(1, word);
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Unable to set option", e);
+		}
 		return executeUpdate(String.format("INSERT INTO %s.%sSpam VALUES(\'%s\')", DATABASE, channelNoHash, word));
 	}
 	
 	public static boolean delSpam(String channelNoHash, String word) {
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement(String.format("DELETE FROM %s.%sSpam WHERE word=?", DATABASE, channelNoHash));
+			stmt.setString(1, word);
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Unable to set option", e);
+		}
 		return executeUpdate(String.format("DELETE FROM %s.%sSpam WHERE word=\'%s\'", DATABASE, channelNoHash, word));
 	}
 
@@ -305,5 +389,4 @@ public class Database {
 		}
 		return false;
 	}
-
 }

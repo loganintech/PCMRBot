@@ -17,31 +17,29 @@
 
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.twitch.TwitchUtilities;
+import me.jewsofhazard.pcmrbot.database.Database;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
-public class Title extends Command {
-
-	private CLevel level=CLevel.Mod;
+public class DelCommand extends Command {
 
 	@Override
 	public CLevel getCommandLevel() {
-		return level;
+		return CLevel.Mod;
 	}
-	
+
 	@Override
 	public String getCommandText() {
-		return "title";
+		return "delcom";
 	}
-	
+
 	@Override
-	public String execute(String channel, String sender, String...parameters) {
-		if (TwitchUtilities.updateTitle(channel.substring(1),
-				parameters[0])) {
-			return "Successfully changed the stream title to \"%title%\"!".replace("%title%", parameters[0]);
-		} else {
-			return "I am not authorized to do that visit http://pcmrbot.no-ip.info/authorize to allow me to do this and so much more!";
-		}
+	public String execute(String channel, String sender, String... parameters) {
+		String[] params = parameters[0].split("[|]");
+		try {
+			params[0].substring(0, params[0].indexOf('|'));
+		} catch (StringIndexOutOfBoundsException e) {}
+		Database.delAutoReply(channel.substring(1), params[0]);
+		return "Removed command from the database.";
 	}
 
 }

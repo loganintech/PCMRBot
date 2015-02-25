@@ -1,5 +1,5 @@
 /*	  It's a Twitch bot, because we can.
- *    Copyright (C) 2015  Logan Ssaso, James Wolff, Angablade
+ *    Copyright (C) 2015  Logan Saso, James Wolff, Kyle Nabinger
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by

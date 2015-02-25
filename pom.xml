@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>PCMRBot</groupId>
 	<artifactId>PCMRBot</artifactId>
-	<version>beta-v0.02.01</version>
+	<version>beta-v0.03.01</version>
 	<name>PCMRBot</name>
 	<repositories>
 		<repository>
