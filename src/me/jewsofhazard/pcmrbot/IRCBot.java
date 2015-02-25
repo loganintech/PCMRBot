@@ -68,6 +68,7 @@ public class IRCBot extends PircBot {
 		confirmationReplies = new HashMap<>();
 		chatPostSeen = new HashMap<>();
 		slowMode = new HashMap<>();
+		subMode = new HashMap<>();
 		polls = new HashMap<>();
 		raffles = new HashMap<>();
 	}
@@ -96,9 +97,10 @@ public class IRCBot extends PircBot {
 		try {
 			if (welcomeEnabled.get(channel)) {
 				if (!sender.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
-					sendMessage(
-							channel,
-							Database.getOption(channel.substring(1), Options.welcomeMessage).replace("%user%", sender));
+					String msg=Database.getOption(channel.substring(1), Options.welcomeMessage).replace("%user%", sender);
+                    if(!msg.equalsIgnoreCase("none")) {
+                        sendMessage(channel, msg);
+                    }
 				} else {
 
 					sendMessage(
@@ -314,7 +316,7 @@ public class IRCBot extends PircBot {
 	}
 	
 	public boolean getSubscribersMode(String channel) {
-		return slowMode.get(channel);
+		return subMode.get(channel);
 	}
 
 	public void removeWelcomeEnabled(String channel) {
