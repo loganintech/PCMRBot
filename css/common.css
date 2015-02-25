@@ -84,6 +84,8 @@ commandTable {
 	padding: 15px;
 	margin: 5px auto;
 	border: 1px solid #AAA;
+    -webkit-transition: height 2s; /* For Safari 3.1 to 6.0 */
+	transition: height 1s;
 }
 
 #twitch-player {
