@@ -1,10 +1,10 @@
 package me.jewsofhazard.pcmrbot.util;
 
-public enum Options {
+public enum TOptions {
 
 	welcomeMessage("welcomeMessage"), numCaps("numCaps"), numSymbols(
 			"numSymbols"), numEmotes("numEmotes"), paragraphLength(
-			"paragraphLength");
+			"paragraphLength"), link("link");
 
 	private final String optionID;
 
@@ -12,7 +12,7 @@ public enum Options {
 		return optionID;
 	}
 
-	Options(String id) {
+	TOptions(String id) {
 		optionID = id;
 	}
 }

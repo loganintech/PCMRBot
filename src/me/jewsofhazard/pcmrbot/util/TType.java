@@ -26,7 +26,7 @@ public enum TType {
 			"Hey! Watch it! (Too many symbols)"), EMOTE(
 			"We get it, you like using that emote! (Too many emotes)"), LINK(
 			"You can't just go posting things williy nilly (Link)"), SPAM(
-			"You sure do like to say that, huh? (Spam)"), PARAGRAPH(
+			"You sure do like to say that, huh? (Spam)", "Do you kiss you're mother with that mouth? (Spam)"), PARAGRAPH(
 			"A bit long winded aren't we? (Too many characters in your message)");
 
 	private final String[] messages;

@@ -1,9 +1,9 @@
 package me.jewsofhazard.pcmrbot.util;
 
-public enum UserLevel {
+public enum ULevel {
 	Normal,Follower,Subscriber;
 
-	public static UserLevel getTypeFromString(String level) {
+	public static ULevel getTypeFromString(String level) {
 		level=level.toLowerCase();
 		if(level.endsWith("s")) {
 			level=level.substring(0, level.length()-1);

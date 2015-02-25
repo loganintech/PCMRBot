@@ -1,13 +1,13 @@
 package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.database.Database;
-import me.jewsofhazard.pcmrbot.util.CommandLevel;
+import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class DelModerator extends Command implements ICommand {
 
 	@Override
-	public CommandLevel getCommandLevel() {
-		return CommandLevel.Owner;
+	public CLevel getCommandLevel() {
+		return CLevel.Owner;
 	}
 
 	@Override

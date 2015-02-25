@@ -1,15 +1,15 @@
 package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.MyBotMain;
-import me.jewsofhazard.pcmrbot.util.CommandLevel;
-import me.jewsofhazard.pcmrbot.util.UserLevel;
+import me.jewsofhazard.pcmrbot.util.CLevel;
+import me.jewsofhazard.pcmrbot.util.ULevel;
 
 public class Raffle extends Command implements ICommand {
 
-	private CommandLevel level=CommandLevel.Mod;
+	private CLevel level=CLevel.Mod;
 
 	@Override
-	public CommandLevel getCommandLevel() {
+	public CLevel getCommandLevel() {
 		return level;
 	}
 	
@@ -23,7 +23,7 @@ public class Raffle extends Command implements ICommand {
 		if(MyBotMain.getBot().getRaffle(channel) != null) {
 			return "There is already a raffle in progress!";
 		}
-		UserLevel level=UserLevel.getTypeFromString(parameters[0]);
+		ULevel level=ULevel.getTypeFromString(parameters[0]);
 		if(level == null) {
 			return "Improper raffle type! Valid choices are \"everyone\", \"followers\" \"subscribers\"";
 		}

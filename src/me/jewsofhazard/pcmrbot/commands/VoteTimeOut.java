@@ -2,15 +2,15 @@ package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.MyBotMain;
 import me.jewsofhazard.pcmrbot.database.Database;
-import me.jewsofhazard.pcmrbot.util.CommandLevel;
+import me.jewsofhazard.pcmrbot.util.CLevel;
 
 import org.jibble.pircbot.User;
 
 public class VoteTimeOut extends Command implements ICommand {
 
 	@Override
-	public CommandLevel getCommandLevel() {
-		return CommandLevel.Normal;
+	public CLevel getCommandLevel() {
+		return CLevel.Normal;
 	}
 
 	@Override

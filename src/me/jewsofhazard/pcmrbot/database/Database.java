@@ -25,7 +25,8 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.jewsofhazard.pcmrbot.util.Options;
+import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.util.TOptions;
 
 public class Database {
 
@@ -72,6 +73,7 @@ public class Database {
 		Statement stmt2;
 		Statement stmt3;
 		Statement stmt4;
+		Statement stmt5;
 		try {
 			stmt = conn.createStatement();
 			stmt.closeOnCompletion();
@@ -105,6 +107,13 @@ public class Database {
 				stmt4.executeUpdate(String.format("CREATE TABLE %s.%sAutoReplies(keyWord varchar(255), reply varchar(4000), PRIMARY KEY (keyWord))", DATABASE, channelNoHash));
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE, String.format("Unable to create table %sAutoReplies!", channelNoHash), ex);
+			}
+			try {
+				stmt5 = conn.createStatement();
+				stmt5.closeOnCompletion();
+				stmt5.executeUpdate(String.format("CREATE TABLE %s.%sWhitelist(userID varchar(30), PRIMARY KEY (userID))", DATABASE, channelNoHash));
+			} catch (SQLException ex) {
+				logger.log(Level.SEVERE, String.format("Unable to create table %sWhitelist!", channelNoHash), ex);
 			}
 			return true;
 		}
@@ -192,24 +201,41 @@ public class Database {
 		return null;
 	}
 
-	public static String getOption(String channelNoHash, Options option) {
+	public static int getOption(String channelNoHash, TOptions option) {
 		ResultSet rs=executeQuery(String.format("SELECT * FROM %s.%sOptions WHERE optionID=\'%s\'", DATABASE, channelNoHash, option.getOptionID()));
+		try {
+			if(rs.next()) {
+				return Integer.valueOf(rs.getString(2));
+			}
+			return -1;
+		} catch (SQLException | NumberFormatException e) {
+			logger.log(Level.SEVERE, String.format("Unable to get welcome message for %s", channelNoHash), e);
+		}
+		return -1;
+	}
+	
+	public static String getWelcomeMessage(String channelNoHash) {
+		ResultSet rs=executeQuery(String.format("SELECT * FROM %s.%sOptions WHERE optionID=\'%s\'", DATABASE, channelNoHash, TOptions.welcomeMessage));
 		try {
 			if(rs.next()) {
 				return rs.getString(2);
 			}
 			return null;
-		} catch (SQLException e) {
+		} catch (SQLException | NumberFormatException e) {
 			logger.log(Level.SEVERE, String.format("Unable to get welcome message for %s", channelNoHash), e);
 		}
 		return null;
 	}
 
-	public static boolean setOption(String channelNoHash, Options option, String value) {
+	public static boolean setWelcomeMessage(String channelNoHash, TOptions option, String value) {
 		return executeUpdate(String.format("UPDATE %s.%sOptions SET optionID=\'%s\',value=\'%s\' WHERE optionID=\'%s\'", DATABASE, channelNoHash, option.getOptionID(), value, option.getOptionID()));
 	}
+
+	public static boolean setOption(String channelNoHash, TOptions option, int value) {
+		return executeUpdate(String.format("UPDATE %s.%sOptions SET optionID=\'%s\',value=\'%d\' WHERE optionID=\'%s\'", DATABASE, channelNoHash, option.getOptionID(), value, option.getOptionID()));
+	}
 	
-	public static boolean addOption(String channelNoHash, Options option, String value) {
+	public static boolean addOption(String channelNoHash, TOptions option, String value) {
 		return executeUpdate(String.format("INSERT INTO %s.%sOptions VALUES(\'%s\' , \'%s\')", DATABASE, channelNoHash, option.getOptionID(), value));
 	}
 
@@ -240,7 +266,10 @@ public class Database {
 	}
 
 	public static boolean delModerator(String moderator, String channelNoHash) {
-		return executeUpdate(String.format("DELETE FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channelNoHash, moderator));
+		if(MyBotMain.isDefaultMod(moderator, channelNoHash)) {
+			return executeUpdate(String.format("DELETE FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channelNoHash, moderator));
+		}
+		return false;
 	}
 
 	public static boolean delAutoReply(String channelNoHash, String keywords) {
@@ -249,6 +278,32 @@ public class Database {
 
 	public static ResultSet getCustomCommands(String channelNoHash) {
 		return executeQuery(String.format("SELECT * FROM %s.%sAutoReplies WHERE keyWord LIKE '!%%'", DATABASE, channelNoHash));
+	}
+
+	public static boolean addSpam(String channelNoHash, String word) {
+		return executeUpdate(String.format("INSERT INTO %s.%sSpam VALUES(\'%s\')", DATABASE, channelNoHash, word));
+	}
+	
+	public static boolean delSpam(String channelNoHash, String word) {
+		return executeUpdate(String.format("DELETE FROM %s.%sSpam WHERE word=\'%s\'", DATABASE, channelNoHash, word));
+	}
+
+	public static boolean addToWhiteList(String channelNoHash, String target) {
+		return executeUpdate(String.format("INSERT INTO %s.%sWhitelist VALUES(\'%s\')", DATABASE, channelNoHash, target));
+	}
+
+	public static boolean delWhitelist(String channelNoHash, String target) {
+		return executeUpdate(String.format("DELETE FROM %s.%sWhitelist WHERE userID=\'%s\'", DATABASE, channelNoHash, target));
+	}
+
+	public static boolean isWhitelisted(String sender, String channelNoHash) {
+		ResultSet rs = executeQuery(String.format("SELECT * FROM %s.%sWhitelist WHERE userID=\'%s\'", DATABASE, channelNoHash, sender));
+		try {
+			return rs.next();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "An error occurred checking if %user% is witelisted!".replace("%user%", sender), e);
+		}
+		return false;
 	}
 
 }

@@ -1,9 +1,9 @@
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.util.CommandLevel;
+import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public interface ICommand { 
 	String execute(String channel, String sender, String... parameters);
-	CommandLevel getCommandLevel();
+	CLevel getCommandLevel();
 	String getCommandText();
 }

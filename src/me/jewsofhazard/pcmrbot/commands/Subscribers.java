@@ -3,15 +3,15 @@ package me.jewsofhazard.pcmrbot.commands;
 import java.util.HashMap;
 
 import me.jewsofhazard.pcmrbot.MyBotMain;
-import me.jewsofhazard.pcmrbot.util.CommandLevel;
+import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Subscribers extends Command implements ICommand {
 	
 	private HashMap<String, Boolean> subscriberModes;
-	private CommandLevel level=CommandLevel.Mod;
+	private CLevel level=CLevel.Mod;
 
 	@Override
-	public CommandLevel getCommandLevel() {
+	public CLevel getCommandLevel() {
 		return level;
 	}
 	
@@ -30,10 +30,10 @@ public class Subscribers extends Command implements ICommand {
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		if (!MyBotMain.getBot().getSubscribersMode(channel)) {
-			MyBotMain.getBot().setSubscribersMode(channel, true);
+			MyBotMain.getBot().setSubMode(channel, true);
 			return "/subscribers";
 		}
-		MyBotMain.getBot().setSubscribersMode(channel, false);
+		MyBotMain.getBot().setSubMode(channel, false);
 		return "/subscribersoff";
 	}
 }

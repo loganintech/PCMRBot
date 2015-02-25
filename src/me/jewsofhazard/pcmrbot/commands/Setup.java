@@ -1,7 +1,7 @@
 package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.MyBotMain;
-import me.jewsofhazard.pcmrbot.util.CommandLevel;
+import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Setup extends Command implements ICommand {
 
@@ -21,6 +21,9 @@ public class Setup extends Command implements ICommand {
 				channel,
 				"To change this, please run !changeOption <caps, symbols, emotes, paragraph>|<new value>. Note: If you make paragraph to short users may not be able to post proper sentences. Think of it like twitter messages.");
 			MyBotMain.getBot().sendMessage(
+					channel,
+					"If you would like to disable any spam protection simply set its value to -1, except for links which only takes \"enable\" or \"disable\".");
+			MyBotMain.getBot().sendMessage(
 				channel,
 				"Once you are finished type \"!setup continue\" in chat!");
 		} else {
@@ -32,7 +35,7 @@ public class Setup extends Command implements ICommand {
 				"If you want the users name to appear in the join message use %user%. This will cause the bot to replace that with the name of the person who is joining.");
 			MyBotMain.getBot().sendMessage(
 				channel,
-				"If you would like to permanantely disable this feature type \"!changeWelcome none\" without the quotes!");
+				"If you would like to permanantely disable this feature type \"!changeWelcome none\" without the quotes! To temporarily disable it type !disableWelcome and to enable it type !enableWelcome (This only works if the message is something is something other than \"none\")!");
 			MyBotMain.getBot().sendMessage(
 				channel,
 				"Also, if you would like to use subscriber raffles or change the stream title and game, please go to http://pcmrbot.no-ip.info/authorize to authorize the bot!");
@@ -41,8 +44,8 @@ public class Setup extends Command implements ICommand {
 	}
 
 	@Override
-	public CommandLevel getCommandLevel() {
-		return CommandLevel.Owner;
+	public CLevel getCommandLevel() {
+		return CLevel.Owner;
 	}
 
 	@Override

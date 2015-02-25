@@ -19,6 +19,7 @@ package me.jewsofhazard.pcmrbot;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -27,7 +28,8 @@ import java.util.logging.Logger;
 import me.jewsofhazard.pcmrbot.commands.AddModerator;
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
 import me.jewsofhazard.pcmrbot.database.Database;
-import me.jewsofhazard.pcmrbot.util.Options;
+import me.jewsofhazard.pcmrbot.util.TOptions;
+import me.jewsofhazard.pcmrbot.util.Permit;
 import me.jewsofhazard.pcmrbot.util.TType;
 import me.jewsofhazard.pcmrbot.util.Timeouts;
 
@@ -50,6 +52,7 @@ public class IRCBot extends PircBot {
 	private static HashMap<String,me.jewsofhazard.pcmrbot.util.Poll> polls;
 	private static HashMap<String,me.jewsofhazard.pcmrbot.util.Raffle> raffles;
 	private static HashMap<String,me.jewsofhazard.pcmrbot.util.VoteTimeOut> voteTimeOuts;
+	private static HashMap<String, ArrayList<Permit>> permits;
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
 	/**
@@ -71,6 +74,7 @@ public class IRCBot extends PircBot {
 		subMode = new HashMap<>();
 		polls = new HashMap<>();
 		raffles = new HashMap<>();
+		permits = new HashMap<>();
 	}
 
 	@Override
@@ -97,10 +101,10 @@ public class IRCBot extends PircBot {
 		try {
 			if (welcomeEnabled.get(channel)) {
 				if (!sender.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
-					String msg=Database.getOption(channel.substring(1), Options.welcomeMessage).replace("%user%", sender);
-                    if(!msg.equalsIgnoreCase("none")) {
-                        sendMessage(channel, msg);
-                    }
+					String msg=Database.getWelcomeMessage(channel.substring(1)).replace("%user%", sender);
+					if(!msg.equalsIgnoreCase("none")) {
+						sendMessage(channel, msg);
+					}
 				} else {
 
 					sendMessage(
@@ -148,23 +152,6 @@ public class IRCBot extends PircBot {
 			if(!sender.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
 				autoReplyCheck(channel, message);
 			}
-			
-			
-			
-			
-			
-			
-			/*else if (message.startsWith("!votekick ")
-					&& !voteKickActive && Database.isMod(sender, channel.substring(1))) {
-
-				message = message.substring(message.indexOf(" ") + 1);
-				voteKick(channel, message);
-
-			} else if (message.equalsIgnoreCase("!votekick") && voteKickActive) {
-
-				addToVoteKickCount(channel, sender);
-
-			} */
 		} catch (Exception e) {
 			logger.log(Level.WARNING,
 					"An error was thrown while executing onMessage() in "
@@ -221,27 +208,26 @@ public class IRCBot extends PircBot {
 	}
 
 	public void checkSpam(String channel, String message, String sender) {
-		if (!Database.isMod(sender, channel.substring(1))) {
-			if (message.matches("[A-Z\\s]{"
-					+ Database.getOption(channel.substring(1), Options.numCaps)
-					+ ",}")) {
+		if (!Database.isMod(sender, channel.substring(1)) && !Database.isWhitelisted(sender, channel.substring(1))) {
+			int caps = Database.getOption(channel.substring(1), TOptions.numCaps);
+			int symbols = Database.getOption(channel.substring(1), TOptions.numSymbols);
+			int link = Database.getOption(channel.substring(1), TOptions.link);
+			int paragraph = Database.getOption(channel.substring(1), TOptions.paragraphLength);
+			int emotes = Database.getOption(channel.substring(1), TOptions.numEmotes);
+			
+			if (caps != -1 && message.matches("[A-Z\\s]{" + caps + ",}")) {
 				new Timeouts(channel, sender, 1, TType.CAPS);
-			} else if (message
-					.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})")
-					|| message
-							.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?")) {
-				new Timeouts(channel, sender, 1, TType.LINK);
-			} else if (message.matches("[\\W_\\s]{"
-					+ Database.getOption(channel.substring(1), Options.numSymbols)
-					+ ",}")) {
+			} else if (link != -1 && (message.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})") || message.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?"))) {
+				if(!isPermitted(channel, sender)) {
+					new Timeouts(channel, sender, 1, TType.LINK);
+				} else {
+					removePermit(channel,  sender);
+				}
+			} else if (symbols != -1 && message.matches("[\\W_\\s]{" + symbols + ",}")) {
 				new Timeouts(channel, sender, 1, TType.SYMBOLS);
-			} else if (message.length() >= Integer.valueOf(Database.getOption(
-					channel.substring(1), Options.paragraphLength))) {
+			} else if (paragraph != -1 && message.length() >= paragraph) {
 				new Timeouts(channel, sender, 1, TType.PARAGRAPH);
-			} else if (message
-					.matches("(:\\(|:\\)|:/|:D|:o|:p|:z|;\\)|;p|<3|>\\(|B\\)|o_o|R\\)|4Head|ANELE|ArsonNoSexy|AsianGlow|AtGL|AthenaPMS|AtIvy|BabyRage|AtWW|BatChest|BCWarrior|BibleThump|BigBrother|BionicBunion|BlargNaut|BloodTrail|BORT|BrainSlug|BrokeBack|BuddhaBar|CougarHunt|DAESuppy|DansGame|DatSheffy|DBstyle|DendiFace|DogFace|EagleEye|EleGiggle|EvilFetus|FailFish|FPSMarksman|FrankerZ|FreakinStinkin|FUNgineer|FunRun|FuzzyOtterOO|GasJoker|GingerPower|GrammarKing|HassaanChop|HassanChop|HeyGuys|HotPokket|HumbleLife|ItsBoshyTime|Jebaited|KZowl|JKanStyle|JonCarnage|KAPOW|Kappa|Keepo|KevinTurtle|Kippa|Kreygasm|KZassault|KZcover|KZguerilla|KZhelghast|KZskull|Mau5|mcaT|MechaSupes|MrDestructoid|MrDestructoid|MVGame|NightBat|NinjaTroll|NoNoSpot|noScope|NotAtk|OMGScoots|OneHand|OpieOP|OptimizePrime|panicBasket|PanicVis|PazPazowitz|PeoplesChamp|PermaSmug|PicoMause|PipeHype|PJHarley|PJSalt|PMSTwin|PogChamp|Poooound|PRChase|PunchTrees|PuppeyFace|RaccAttack|RalpherZ|RedCoat|ResidentSleeper|RitzMitz|RuleFive|Shazam|shazamicon|ShazBotstix|ShazBotstix|ShibeZ|SMOrc|SMSkull|SoBayed|SoonerLater|SriHead|SSSsss|StoneLightning|StrawBeary|SuperVinlin|SwiftRage|TF2John|TheRinger|TheTarFu|TheThing|ThunBeast|TinyFace|TooSpicy|TriHard|TTours|UleetBackup|UncleNox|UnSane|Volcania|WholeWheat|WinWaker|WTRuck|WutFace|YouWHY|\\(mooning\\)|\\(poolparty\\)|\\(puke\\)|:\\'\\(|:tf:|aPliS|BaconEffect|BasedGod|BroBalt|bttvNice|ButterSauce|cabbag3|CandianRage|CHAccepted|CiGrip|ConcernDoge|D:|DatSauce|FapFapFap|FishMoley|ForeverAlone|FuckYea|GabeN|HailHelix|HerbPerve|Hhhehehe|HHydro|iAMbh|iamsocal|iDog|JessSaiyan|JuliAwesome|KaRappa|KKona|LLuda|M&Mjc|ManlyScreams|NaM|OhGod|OhGodchanZ|OhhhKee|OhMyGoodness|PancakeMix|PedoBear|PedoNam|PokerFace|PoleDoge|RageFace|RebeccaBlack|RollIt!|rStrike|SexPanda|She'llBeRight|ShoopDaWhoop|SourPls|SuchFraud|SwedSwag|TaxiBro|tEh|ToasTy|TopHam|TwaT|UrnCrown|VisLaud|WatChuSay|WhatAYolk|YetiZ|PraiseIt|\\s){"
-							+ Database.getOption(channel.substring(1),
-									Options.numEmotes) + ",}")) {
+			} else if (emotes != -1 && message.matches("(:\\(|:\\)|:/|:D|:o|:p|:z|;\\)|;p|<3|>\\(|B\\)|o_o|R\\)|4Head|ANELE|ArsonNoSexy|AsianGlow|AtGL|AthenaPMS|AtIvy|BabyRage|AtWW|BatChest|BCWarrior|BibleThump|BigBrother|BionicBunion|BlargNaut|BloodTrail|BORT|BrainSlug|BrokeBack|BuddhaBar|CougarHunt|DAESuppy|DansGame|DatSheffy|DBstyle|DendiFace|DogFace|EagleEye|EleGiggle|EvilFetus|FailFish|FPSMarksman|FrankerZ|FreakinStinkin|FUNgineer|FunRun|FuzzyOtterOO|GasJoker|GingerPower|GrammarKing|HassaanChop|HassanChop|HeyGuys|HotPokket|HumbleLife|ItsBoshyTime|Jebaited|KZowl|JKanStyle|JonCarnage|KAPOW|Kappa|Keepo|KevinTurtle|Kippa|Kreygasm|KZassault|KZcover|KZguerilla|KZhelghast|KZskull|Mau5|mcaT|MechaSupes|MrDestructoid|MrDestructoid|MVGame|NightBat|NinjaTroll|NoNoSpot|noScope|NotAtk|OMGScoots|OneHand|OpieOP|OptimizePrime|panicBasket|PanicVis|PazPazowitz|PeoplesChamp|PermaSmug|PicoMause|PipeHype|PJHarley|PJSalt|PMSTwin|PogChamp|Poooound|PRChase|PunchTrees|PuppeyFace|RaccAttack|RalpherZ|RedCoat|ResidentSleeper|RitzMitz|RuleFive|Shazam|shazamicon|ShazBotstix|ShazBotstix|ShibeZ|SMOrc|SMSkull|SoBayed|SoonerLater|SriHead|SSSsss|StoneLightning|StrawBeary|SuperVinlin|SwiftRage|TF2John|TheRinger|TheTarFu|TheThing|ThunBeast|TinyFace|TooSpicy|TriHard|TTours|UleetBackup|UncleNox|UnSane|Volcania|WholeWheat|WinWaker|WTRuck|WutFace|YouWHY|\\(mooning\\)|\\(poolparty\\)|\\(puke\\)|:\\'\\(|:tf:|aPliS|BaconEffect|BasedGod|BroBalt|bttvNice|ButterSauce|cabbag3|CandianRage|CHAccepted|CiGrip|ConcernDoge|D:|DatSauce|FapFapFap|FishMoley|ForeverAlone|FuckYea|GabeN|HailHelix|HerbPerve|Hhhehehe|HHydro|iAMbh|iamsocal|iDog|JessSaiyan|JuliAwesome|KaRappa|KKona|LLuda|M&Mjc|ManlyScreams|NaM|OhGod|OhGodchanZ|OhhhKee|OhMyGoodness|PancakeMix|PedoBear|PedoNam|PokerFace|PoleDoge|RageFace|RebeccaBlack|RollIt!|rStrike|SexPanda|She'llBeRight|ShoopDaWhoop|SourPls|SuchFraud|SwedSwag|TaxiBro|tEh|ToasTy|TopHam|TwaT|UrnCrown|VisLaud|WatChuSay|WhatAYolk|YetiZ|PraiseIt|\\s){"	+ emotes + ",}")) {
 				new Timeouts(channel, sender, 1, TType.EMOTE);
 			}
 			ResultSet rs = Database.getSpam(channel.substring(1));
@@ -258,7 +244,20 @@ public class IRCBot extends PircBot {
 		}
 
 	}
-	
+
+	public boolean isPermitted(String channel, String sender) {
+		ArrayList<Permit> ps=permits.get(sender);
+		if(ps == null) {
+			return false;
+		}
+		for(Permit p: ps) {
+			if(p.getChannel().equalsIgnoreCase(channel)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void setWelcomeEnabled(String channel, boolean value) {
 		welcomeEnabled.put(channel, value);
 	}
@@ -311,8 +310,8 @@ public class IRCBot extends PircBot {
 		return slowMode.get(channel);
 	}
 	
-	public void setSubscribersMode(String chanel, boolean subMode) {
-		IRCBot.slowMode.put(chanel, subMode);
+	public void setSubMode(String chanel, boolean s) {
+		subMode.put(chanel, s);
 	}
 	
 	public boolean getSubscribersMode(String channel) {
@@ -341,6 +340,46 @@ public class IRCBot extends PircBot {
 
 	public me.jewsofhazard.pcmrbot.util.VoteTimeOut getVoteTimeOut(String channel) {
 		return voteTimeOuts.get(channel);
+	}
+
+	public void addPermit(Permit permit, String user) {
+		ArrayList<Permit> p = permits.get(user);
+		if(p == null) {
+			p = new ArrayList<>();
+		}
+		p.add(permit);
+		permits.put(user, p);
+	}
+
+	public void removePermit(Permit permit, String user) {
+		ArrayList<Permit> p = permits.get(user);
+		if(p == null) {
+			return;
+		}
+		p.remove(permit);
+		if(p.size() > 0) {
+			permits.put(user, p);
+		} else {
+			permits.remove(user);
+		}
+	}
+	
+	private void removePermit(String channel, String sender) {
+		ArrayList<Permit> ps = permits.get(sender);
+		if(ps == null) {
+			return;
+		}
+		for(Permit p: ps) {
+			if(p.getChannel().equalsIgnoreCase(channel)) {
+				ps.remove(p);
+				break;
+			}
+		}
+		if(ps.size() > 0) {
+			permits.put(sender, ps);
+		} else {
+			permits.remove(sender);
+		}
 	}
 	
 }

@@ -1,14 +1,14 @@
 package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.MyBotMain;
-import me.jewsofhazard.pcmrbot.util.CommandLevel;
+import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Broadcast extends Command  implements ICommand {
 	
-	private CommandLevel level=CommandLevel.Mod;
+	private CLevel level=CLevel.Mod;
 
 	@Override
-	public CommandLevel getCommandLevel() {
+	public CLevel getCommandLevel() {
 		return level;
 	}
 	
@@ -22,7 +22,7 @@ public class Broadcast extends Command  implements ICommand {
 		if(channel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
 			String message=parameters[0];
 			for (String s : MyBotMain.getBot().getChannels()) {
-				if (!s.equalsIgnoreCase("#pcmrbot")) {
+				if (!s.equalsIgnoreCase(MyBotMain.getBotChannel())) {
 					MyBotMain.getBot().sendMessage(s,	message);
 				}
 			}

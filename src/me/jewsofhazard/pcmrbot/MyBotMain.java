@@ -25,8 +25,8 @@ import java.util.logging.Logger;
 
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
 import me.jewsofhazard.pcmrbot.database.Database;
-import me.jewsofhazard.pcmrbot.util.GenerateCommandsHTML;
-import me.jewsofhazard.pcmrbot.util.Options;
+import me.jewsofhazard.pcmrbot.util.CommandsPage;
+import me.jewsofhazard.pcmrbot.util.TOptions;
 import me.jewsofhazard.pcmrbot.util.TFileReader;
 
 import org.jibble.pircbot.IrcException;
@@ -35,7 +35,7 @@ public class MyBotMain implements Runnable{
 	
 	private static IRCBot bot;
 	private static String[] args;
-	private static final String botChannel = "#pcmrbot";
+	private static final String botChannel = "#pcmrbottester";
 	private static final Logger logger = Logger.getLogger(MyBotMain.class + "");
 	
 	public MyBotMain() {
@@ -117,19 +117,20 @@ public class MyBotMain implements Runnable{
 			if(!Database.isMod(channel.substring(1), channel.substring(1))) {
 				Database.addMod(channel.substring(1), channel.substring(1));
 			}
-			Database.addOption(channel.substring(1), Options.welcomeMessage, "Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
-			Database.addOption(channel.substring(1), Options.numCaps, "10");
-			Database.addOption(channel.substring(1), Options.numEmotes, "10");
-			Database.addOption(channel.substring(1), Options.numSymbols, "10");
-			Database.addOption(channel.substring(1), Options.paragraphLength, "250");
+			Database.addOption(channel.substring(1), TOptions.welcomeMessage, "Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
+			Database.addOption(channel.substring(1), TOptions.numCaps, "10");
+			Database.addOption(channel.substring(1), TOptions.numEmotes, "10");
+			Database.addOption(channel.substring(1), TOptions.numSymbols, "10");
+			Database.addOption(channel.substring(1), TOptions.link, "0");
+			Database.addOption(channel.substring(1), TOptions.paragraphLength, "250");
 		}
 		
 		bot.joinChannel(channel);
 		bot.setWelcomeEnabled(channel, true);
 		bot.setConfirmationEnabled(channel, true);
 		bot.setSlowMode(channel, false);
-		bot.setSubscribersMode(channel, false);
-		GenerateCommandsHTML.createCommandsHTML(channel.substring(1));
+		bot.setSubMode(channel, false);
+		CommandsPage.createCommandsHTML(channel.substring(1));
 		if (firstTime) {
 			bot.onFirstJoin(channel);
 		}
@@ -149,6 +150,10 @@ public class MyBotMain implements Runnable{
 
 	public static String getBotChannel() {
 		return botChannel;
+	}
+
+	public static boolean isDefaultMod(String moderator, String channelNoHash) {
+		return !moderator.equalsIgnoreCase(channelNoHash) && !moderator.equalsIgnoreCase("donald10101") && !moderator.equalsIgnoreCase("j3wsofhazard") && !moderator.equalsIgnoreCase("angablade") && !moderator.equalsIgnoreCase("pcmrbot");
 	}
 
 

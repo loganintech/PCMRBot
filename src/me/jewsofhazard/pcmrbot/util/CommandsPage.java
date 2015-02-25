@@ -8,11 +8,11 @@ import java.util.logging.Logger;
 
 import me.jewsofhazard.pcmrbot.database.Database;
 
-public class GenerateCommandsHTML {
+public class CommandsPage {
 
 	private static String template = getTemplate();
 	
-	private static final Logger logger = Logger.getLogger(GenerateCommandsHTML.class+"");
+	private static final Logger logger = Logger.getLogger(CommandsPage.class+"");
 	
 	public static boolean createCommandsHTML(String channelNoHash) {
 		String tableBody = generateTableBodyHTML(channelNoHash);
@@ -50,6 +50,13 @@ public class GenerateCommandsHTML {
 		}
 		return null;
 	}
+	
+	public static boolean pageExists(String channelNoHash) {
+		if(System.getProperty("os.name").toLowerCase().contains("win")) {
+			return new File("C:/Apache2/htdocs/commands/%channel%.html".replace("%channel%", channelNoHash)).exists();
+		}
+		return new File("/var/www/commands/commandsTemplate.html".replace("%channel%", channelNoHash)).exists();
+	}
 
 	private static String generateTableRow(String command, String reply) {
 		StringBuilder tr = new StringBuilder();
@@ -60,5 +67,4 @@ public class GenerateCommandsHTML {
 		.append("</tr>");
 		return tr.toString();
 	}
-	
 }
