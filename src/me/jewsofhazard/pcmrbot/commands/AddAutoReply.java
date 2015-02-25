@@ -1,14 +1,14 @@
 package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.database.Database;
-import me.jewsofhazard.pcmrbot.util.CommandLevel;
+import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class AddAutoReply extends Command implements ICommand{
 	
-	private CommandLevel level=CommandLevel.Mod;
+	private CLevel level=CLevel.Mod;
 
 	@Override
-	public CommandLevel getCommandLevel() {
+	public CLevel getCommandLevel() {
 		return level;
 	}
 	

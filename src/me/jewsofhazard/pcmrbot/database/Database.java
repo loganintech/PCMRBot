@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.jewsofhazard.pcmrbot.MyBotMain;
-import me.jewsofhazard.pcmrbot.util.Options;
+import me.jewsofhazard.pcmrbot.util.TOptions;
 
 public class Database {
 
@@ -193,24 +193,41 @@ public class Database {
 		return null;
 	}
 
-	public static String getOption(String channelNoHash, Options option) {
+	public static int getOption(String channelNoHash, TOptions option) {
 		ResultSet rs=executeQuery(String.format("SELECT * FROM %s.%sOptions WHERE optionID=\'%s\'", DATABASE, channelNoHash, option.getOptionID()));
+		try {
+			if(rs.next()) {
+				return Integer.valueOf(rs.getString(2));
+			}
+			return -1;
+		} catch (SQLException | NumberFormatException e) {
+			logger.log(Level.SEVERE, String.format("Unable to get welcome message for %s", channelNoHash), e);
+		}
+		return -1;
+	}
+	
+	public static String getWelcomeMessage(String channelNoHash) {
+		ResultSet rs=executeQuery(String.format("SELECT * FROM %s.%sOptions WHERE optionID=\'%s\'", DATABASE, channelNoHash, TOptions.welcomeMessage));
 		try {
 			if(rs.next()) {
 				return rs.getString(2);
 			}
 			return null;
-		} catch (SQLException e) {
+		} catch (SQLException | NumberFormatException e) {
 			logger.log(Level.SEVERE, String.format("Unable to get welcome message for %s", channelNoHash), e);
 		}
 		return null;
 	}
 
-	public static boolean setOption(String channelNoHash, Options option, String value) {
+	public static boolean setWelcomeMessage(String channelNoHash, TOptions option, String value) {
 		return executeUpdate(String.format("UPDATE %s.%sOptions SET optionID=\'%s\',value=\'%s\' WHERE optionID=\'%s\'", DATABASE, channelNoHash, option.getOptionID(), value, option.getOptionID()));
 	}
+
+	public static boolean setOption(String channelNoHash, TOptions option, int value) {
+		return executeUpdate(String.format("UPDATE %s.%sOptions SET optionID=\'%s\',value=\'%d\' WHERE optionID=\'%s\'", DATABASE, channelNoHash, option.getOptionID(), value, option.getOptionID()));
+	}
 	
-	public static boolean addOption(String channelNoHash, Options option, String value) {
+	public static boolean addOption(String channelNoHash, TOptions option, String value) {
 		return executeUpdate(String.format("INSERT INTO %s.%sOptions VALUES(\'%s\' , \'%s\')", DATABASE, channelNoHash, option.getOptionID(), value));
 	}
 
@@ -253,6 +270,14 @@ public class Database {
 
 	public static ResultSet getCustomCommands(String channelNoHash) {
 		return executeQuery(String.format("SELECT * FROM %s.%sAutoReplies WHERE keyWord LIKE '!%%'", DATABASE, channelNoHash));
+	}
+
+	public static boolean addSpam(String channelNoHash, String word) {
+		return executeUpdate(String.format("INSERT INTO %s.%sSpam VALUES(\'%s\')", DATABASE, channelNoHash, word));
+	}
+	
+	public static boolean delSpam(String channelNoHash, String word) {
+		return executeUpdate(String.format("DELETE FROM %s.%sSpam WHERE word=\'%s\'", DATABASE, channelNoHash, word));
 	}
 
 }

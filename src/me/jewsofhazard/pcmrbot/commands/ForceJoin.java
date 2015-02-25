@@ -1,13 +1,13 @@
 package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.MyBotMain;
-import me.jewsofhazard.pcmrbot.util.CommandLevel;
+import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class ForceJoin extends Command implements ICommand {
 
 	@Override
-	public CommandLevel getCommandLevel() {
-		return CommandLevel.Mod;
+	public CLevel getCommandLevel() {
+		return CLevel.Mod;
 	}
 
 	@Override

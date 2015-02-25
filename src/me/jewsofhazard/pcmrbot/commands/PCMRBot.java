@@ -1,13 +1,13 @@
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.util.CommandLevel;
+import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class PCMRBot extends Command implements ICommand {
 
-	private CommandLevel level=CommandLevel.Normal;
+	private CLevel level=CLevel.Normal;
 
 	@Override
-	public CommandLevel getCommandLevel() {
+	public CLevel getCommandLevel() {
 		return level;
 	}
 	

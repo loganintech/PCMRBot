@@ -12,9 +12,9 @@ public class Raffle {
 	// first user to ever win the raffle.
 	private ArrayList<String> participants;
 	private String channel;
-	private UserLevel type;
+	private ULevel type;
 	
-	public Raffle(String c, UserLevel t) {
+	public Raffle(String c, ULevel t) {
 		channel = c;
 		type = t;
 		participants = new ArrayList<>();
@@ -32,17 +32,17 @@ public class Raffle {
 			return;
 		}
 
-		if ((type.equals(UserLevel.Follower)) && (TwitchUtilities.isFollower(channel, sender) || sender.equalsIgnoreCase(channel.substring(1)))) {
+		if ((type.equals(ULevel.Follower)) && (TwitchUtilities.isFollower(channel, sender) || sender.equalsIgnoreCase(channel.substring(1)))) {
 			participants.add(sender);
 			if (MyBotMain.getBot().getConfirmationReplies(channel)) {
 				MyBotMain.getBot().sendMessage(channel, "%sender% has joined the raffle.".replace("%sender%", sender));
 			}
-		} else if (type.equals(UserLevel.Subscriber) && (TwitchUtilities.isSubscriber(channel, sender) || sender.equalsIgnoreCase(channel.substring(1)))) {
+		} else if (type.equals(ULevel.Subscriber) && (TwitchUtilities.isSubscriber(channel, sender) || sender.equalsIgnoreCase(channel.substring(1)))) {
 			participants.add(sender);
 			if (MyBotMain.getBot().getConfirmationReplies(channel)) {
 				MyBotMain.getBot().sendMessage(channel, "%sender% has joined the raffle.".replace("%sender%", sender));
 			}
-		} else if (type.equals(UserLevel.Normal)) {
+		} else if (type.equals(ULevel.Normal)) {
 			participants.add(sender);
 			if (MyBotMain.getBot().getConfirmationReplies(channel)) {
 				MyBotMain.getBot().sendMessage(channel, "%sender% has joined the raffle.".replace("%sender%", sender));

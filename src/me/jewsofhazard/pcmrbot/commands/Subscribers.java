@@ -3,15 +3,15 @@ package me.jewsofhazard.pcmrbot.commands;
 import java.util.HashMap;
 
 import me.jewsofhazard.pcmrbot.MyBotMain;
-import me.jewsofhazard.pcmrbot.util.CommandLevel;
+import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Subscribers extends Command implements ICommand {
 	
 	private HashMap<String, Boolean> subscriberModes;
-	private CommandLevel level=CommandLevel.Mod;
+	private CLevel level=CLevel.Mod;
 
 	@Override
-	public CommandLevel getCommandLevel() {
+	public CLevel getCommandLevel() {
 		return level;
 	}
 	

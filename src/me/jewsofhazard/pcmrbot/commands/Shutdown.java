@@ -4,15 +4,15 @@ import java.io.File;
 import java.util.ArrayList;
 
 import me.jewsofhazard.pcmrbot.MyBotMain;
-import me.jewsofhazard.pcmrbot.util.CommandLevel;
+import me.jewsofhazard.pcmrbot.util.CLevel;
 import me.jewsofhazard.pcmrbot.util.TFileWriter;
 
 public class Shutdown extends Command implements ICommand {
 
-	private CommandLevel level=CommandLevel.Mod;
+	private CLevel level=CLevel.Mod;
 
 	@Override
-	public CommandLevel getCommandLevel() {
+	public CLevel getCommandLevel() {
 		return level;
 	}
 	

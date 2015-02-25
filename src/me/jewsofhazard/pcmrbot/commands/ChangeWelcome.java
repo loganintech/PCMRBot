@@ -1,15 +1,15 @@
 package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.database.Database;
-import me.jewsofhazard.pcmrbot.util.CommandLevel;
-import me.jewsofhazard.pcmrbot.util.Options;
+import me.jewsofhazard.pcmrbot.util.CLevel;
+import me.jewsofhazard.pcmrbot.util.TOptions;
 
 public class ChangeWelcome extends Command  implements ICommand {
 
-	private CommandLevel level=CommandLevel.Mod;
+	private CLevel level=CLevel.Mod;
 
 	@Override
-	public CommandLevel getCommandLevel() {
+	public CLevel getCommandLevel() {
 		return level;
 	}
 	
@@ -21,7 +21,7 @@ public class ChangeWelcome extends Command  implements ICommand {
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		String message = parameters[0];
-		Database.setOption(channel.substring(1), Options.welcomeMessage, message);
+		Database.setWelcomeMessage(channel.substring(1), TOptions.welcomeMessage, message);
 		if(!message.equalsIgnoreCase("none")) {
 			return "The welcome message has been changed to: %message%".replace("%message%", message);
 		}
