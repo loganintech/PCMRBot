@@ -73,6 +73,7 @@ public class Database {
 		Statement stmt2;
 		Statement stmt3;
 		Statement stmt4;
+		Statement stmt5;
 		try {
 			stmt = conn.createStatement();
 			stmt.closeOnCompletion();
@@ -106,6 +107,13 @@ public class Database {
 				stmt4.executeUpdate(String.format("CREATE TABLE %s.%sAutoReplies(keyWord varchar(255), reply varchar(4000), PRIMARY KEY (keyWord))", DATABASE, channelNoHash));
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE, String.format("Unable to create table %sAutoReplies!", channelNoHash), ex);
+			}
+			try {
+				stmt5 = conn.createStatement();
+				stmt5.closeOnCompletion();
+				stmt5.executeUpdate(String.format("CREATE TABLE %s.%sWhitelist(userID varchar(30), PRIMARY KEY (userID))", DATABASE, channelNoHash));
+			} catch (SQLException ex) {
+				logger.log(Level.SEVERE, String.format("Unable to create table %sWhitelist!", channelNoHash), ex);
 			}
 			return true;
 		}
@@ -278,6 +286,24 @@ public class Database {
 	
 	public static boolean delSpam(String channelNoHash, String word) {
 		return executeUpdate(String.format("DELETE FROM %s.%sSpam WHERE word=\'%s\'", DATABASE, channelNoHash, word));
+	}
+
+	public static boolean addToWhiteList(String channelNoHash, String target) {
+		return executeUpdate(String.format("INSERT INTO %s.%sWhitelist VALUES(\'%s\')", DATABASE, channelNoHash, target));
+	}
+
+	public static boolean delWhitelist(String channelNoHash, String target) {
+		return executeUpdate(String.format("DELETE FROM %s.%sWhitelist WHERE userID=\'%s\'", DATABASE, channelNoHash, target));
+	}
+
+	public static boolean isWhitelisted(String sender, String channelNoHash) {
+		ResultSet rs = executeQuery(String.format("SELECT * FROM %s.%sWhitelist WHERE userID=\'%s\'", DATABASE, channelNoHash, sender));
+		try {
+			return rs.next();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "An error occurred checking if %user% is witelisted!".replace("%user%", sender), e);
+		}
+		return false;
 	}
 
 }

@@ -208,7 +208,7 @@ public class IRCBot extends PircBot {
 	}
 
 	public void checkSpam(String channel, String message, String sender) {
-		if (!Database.isMod(sender, channel.substring(1))) {
+		if (!Database.isMod(sender, channel.substring(1)) && !Database.isWhitelisted(sender, channel.substring(1))) {
 			int caps = Database.getOption(channel.substring(1), TOptions.numCaps);
 			int symbols = Database.getOption(channel.substring(1), TOptions.numSymbols);
 			int link = Database.getOption(channel.substring(1), TOptions.link);
