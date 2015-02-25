@@ -31,14 +31,14 @@ import me.jewsofhazard.pcmrbot.util.TFileReader;
 
 import org.jibble.pircbot.IrcException;
 
-public class MyBotMain implements Runnable{
-	
+public final class Main implements Runnable {
+
 	private static IRCBot bot;
 	private static String[] args;
 	private static final String botChannel = "#pcmrbot";
-	private static final Logger logger = Logger.getLogger(MyBotMain.class + "");
-	
-	public MyBotMain() {
+	private static final Logger logger = Logger.getLogger(Main.class + "");
+
+	public Main() {
 		new Thread(this).start();
 	}
 
@@ -50,29 +50,30 @@ public class MyBotMain implements Runnable{
 	 *            - the oAuth for the bot is passed on the command-line
 	 */
 	public static void main(String[] args) {
-		MyBotMain.args=args;
-		new MyBotMain();
-		try(Scanner scan=new Scanner(System.in)) {
-			while(true) {
-				String message=scan.nextLine();
-				String params="";
+		Main.args = args;
+		new Main();
+		try (Scanner scanner = new Scanner(System.in)) {
+			while (true) {
+				String message = scanner.nextLine();
+				String params = "";
 				try {
 					params = message.substring(message.indexOf(' ') + 1);
-				} catch(StringIndexOutOfBoundsException e) {
-					
+				} catch (StringIndexOutOfBoundsException e) {
+
 				}
-				
-				String command=message.substring(1, message.length());
+
+				String command = message.substring(1, message.length());
 				try {
 					command = message.substring(1, message.indexOf(' '));
-				} catch(StringIndexOutOfBoundsException e) {
-					
+				} catch (StringIndexOutOfBoundsException e) {
+
 				}
-				CommandParser.parse(command, getBotChannel().substring(1), getBotChannel(), params);
+				CommandParser.parse(command, getBotChannel().substring(1),
+						getBotChannel(), params);
 			}
 		}
 	}
-		
+
 	@Override
 	public void run() {
 		Database.initDBConnection(args[1]);
@@ -80,14 +81,14 @@ public class MyBotMain implements Runnable{
 
 		bot.setVerbose(true);
 		try {
-			bot.connect(
-					"irc.twitch.tv", 6667, args[0]);
+			bot.connect("irc.twitch.tv", 6667, args[0]);
 		} catch (IOException | IrcException e) {
-			logger.log(Level.SEVERE, "An error occurred while connecting to Twitch IRC", e);
+			logger.log(Level.SEVERE,
+					"An error occurred while connecting to Twitch IRC", e);
 		}
 		joinChannel(getBotChannel());
 		CommandParser.init();
-		
+
 		File f = new File("connectedChannels.txt");
 		if (f.exists()) {
 			for (String s : TFileReader.readFile(f)) {
@@ -103,7 +104,7 @@ public class MyBotMain implements Runnable{
 	 */
 	public static void joinChannel(String channel) {
 
-		if(bot.isWatchingChannel(channel)) {
+		if (bot.isWatchingChannel(channel)) {
 			return;
 		}
 
@@ -114,16 +115,20 @@ public class MyBotMain implements Runnable{
 			Database.addMod("j3wsofhazard", channel.substring(1));
 			Database.addMod("donald10101", channel.substring(1));
 			Database.addMod("angablade", channel.substring(1));
-			if(!Database.isMod(channel.substring(1), channel.substring(1))) {
+			if (!Database.isMod(channel.substring(1), channel.substring(1))) {
 				Database.addMod(channel.substring(1), channel.substring(1));
 			}
-			Database.addOption(channel.substring(1), Options.welcomeMessage, "Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
+			Database.addOption(
+					channel.substring(1),
+					Options.welcomeMessage,
+					"Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
 			Database.addOption(channel.substring(1), Options.numCaps, "10");
 			Database.addOption(channel.substring(1), Options.numEmotes, "10");
 			Database.addOption(channel.substring(1), Options.numSymbols, "10");
-			Database.addOption(channel.substring(1), Options.paragraphLength, "250");
+			Database.addOption(channel.substring(1), Options.paragraphLength,
+					"250");
 		}
-		
+
 		bot.joinChannel(channel);
 		bot.setWelcomeEnabled(channel, true);
 		bot.setConfirmationEnabled(channel, true);
@@ -134,7 +139,7 @@ public class MyBotMain implements Runnable{
 			bot.onFirstJoin(channel);
 		}
 	}
-	
+
 	public static void partChannel(String channel) {
 		bot.partChannel(channel);
 		bot.removeWelcomeEnabled(channel);
@@ -142,7 +147,7 @@ public class MyBotMain implements Runnable{
 		bot.removeSlowMode(channel);
 		bot.removeSubMode(channel);
 	}
-	
+
 	public static IRCBot getBot() {
 		return bot;
 	}
@@ -150,6 +155,5 @@ public class MyBotMain implements Runnable{
 	public static String getBotChannel() {
 		return botChannel;
 	}
-
 
 }

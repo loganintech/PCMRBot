@@ -7,20 +7,20 @@ import net.swisstech.bitly.model.v3.ShortenResponse;
 
 import com.google.gson.JsonParser;
 
-public class Shorten extends Command implements ICommand {
+public class Shorten extends Command {
 
-	private CommandLevel level=CommandLevel.Normal;
+	private CommandLevel level = CommandLevel.Normal;
 
 	@Override
 	public CommandLevel getCommandLevel() {
 		return level;
 	}
-	
+
 	@Override
 	public String getCommandText() {
 		return "shorten";
 	}
-	
+
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		String url = parameters[0];
@@ -33,7 +33,8 @@ public class Shorten extends Command implements ICommand {
 			return new JsonParser().parse(repShort.data.toString())
 					.getAsJsonObject().getAsJsonPrimitive("url").getAsString();
 		}
-		return "%url% is an invalid url! Make sure you include http(s)://.".replace("%url%", url);
+		return "%url% is an invalid url! Make sure you include http(s)://."
+				.replace("%url%", url);
 	}
 
 }

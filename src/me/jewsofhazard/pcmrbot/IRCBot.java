@@ -37,19 +37,20 @@ import org.jibble.pircbot.PircBot;
 
 /**
  *
- * @author JewsOfHazard, Donald10101, And Angablade.
+ * @author JewsOfHazard
+ * @author Donald10101
+ * @author Angablade
  */
-
 public class IRCBot extends PircBot {
-	
+
 	private static HashMap<String, String> chatPostSeen;
-	private static HashMap<String,Boolean> welcomeEnabled;
-	private static HashMap<String,Boolean> confirmationReplies;
-	private static HashMap<String,Boolean> slowMode;
-	private static HashMap<String,Boolean> subMode;
-	private static HashMap<String,me.jewsofhazard.pcmrbot.util.Poll> polls;
-	private static HashMap<String,me.jewsofhazard.pcmrbot.util.Raffle> raffles;
-	private static HashMap<String,me.jewsofhazard.pcmrbot.util.VoteTimeOut> voteTimeOuts;
+	private static HashMap<String, Boolean> welcomeEnabled;
+	private static HashMap<String, Boolean> confirmationReplies;
+	private static HashMap<String, Boolean> slowMode;
+	private static HashMap<String, Boolean> subMode;
+	private static HashMap<String, me.jewsofhazard.pcmrbot.util.Poll> polls;
+	private static HashMap<String, me.jewsofhazard.pcmrbot.util.Raffle> raffles;
+	private static HashMap<String, me.jewsofhazard.pcmrbot.util.VoteTimeOut> voteTimeOuts;
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
 	/**
@@ -59,7 +60,7 @@ public class IRCBot extends PircBot {
 	 *            - The IRC Channel we are connecting to.
 	 */
 	public IRCBot() {
-		this.setName(MyBotMain.getBotChannel().substring(1));
+		this.setName(Main.getBotChannel().substring(1));
 		initVariables();
 	}
 
@@ -85,8 +86,8 @@ public class IRCBot extends PircBot {
 			}
 		} catch (Exception e) {
 			logger.log(Level.WARNING,
-					"An error was thrown while executing onOp() in "
-							+ channel, e);
+					"An error was thrown while executing onOp() in " + channel,
+					e);
 		}
 	}
 
@@ -96,11 +97,13 @@ public class IRCBot extends PircBot {
 
 		try {
 			if (welcomeEnabled.get(channel)) {
-				if (!sender.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
-					String msg=Database.getOption(channel.substring(1), Options.welcomeMessage).replace("%user%", sender);
-                    if(!msg.equalsIgnoreCase("none")) {
-                        sendMessage(channel, msg);
-                    }
+				if (!sender.equalsIgnoreCase(Main.getBotChannel()
+						.substring(1))) {
+					String msg = Database.getOption(channel.substring(1),
+							Options.welcomeMessage).replace("%user%", sender);
+					if (!msg.equalsIgnoreCase("none")) {
+						sendMessage(channel, msg);
+					}
 				} else {
 
 					sendMessage(
@@ -122,49 +125,49 @@ public class IRCBot extends PircBot {
 		try {
 
 			checkSpam(channel, message, sender);
-			
-			String params="";
+
+			String params = "";
 			try {
 				params = message.substring(message.indexOf(' ') + 1);
-			} catch(StringIndexOutOfBoundsException e) {
-				
+			} catch (StringIndexOutOfBoundsException e) {
+
 			}
-			
-			String command=message.substring(1, message.length());
+
+			String command = message.substring(1, message.length());
 			try {
 				command = message.substring(1, message.indexOf(' '));
-			} catch(StringIndexOutOfBoundsException e) {
-				
+			} catch (StringIndexOutOfBoundsException e) {
+
 			}
 
 			Date date = new Date();
 			chatPostSeen.put(sender,
 					channel.substring(1) + "|" + date.toString());
 
-			String reply = CommandParser.parse(command.toLowerCase(), sender, channel, params);
-			if(reply != null) {
+			String reply = CommandParser.parse(command.toLowerCase(), sender,
+					channel, params);
+			if (reply != null) {
 				sendMessage(channel, reply);
 			}
-			if(!sender.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
+			if (!sender
+					.equalsIgnoreCase(Main.getBotChannel().substring(1))) {
 				autoReplyCheck(channel, message);
 			}
-			
-			
-			
-			
-			
-			
-			/*else if (message.startsWith("!votekick ")
-					&& !voteKickActive && Database.isMod(sender, channel.substring(1))) {
 
-				message = message.substring(message.indexOf(" ") + 1);
-				voteKick(channel, message);
-
-			} else if (message.equalsIgnoreCase("!votekick") && voteKickActive) {
-
-				addToVoteKickCount(channel, sender);
-
-			} */
+			/*
+			 * else if (message.startsWith("!votekick ") && !voteKickActive &&
+			 * Database.isMod(sender, channel.substring(1))) {
+			 * 
+			 * message = message.substring(message.indexOf(" ") + 1);
+			 * voteKick(channel, message);
+			 * 
+			 * } else if (message.equalsIgnoreCase("!votekick") &&
+			 * voteKickActive) {
+			 * 
+			 * addToVoteKickCount(channel, sender);
+			 * 
+			 * }
+			 */
 		} catch (Exception e) {
 			logger.log(Level.WARNING,
 					"An error was thrown while executing onMessage() in "
@@ -180,10 +183,10 @@ public class IRCBot extends PircBot {
 				channel,
 				"Hello, this appears to be the first time you have invited me to join your channel. We just have a few preliminary manners to attend to. First off make sure to mod me so I don't get timed out, then type !setup");
 	}
-	
+
 	public boolean isWatchingChannel(String channel) {
 		for (String s : getChannels()) {
-			if(s.equalsIgnoreCase(channel)) {
+			if (s.equalsIgnoreCase(channel)) {
 				return true;
 			}
 		}
@@ -192,15 +195,14 @@ public class IRCBot extends PircBot {
 
 	public void autoReplyCheck(String channel, String message) {
 
-		message=message.toLowerCase();
+		message = message.toLowerCase();
 		ResultSet rs = Database.getAutoReplies(channel.substring(1));
 		try {
 			while (rs.next()) {
 				String[] keyword = rs.getString(1).split(",");
 				boolean matches = true;
 				for (int i = 0; i < keyword.length; i++) {
-					if (!message.contains(
-							keyword[i].toLowerCase())) {
+					if (!message.contains(keyword[i].toLowerCase())) {
 						matches = false;
 						break;
 					}
@@ -232,8 +234,8 @@ public class IRCBot extends PircBot {
 							.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?")) {
 				new Timeouts(channel, sender, 1, TType.LINK);
 			} else if (message.matches("[\\W_\\s]{"
-					+ Database.getOption(channel.substring(1), Options.numSymbols)
-					+ ",}")) {
+					+ Database.getOption(channel.substring(1),
+							Options.numSymbols) + ",}")) {
 				new Timeouts(channel, sender, 1, TType.SYMBOLS);
 			} else if (message.length() >= Integer.valueOf(Database.getOption(
 					channel.substring(1), Options.paragraphLength))) {
@@ -258,11 +260,11 @@ public class IRCBot extends PircBot {
 		}
 
 	}
-	
+
 	public void setWelcomeEnabled(String channel, boolean value) {
 		welcomeEnabled.put(channel, value);
 	}
-	
+
 	public void setConfirmationEnabled(String channel, boolean value) {
 		confirmationReplies.put(channel, value);
 	}
@@ -270,7 +272,7 @@ public class IRCBot extends PircBot {
 	public String getChatPostSeen(String target) {
 		return chatPostSeen.get(target);
 	}
-	
+
 	public void addPoll(String channel, me.jewsofhazard.pcmrbot.util.Poll poll) {
 		polls.put(channel, poll);
 	}
@@ -291,7 +293,8 @@ public class IRCBot extends PircBot {
 		return confirmationReplies.get(channel);
 	}
 
-	public void addRaffle(String channel, me.jewsofhazard.pcmrbot.util.Raffle raffle) {
+	public void addRaffle(String channel,
+			me.jewsofhazard.pcmrbot.util.Raffle raffle) {
 		raffles.put(channel, raffle);
 	}
 
@@ -302,19 +305,19 @@ public class IRCBot extends PircBot {
 	public me.jewsofhazard.pcmrbot.util.Raffle getRaffle(String string) {
 		return raffles.get(string);
 	}
-	
+
 	public void setSlowMode(String chanel, boolean slowMode) {
 		IRCBot.slowMode.put(chanel, slowMode);
 	}
-	
+
 	public boolean getSlowMode(String channel) {
 		return slowMode.get(channel);
 	}
-	
+
 	public void setSubscribersMode(String chanel, boolean subMode) {
 		IRCBot.slowMode.put(chanel, subMode);
 	}
-	
+
 	public boolean getSubscribersMode(String channel) {
 		return subMode.get(channel);
 	}
@@ -335,12 +338,14 @@ public class IRCBot extends PircBot {
 		subMode.remove(channel);
 	}
 
-	public void addVoteTimeOut(String channel, me.jewsofhazard.pcmrbot.util.VoteTimeOut voteTimeOut) {
+	public void addVoteTimeOut(String channel,
+			me.jewsofhazard.pcmrbot.util.VoteTimeOut voteTimeOut) {
 		voteTimeOuts.put(channel, voteTimeOut);
 	}
 
-	public me.jewsofhazard.pcmrbot.util.VoteTimeOut getVoteTimeOut(String channel) {
+	public me.jewsofhazard.pcmrbot.util.VoteTimeOut getVoteTimeOut(
+			String channel) {
 		return voteTimeOuts.get(channel);
 	}
-	
+
 }

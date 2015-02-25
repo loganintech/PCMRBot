@@ -1,25 +1,25 @@
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.util.CommandLevel;
 
-public class DisableWelcome extends Command  implements ICommand {
+public class DisableWelcome extends Command {
 
-	private CommandLevel level=CommandLevel.Mod;
+	private CommandLevel level = CommandLevel.Mod;
 
 	@Override
 	public CommandLevel getCommandLevel() {
 		return level;
 	}
-	
+
 	@Override
 	public String getCommandText() {
 		return "disablewelcome";
 	}
-	
+
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		MyBotMain.getBot().setWelcomeEnabled(channel, false);
+		Main.getBot().setWelcomeEnabled(channel, false);
 		return "Welcome messages have been disabled.";
 	}
 
