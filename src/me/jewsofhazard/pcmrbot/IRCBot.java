@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.jewsofhazard.pcmrbot.cmd.Command;
 import me.jewsofhazard.pcmrbot.cmd.CommandManager;
 import me.jewsofhazard.pcmrbot.cmd.impl.AddModerator;
 import me.jewsofhazard.pcmrbot.db.Database;
@@ -71,7 +72,9 @@ public class IRCBot extends PircBot {
 		polls = new HashMap<>();
 		raffles = new HashMap<>();
 		try {
-			cm.loadCommands(Paths.get("data/cmd/"));
+			for (Command cmd : cm.loadCommands(Paths.get("data/cmd/")))
+				// Testing purposes
+				System.out.println("Loaded command " + cmd.getCommandText());
 		} catch (IOException ex) {
 			/* TODO */
 		}
