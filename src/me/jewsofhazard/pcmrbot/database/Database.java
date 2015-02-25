@@ -25,6 +25,7 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.jewsofhazard.pcmrbot.MyBotMain;
 import me.jewsofhazard.pcmrbot.util.Options;
 
 public class Database {
@@ -240,7 +241,10 @@ public class Database {
 	}
 
 	public static boolean delModerator(String moderator, String channelNoHash) {
-		return executeUpdate(String.format("DELETE FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channelNoHash, moderator));
+		if(MyBotMain.isDefaultMod(moderator, channelNoHash)) {
+			return executeUpdate(String.format("DELETE FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channelNoHash, moderator));
+		}
+		return false;
 	}
 
 	public static boolean delAutoReply(String channelNoHash, String keywords) {

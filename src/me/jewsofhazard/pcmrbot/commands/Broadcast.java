@@ -22,7 +22,7 @@ public class Broadcast extends Command  implements ICommand {
 		if(channel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
 			String message=parameters[0];
 			for (String s : MyBotMain.getBot().getChannels()) {
-				if (!s.equalsIgnoreCase("#pcmrbot")) {
+				if (!s.equalsIgnoreCase(MyBotMain.getBotChannel())) {
 					MyBotMain.getBot().sendMessage(s,	message);
 				}
 			}

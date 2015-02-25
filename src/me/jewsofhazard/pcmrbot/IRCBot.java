@@ -19,6 +19,7 @@ package me.jewsofhazard.pcmrbot;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -28,6 +29,7 @@ import me.jewsofhazard.pcmrbot.commands.AddModerator;
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
 import me.jewsofhazard.pcmrbot.database.Database;
 import me.jewsofhazard.pcmrbot.util.Options;
+import me.jewsofhazard.pcmrbot.util.Permit;
 import me.jewsofhazard.pcmrbot.util.TType;
 import me.jewsofhazard.pcmrbot.util.Timeouts;
 
@@ -50,6 +52,7 @@ public class IRCBot extends PircBot {
 	private static HashMap<String,me.jewsofhazard.pcmrbot.util.Poll> polls;
 	private static HashMap<String,me.jewsofhazard.pcmrbot.util.Raffle> raffles;
 	private static HashMap<String,me.jewsofhazard.pcmrbot.util.VoteTimeOut> voteTimeOuts;
+	private static HashMap<String, ArrayList<Permit>> permits;
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
 	/**
@@ -68,8 +71,10 @@ public class IRCBot extends PircBot {
 		confirmationReplies = new HashMap<>();
 		chatPostSeen = new HashMap<>();
 		slowMode = new HashMap<>();
+		subMode = new HashMap<>();
 		polls = new HashMap<>();
 		raffles = new HashMap<>();
+		permits = new HashMap<>();
 	}
 
 	@Override
@@ -96,9 +101,10 @@ public class IRCBot extends PircBot {
 		try {
 			if (welcomeEnabled.get(channel)) {
 				if (!sender.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
-					sendMessage(
-							channel,
-							Database.getOption(channel.substring(1), Options.welcomeMessage).replace("%user%", sender));
+					String msg=Database.getOption(channel.substring(1), Options.welcomeMessage).replace("%user%", sender);
+					if(!msg.equalsIgnoreCase("none")) {
+						sendMessage(channel, msg);
+					}
 				} else {
 
 					sendMessage(
@@ -146,23 +152,6 @@ public class IRCBot extends PircBot {
 			if(!sender.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
 				autoReplyCheck(channel, message);
 			}
-			
-			
-			
-			
-			
-			
-			/*else if (message.startsWith("!votekick ")
-					&& !voteKickActive && Database.isMod(sender, channel.substring(1))) {
-
-				message = message.substring(message.indexOf(" ") + 1);
-				voteKick(channel, message);
-
-			} else if (message.equalsIgnoreCase("!votekick") && voteKickActive) {
-
-				addToVoteKickCount(channel, sender);
-
-			} */
 		} catch (Exception e) {
 			logger.log(Level.WARNING,
 					"An error was thrown while executing onMessage() in "
@@ -224,11 +213,12 @@ public class IRCBot extends PircBot {
 					+ Database.getOption(channel.substring(1), Options.numCaps)
 					+ ",}")) {
 				new Timeouts(channel, sender, 1, TType.CAPS);
-			} else if (message
-					.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})")
-					|| message
-							.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?")) {
-				new Timeouts(channel, sender, 1, TType.LINK);
+			} else if ((message.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})") || message.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?"))) {
+				if(!isPermitted(channel, sender)) {
+					new Timeouts(channel, sender, 1, TType.LINK);
+				} else {
+					removePermit(channel,  sender);
+				}
 			} else if (message.matches("[\\W_\\s]{"
 					+ Database.getOption(channel.substring(1), Options.numSymbols)
 					+ ",}")) {
@@ -256,7 +246,20 @@ public class IRCBot extends PircBot {
 		}
 
 	}
-	
+
+	public boolean isPermitted(String channel, String sender) {
+		ArrayList<Permit> ps=permits.get(sender);
+		if(ps == null) {
+			return false;
+		}
+		for(Permit p: ps) {
+			if(p.getChannel().equalsIgnoreCase(channel)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void setWelcomeEnabled(String channel, boolean value) {
 		welcomeEnabled.put(channel, value);
 	}
@@ -309,8 +312,8 @@ public class IRCBot extends PircBot {
 		return slowMode.get(channel);
 	}
 	
-	public void setSubscribersMode(String chanel, boolean subMode) {
-		IRCBot.slowMode.put(chanel, subMode);
+	public void setSubMode(String chanel, boolean s) {
+		subMode.put(chanel, s);
 	}
 	
 	public boolean getSubscribersMode(String channel) {
@@ -339,6 +342,46 @@ public class IRCBot extends PircBot {
 
 	public me.jewsofhazard.pcmrbot.util.VoteTimeOut getVoteTimeOut(String channel) {
 		return voteTimeOuts.get(channel);
+	}
+
+	public void addPermit(Permit permit, String user) {
+		ArrayList<Permit> p = permits.get(user);
+		if(p == null) {
+			p = new ArrayList<>();
+		}
+		p.add(permit);
+		permits.put(user, p);
+	}
+
+	public void removePermit(Permit permit, String user) {
+		ArrayList<Permit> p = permits.get(user);
+		if(p == null) {
+			return;
+		}
+		p.remove(permit);
+		if(p.size() > 0) {
+			permits.put(user, p);
+		} else {
+			permits.remove(user);
+		}
+	}
+	
+	private void removePermit(String channel, String sender) {
+		ArrayList<Permit> ps = permits.get(sender);
+		if(ps == null) {
+			return;
+		}
+		for(Permit p: ps) {
+			if(p.getChannel().equalsIgnoreCase(channel)) {
+				ps.remove(p);
+				break;
+			}
+		}
+		if(ps.size() > 0) {
+			permits.put(sender, ps);
+		} else {
+			permits.remove(sender);
+		}
 	}
 	
 }

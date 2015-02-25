@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
 import me.jewsofhazard.pcmrbot.database.Database;
-import me.jewsofhazard.pcmrbot.util.GenerateCommandsHTML;
+import me.jewsofhazard.pcmrbot.util.CommandsPage;
 import me.jewsofhazard.pcmrbot.util.Options;
 import me.jewsofhazard.pcmrbot.util.TFileReader;
 
@@ -35,7 +35,7 @@ public class MyBotMain implements Runnable{
 	
 	private static IRCBot bot;
 	private static String[] args;
-	private static final String botChannel = "#pcmrbot";
+	private static final String botChannel = "#pcmrbottester";
 	private static final Logger logger = Logger.getLogger(MyBotMain.class + "");
 	
 	public MyBotMain() {
@@ -128,8 +128,8 @@ public class MyBotMain implements Runnable{
 		bot.setWelcomeEnabled(channel, true);
 		bot.setConfirmationEnabled(channel, true);
 		bot.setSlowMode(channel, false);
-		bot.setSubscribersMode(channel, false);
-		GenerateCommandsHTML.createCommandsHTML(channel.substring(1));
+		bot.setSubMode(channel, false);
+		CommandsPage.createCommandsHTML(channel.substring(1));
 		if (firstTime) {
 			bot.onFirstJoin(channel);
 		}
@@ -149,6 +149,10 @@ public class MyBotMain implements Runnable{
 
 	public static String getBotChannel() {
 		return botChannel;
+	}
+
+	public static boolean isDefaultMod(String moderator, String channelNoHash) {
+		return !moderator.equalsIgnoreCase(channelNoHash) && !moderator.equalsIgnoreCase("donald10101") && !moderator.equalsIgnoreCase("j3wsofhazard") && !moderator.equalsIgnoreCase("angablade") && !moderator.equalsIgnoreCase("pcmrbot");
 	}
 
 

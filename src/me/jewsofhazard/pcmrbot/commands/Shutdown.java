@@ -26,11 +26,9 @@ public class Shutdown extends Command implements ICommand {
 		if(channel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
 			ArrayList<String> channels = new ArrayList<>();
 			for (String s : MyBotMain.getBot().getChannels()) {
-				if(!s.equalsIgnoreCase(MyBotMain.getBotChannel())) {
-					channels.add(s);
-				}
+				channels.add(s);
+				MyBotMain.getBot().sendMessage(s, "I am shutting down, I will automatically rejoin your channel when I restart!");
 			}
-			MyBotMain.getBot().sendMessage(MyBotMain.getBotChannel(), new Broadcast().execute(MyBotMain.getBotChannel(), MyBotMain.getBotChannel().substring(1), "I am shutting down, I will automatically rejoin your channel when I restart!"));
 			TFileWriter.overWriteFile(new File("connectedChannels.txt"), channels);
 			System.exit(0);
 		}
