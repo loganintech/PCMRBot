@@ -17,6 +17,8 @@
 
 package me.jewsofhazard.pcmrbot;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -24,16 +26,14 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.jewsofhazard.pcmrbot.commands.AddModerator;
-import me.jewsofhazard.pcmrbot.commands.CommandParser;
-import me.jewsofhazard.pcmrbot.database.Database;
+import me.jewsofhazard.pcmrbot.cmd.CommandManager;
+import me.jewsofhazard.pcmrbot.cmd.impl.AddModerator;
+import me.jewsofhazard.pcmrbot.db.Database;
 import me.jewsofhazard.pcmrbot.util.Options;
 import me.jewsofhazard.pcmrbot.util.TType;
 import me.jewsofhazard.pcmrbot.util.Timeouts;
 
 import org.jibble.pircbot.PircBot;
-
-//
 
 /**
  *
@@ -53,6 +53,8 @@ public class IRCBot extends PircBot {
 	private static HashMap<String, me.jewsofhazard.pcmrbot.util.VoteTimeOut> voteTimeOuts;
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
+	private CommandManager cm = new CommandManager();
+
 	/**
 	 * Creates a new instance of IRCBot for the specified channel
 	 * 
@@ -60,11 +62,7 @@ public class IRCBot extends PircBot {
 	 *            - The IRC Channel we are connecting to.
 	 */
 	public IRCBot() {
-		this.setName(Main.getBotChannel().substring(1));
-		initVariables();
-	}
-
-	private void initVariables() {
+		setName(Main.getBotChannel().substring(1));
 		welcomeEnabled = new HashMap<>();
 		confirmationReplies = new HashMap<>();
 		chatPostSeen = new HashMap<>();
@@ -72,6 +70,11 @@ public class IRCBot extends PircBot {
 		subMode = new HashMap<>();
 		polls = new HashMap<>();
 		raffles = new HashMap<>();
+		try {
+			cm.loadCommands(Paths.get("data/cmd/"));
+		} catch (IOException ex) {
+			/* TODO */
+		}
 	}
 
 	@Override
@@ -97,8 +100,7 @@ public class IRCBot extends PircBot {
 
 		try {
 			if (welcomeEnabled.get(channel)) {
-				if (!sender.equalsIgnoreCase(Main.getBotChannel()
-						.substring(1))) {
+				if (!sender.equalsIgnoreCase(Main.getBotChannel().substring(1))) {
 					String msg = Database.getOption(channel.substring(1),
 							Options.welcomeMessage).replace("%user%", sender);
 					if (!msg.equalsIgnoreCase("none")) {
@@ -144,30 +146,14 @@ public class IRCBot extends PircBot {
 			chatPostSeen.put(sender,
 					channel.substring(1) + "|" + date.toString());
 
-			String reply = CommandParser.parse(command.toLowerCase(), sender,
-					channel, params);
+			String reply = cm.parse(command.toLowerCase(), sender, channel,
+					params);
 			if (reply != null) {
 				sendMessage(channel, reply);
 			}
-			if (!sender
-					.equalsIgnoreCase(Main.getBotChannel().substring(1))) {
+			if (!sender.equalsIgnoreCase(Main.getBotChannel().substring(1))) {
 				autoReplyCheck(channel, message);
 			}
-
-			/*
-			 * else if (message.startsWith("!votekick ") && !voteKickActive &&
-			 * Database.isMod(sender, channel.substring(1))) {
-			 * 
-			 * message = message.substring(message.indexOf(" ") + 1);
-			 * voteKick(channel, message);
-			 * 
-			 * } else if (message.equalsIgnoreCase("!votekick") &&
-			 * voteKickActive) {
-			 * 
-			 * addToVoteKickCount(channel, sender);
-			 * 
-			 * }
-			 */
 		} catch (Exception e) {
 			logger.log(Level.WARNING,
 					"An error was thrown while executing onMessage() in "

@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.jewsofhazard.pcmrbot.database.Database;
+import me.jewsofhazard.pcmrbot.db.Database;
 
 public class GenerateCommandsHTML {
 

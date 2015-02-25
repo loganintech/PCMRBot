@@ -19,12 +19,10 @@ package me.jewsofhazard.pcmrbot;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.jewsofhazard.pcmrbot.commands.CommandParser;
-import me.jewsofhazard.pcmrbot.database.Database;
+import me.jewsofhazard.pcmrbot.db.Database;
 import me.jewsofhazard.pcmrbot.util.GenerateCommandsHTML;
 import me.jewsofhazard.pcmrbot.util.Options;
 import me.jewsofhazard.pcmrbot.util.TFileReader;
@@ -40,10 +38,10 @@ public final class Main implements Runnable {
 	 * @param args
 	 *            - the oAuth for the bot is passed on the command-line
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Main.args = args;
 		new Main();
-		try (Scanner scanner = new Scanner(System.in)) {
+		/*try (Scanner scanner = new Scanner(System.in)) {
 			while (true) {
 				String message = scanner.nextLine();
 				String params = "";
@@ -62,7 +60,7 @@ public final class Main implements Runnable {
 				CommandParser.parse(command, getBotChannel().substring(1),
 						getBotChannel(), params);
 			}
-		}
+		}*/
 	}
 
 	private static IRCBot bot;
@@ -87,7 +85,6 @@ public final class Main implements Runnable {
 					"An error occurred while connecting to Twitch IRC", e);
 		}
 		joinChannel(getBotChannel());
-		CommandParser.init();
 
 		File f = new File("connectedChannels.txt");
 		if (f.exists()) {

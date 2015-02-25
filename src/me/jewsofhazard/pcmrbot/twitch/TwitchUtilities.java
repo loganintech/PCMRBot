@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import me.jewsofhazard.pcmrbot.database.Database;
+import me.jewsofhazard.pcmrbot.db.Database;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
