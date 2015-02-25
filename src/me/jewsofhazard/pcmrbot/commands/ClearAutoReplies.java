@@ -22,11 +22,9 @@ import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class ClearAutoReplies extends Command {
 
-	private CLevel level=CLevel.Owner;
-
 	@Override
 	public CLevel getCommandLevel() {
-		return level;
+		return CLevel.Owner;
 	}
 	
 	@Override
