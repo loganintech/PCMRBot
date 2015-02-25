@@ -22,11 +22,9 @@ import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Enter extends Command {
 
-	private CLevel level=CLevel.Normal;
-
 	@Override
 	public CLevel getCommandLevel() {
-		return level;
+		return CLevel.Normal;
 	}
 	
 	@Override

@@ -21,11 +21,9 @@ import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Slap extends Command {
 
-	private CLevel level=CLevel.Normal;
-
 	@Override
 	public CLevel getCommandLevel() {
-		return level;
+		return CLevel.Normal;
 	}
 	
 	@Override

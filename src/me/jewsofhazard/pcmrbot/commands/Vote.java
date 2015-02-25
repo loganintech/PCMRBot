@@ -21,12 +21,9 @@ import me.jewsofhazard.pcmrbot.MyBotMain;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Vote extends Command {
-
-	private CLevel level=CLevel.Normal;
-
 	@Override
 	public CLevel getCommandLevel() {
-		return level;
+		return CLevel.Normal;
 	}
 	
 	@Override

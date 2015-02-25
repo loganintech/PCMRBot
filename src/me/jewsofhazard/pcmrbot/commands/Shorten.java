@@ -26,11 +26,9 @@ import com.google.gson.JsonParser;
 
 public class Shorten extends Command {
 
-	private CLevel level=CLevel.Normal;
-
 	@Override
 	public CLevel getCommandLevel() {
-		return level;
+		return CLevel.Normal;
 	}
 	
 	@Override

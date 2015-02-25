@@ -21,11 +21,9 @@ import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Me extends Command {
 
-	private CLevel level=CLevel.Mod;
-
 	@Override
 	public CLevel getCommandLevel() {
-		return level;
+		return CLevel.Normal;
 	}
 	
 	@Override

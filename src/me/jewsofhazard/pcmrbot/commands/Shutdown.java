@@ -26,11 +26,9 @@ import me.jewsofhazard.pcmrbot.util.TFileWriter;
 
 public class Shutdown extends Command {
 
-	private CLevel level=CLevel.Mod;
-
 	@Override
 	public CLevel getCommandLevel() {
-		return level;
+		return CLevel.Normal;
 	}
 	
 	@Override

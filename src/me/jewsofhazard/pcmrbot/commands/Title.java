@@ -21,12 +21,9 @@ import me.jewsofhazard.pcmrbot.twitch.TwitchUtilities;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Title extends Command {
-
-	private CLevel level=CLevel.Mod;
-
 	@Override
 	public CLevel getCommandLevel() {
-		return level;
+		return CLevel.Mod;
 	}
 	
 	@Override

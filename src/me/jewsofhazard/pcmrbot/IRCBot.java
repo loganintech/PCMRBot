@@ -119,6 +119,21 @@ public class IRCBot extends PircBot {
 		}
 	}
 
+        public void onLeave(String channel, String sender, String login, String hostname){
+        
+                try {
+			
+			sendMessage(
+                                        "#pcmrbot",
+                                                 String.format("%s has left %s's channel.", sender, channel));
+			}
+                catch (Exception e) {
+			logger.log(Level.SEVERE,
+					"An error occurred while executing onLeave()", e);
+		}
+        
+        }
+        
 	@Override
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message) {

@@ -23,11 +23,9 @@ import me.jewsofhazard.pcmrbot.util.TOptions;
 
 public class ChangeWelcome extends Command {
 
-	private CLevel level=CLevel.Mod;
-
 	@Override
 	public CLevel getCommandLevel() {
-		return level;
+		return CLevel.Mod;
 	}
 	
 	@Override
