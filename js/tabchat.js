@@ -1,8 +1,6 @@
 function loadtwitch(username){
 
-			document.getElementById('twitch').setAttribute("style","height:15px; transition: height 1s;");
-		document.getElementById('twitch').innerHTML='<img src="./media/loading.gif"  height="15" width="15" />Loading.....';
-	
+	document.getElementById('twitch').innerHTML='<img src="./media/loading.gif"  height="15" width="15" />Loading.....';
 	
 	setTimeout(function(){
 		switch (username) {
@@ -27,14 +25,5 @@ function loadtwitch(username){
 			break;
 		}
 	},1000);
-	
-
-	
-	
-
-	setTimeout(function(){
-		document.getElementById('twitch').setAttribute("style","height:460px; transition: height 1s;");
-	},1000);
-
 }
 //<ul id="navtabs" class="navtabs"><li><button onclick="javascript:loadtwitch('angablade');">Angablade</button></li><li><button onclick="javascript:loadtwitch('donald10101');">Donald10101</button></li><li><button onclick="javascript:loadtwitch('j3wsofhazard');">J3wsOfHazard</button></li><li class="selected"><button onclick="javascript:loadtwitch('officialpcmasterrace');">Official PC Master Race</button></li></ul>
