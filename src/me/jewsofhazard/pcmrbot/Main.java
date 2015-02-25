@@ -33,15 +33,6 @@ import org.jibble.pircbot.IrcException;
 
 public final class Main implements Runnable {
 
-	private static IRCBot bot;
-	private static String[] args;
-	private static final String botChannel = "#pcmrbot";
-	private static final Logger logger = Logger.getLogger(Main.class + "");
-
-	public Main() {
-		new Thread(this).start();
-	}
-
 	/**
 	 * Performs all of the setup for the bot, both on first run, and all
 	 * subsequent runs.
@@ -72,6 +63,15 @@ public final class Main implements Runnable {
 						getBotChannel(), params);
 			}
 		}
+	}
+
+	private static IRCBot bot;
+	private static String[] args;
+	private static final String botChannel = "#pcmrbot";
+	private static final Logger logger = Logger.getLogger(Main.class + "");
+
+	public Main() {
+		new Thread(this).start();
 	}
 
 	@Override
