@@ -42,7 +42,7 @@ public class MyBotMain implements Runnable{
 		new Thread(this).start();
 	}
 
-	/**
+	/** 
 	 * Performs all of the setup for the bot, both on first run, and all
 	 * subsequent runs.
 	 * 
