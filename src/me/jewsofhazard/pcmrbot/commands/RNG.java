@@ -36,6 +36,7 @@ public class RNG extends Command {
         catch(NumberFormatException e){
         return "You have to type a valid number.";
         }
+        
     }
     
 }

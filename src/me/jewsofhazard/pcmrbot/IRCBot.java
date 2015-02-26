@@ -246,9 +246,12 @@ public class IRCBot extends PircBot {
 				new Timeouts(channel, sender, 1, TType.EMOTE);
 			}
 			ResultSet rs = Database.getSpam(channel.substring(1));
-			try {
+			//System.out.println("Downloaded the spam check database.");
+                        try {
 				while (rs.next()) {
+                                    //System.out.println("Spam checked for possible checks.");
 					if (message.matches("(" + rs.getString(1) + ")+")) {
+                                            //System.out.println("Spam checked and found true");
 						new Timeouts(channel, sender, 1, TType.SPAM);
 					}
 				}
