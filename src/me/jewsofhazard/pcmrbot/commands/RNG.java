@@ -29,9 +29,13 @@ public class RNG extends Command {
     @Override
     public String execute(String channel, String sender, String... parameters){
     
+        try{
         Random rand = new Random();
-        return "Your random number is " + Integer.toString(rand.nextInt(Integer.valueOf(parameters[0] + 1))) + ".";
-        
+        return "Your random number is " + Integer.toString(rand.nextInt(Integer.valueOf(parameters[0]) + 1)) + ".";
+        }
+        catch(NumberFormatException e){
+        return "You have to type a valid number.";
+        }
     }
     
 }
