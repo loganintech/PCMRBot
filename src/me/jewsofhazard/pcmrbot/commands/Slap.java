@@ -33,7 +33,7 @@ public class Slap extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		return "slaps %target% with a raw fish".replace("%target%", parameters[0]);
+		return "/me slaps %target% with a raw fish".replace("%target%", parameters[0]);
 	}
 
 }

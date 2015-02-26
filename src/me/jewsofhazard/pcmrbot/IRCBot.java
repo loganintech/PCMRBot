@@ -333,7 +333,7 @@ public class IRCBot extends PircBot {
 	}
 	
 	public boolean getSubscribersMode(String channel) {
-		return slowMode.get(channel);
+		return subMode.get(channel);
 	}
 
 	public void removeWelcomeEnabled(String channel) {
