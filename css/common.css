@@ -79,12 +79,13 @@ commandTable {
 }
 
 #twitch {
+	height: 460px;
 	text-align: center;
 	background-color: 121212;
 	padding: 15px;
 	margin: 5px auto;
 	border: 1px solid #AAA;
-    -webkit-transition: height 2s; /* For Safari 3.1 to 6.0 */
+    -webkit-transition: height 1s; /* For Safari 3.1 to 6.0 */
 	transition: height 1s;
 }
 
