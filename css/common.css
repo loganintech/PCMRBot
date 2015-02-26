@@ -87,6 +87,16 @@ commandTable {
 	border: 1px solid #AAA;
     -webkit-transition: height 1s; /* For Safari 3.1 to 6.0 */
 	transition: height 1s;
+	
+
+}
+
+p.vs {
+	position: relative;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
 }
 
 #twitch-player {
