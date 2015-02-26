@@ -44,7 +44,7 @@
                        <archive>
                           <manifest>
 
-                              <mainClass>com.jewsofhazard.pcmrbot.MyBotMain</mainClass>
+                              <mainClass>me.jewsofhazard.pcmrbot.MyBotMain</mainClass>
                           </manifest>
                        </archive>
                     </configuration>

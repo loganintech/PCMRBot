@@ -35,7 +35,7 @@ public class MyBotMain implements Runnable{
 	
 	private static IRCBot bot;
 	private static String[] args;
-	private static final String botChannel = "#pcmrbottester";
+	private static final String botChannel = "#pcmrbot";
 	private static final Logger logger = Logger.getLogger(MyBotMain.class + "");
 	
 	public MyBotMain() {
