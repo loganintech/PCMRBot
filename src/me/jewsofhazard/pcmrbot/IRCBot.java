@@ -28,14 +28,13 @@ import java.util.logging.Logger;
 import me.jewsofhazard.pcmrbot.commands.AddModerator;
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
 import me.jewsofhazard.pcmrbot.database.Database;
-import me.jewsofhazard.pcmrbot.util.TOptions;
 import me.jewsofhazard.pcmrbot.util.Permit;
+import me.jewsofhazard.pcmrbot.util.PointsRunnable;
+import me.jewsofhazard.pcmrbot.util.TOptions;
 import me.jewsofhazard.pcmrbot.util.TType;
 import me.jewsofhazard.pcmrbot.util.Timeouts;
 
 import org.jibble.pircbot.PircBot;
-
-//
 
 /**
  *
@@ -43,15 +42,15 @@ import org.jibble.pircbot.PircBot;
  */
 
 public class IRCBot extends PircBot {
-	
+
 	private static HashMap<String, String> chatPostSeen;
-	private static HashMap<String,Boolean> welcomeEnabled;
-	private static HashMap<String,Boolean> confirmationReplies;
-	private static HashMap<String,Boolean> slowMode;
-	private static HashMap<String,Boolean> subMode;
-	private static HashMap<String,me.jewsofhazard.pcmrbot.util.Poll> polls;
-	private static HashMap<String,me.jewsofhazard.pcmrbot.util.Raffle> raffles;
-	private static HashMap<String,me.jewsofhazard.pcmrbot.util.VoteTimeOut> voteTimeOuts;
+	private static HashMap<String, Boolean> welcomeEnabled;
+	private static HashMap<String, Boolean> confirmationReplies;
+	private static HashMap<String, Boolean> slowMode;
+	private static HashMap<String, Boolean> subMode;
+	private static HashMap<String, me.jewsofhazard.pcmrbot.util.Poll> polls;
+	private static HashMap<String, me.jewsofhazard.pcmrbot.util.Raffle> raffles;
+	private static HashMap<String, me.jewsofhazard.pcmrbot.util.VoteTimeOut> voteTimeOuts;
 	private static HashMap<String, ArrayList<Permit>> permits;
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
@@ -89,51 +88,49 @@ public class IRCBot extends PircBot {
 			}
 		} catch (Exception e) {
 			logger.log(Level.WARNING,
-					"An error was thrown while executing onOp() in "
-							+ channel, e);
+					"An error was thrown while executing onOp() in " + channel,
+					e);
 		}
 	}
 
 	@Override
 	public void onJoin(String channel, String sender, String login,
 			String hostname) {
-
 		try {
 			if (welcomeEnabled.get(channel)) {
-				if (!sender.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
-					String msg=Database.getWelcomeMessage(channel.substring(1)).replace("%user%", sender);
-					if(!msg.equalsIgnoreCase("none")) {
+				if (!sender.equalsIgnoreCase(MyBotMain.getBotChannel()
+						.substring(1))) {
+					String msg = Database.getWelcomeMessage(
+							channel.substring(1)).replace("%user%", sender);
+					if (!msg.equalsIgnoreCase("none")) {
 						sendMessage(channel, msg);
 					}
 				} else {
-
 					sendMessage(
 							channel,
 							"I have joined the channel and will stay with you unless you tell me to !leave or my creators do not shut me down properly because they are cruel people with devious minds.");
-
 				}
 			}
+			new PointsRunnable(sender, channel.substring(1));
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,
 					"An error occurred while executing onJoin()", e);
 		}
 	}
 
-        public void onLeave(String channel, String sender, String login, String hostname){
-        
-                try {
-			
-			sendMessage(
-                                        "#pcmrbot",
-                                                 String.format("%s has left %s's channel.", sender, channel));
-			}
-                catch (Exception e) {
+	@Override
+	public void onPart(String channel, String sender, String login,
+			String hostname) {
+		try {
+			sendMessage(MyBotMain.getBotChannel(),
+					String.format("%s has left %s's channel.", sender, channel));
+		} catch (Exception e) {
 			logger.log(Level.SEVERE,
 					"An error occurred while executing onLeave()", e);
 		}
-        
-        }
-        
+		PointsRunnable.removeChannelFromUser(sender, channel.substring(1));
+	}
+
 	@Override
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message) {
@@ -141,30 +138,32 @@ public class IRCBot extends PircBot {
 		try {
 
 			checkSpam(channel, message, sender);
-			
-			String params="";
+
+			String params = "";
 			try {
 				params = message.substring(message.indexOf(' ') + 1);
-			} catch(StringIndexOutOfBoundsException e) {
-				
+			} catch (StringIndexOutOfBoundsException e) {
+
 			}
-			
-			String command=message.substring(1, message.length());
+
+			String command = message.substring(1, message.length());
 			try {
 				command = message.substring(1, message.indexOf(' '));
-			} catch(StringIndexOutOfBoundsException e) {
-				
+			} catch (StringIndexOutOfBoundsException e) {
+
 			}
 
 			Date date = new Date();
 			chatPostSeen.put(sender,
 					channel.substring(1) + "|" + date.toString());
 
-			String reply = CommandParser.parse(command.toLowerCase(), sender, channel, params);
-			if(reply != null) {
+			String reply = CommandParser.parse(command.toLowerCase(), sender,
+					channel, params);
+			if (reply != null) {
 				sendMessage(channel, reply);
 			}
-			if(!sender.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
+			if (!sender
+					.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
 				autoReplyCheck(channel, message);
 			}
 		} catch (Exception e) {
@@ -182,10 +181,10 @@ public class IRCBot extends PircBot {
 				channel,
 				"Hello, this appears to be the first time you have invited me to join your channel. We just have a few preliminary manners to attend to. First off make sure to mod me so I don't get timed out, then type !setup");
 	}
-	
+
 	public boolean isWatchingChannel(String channel) {
 		for (String s : getChannels()) {
-			if(s.equalsIgnoreCase(channel)) {
+			if (s.equalsIgnoreCase(channel)) {
 				return true;
 			}
 		}
@@ -194,15 +193,14 @@ public class IRCBot extends PircBot {
 
 	public void autoReplyCheck(String channel, String message) {
 
-		message=message.toLowerCase();
+		message = message.toLowerCase();
 		ResultSet rs = Database.getAutoReplies(channel.substring(1));
 		try {
 			while (rs.next()) {
 				String[] keyword = rs.getString(1).split(",");
 				boolean matches = true;
 				for (int i = 0; i < keyword.length; i++) {
-					if (!message.contains(
-							keyword[i].toLowerCase())) {
+					if (!message.contains(keyword[i].toLowerCase())) {
 						matches = false;
 						break;
 					}
@@ -223,35 +221,47 @@ public class IRCBot extends PircBot {
 	}
 
 	public void checkSpam(String channel, String message, String sender) {
-		if (!Database.isMod(sender, channel.substring(1)) && !Database.isWhitelisted(sender, channel.substring(1))) {
-			int caps = Database.getOption(channel.substring(1), TOptions.numCaps);
-			int symbols = Database.getOption(channel.substring(1), TOptions.numSymbols);
+		if (!Database.isMod(sender, channel.substring(1))
+				&& !Database.isWhitelisted(sender, channel.substring(1))) {
+			int caps = Database.getOption(channel.substring(1),
+					TOptions.numCaps);
+			int symbols = Database.getOption(channel.substring(1),
+					TOptions.numSymbols);
 			int link = Database.getOption(channel.substring(1), TOptions.link);
-			int paragraph = Database.getOption(channel.substring(1), TOptions.paragraphLength);
-			int emotes = Database.getOption(channel.substring(1), TOptions.numEmotes);
-			
+			int paragraph = Database.getOption(channel.substring(1),
+					TOptions.paragraphLength);
+			int emotes = Database.getOption(channel.substring(1),
+					TOptions.numEmotes);
+
 			if (caps != -1 && message.matches("[A-Z\\s]{" + caps + ",}")) {
 				new Timeouts(channel, sender, 1, TType.CAPS);
-			} else if (link != -1 && (message.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})") || message.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?"))) {
-				if(!isPermitted(channel, sender)) {
+			} else if (link != -1
+					&& (message
+							.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})") || message
+							.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?"))) {
+				if (!isPermitted(channel, sender)) {
 					new Timeouts(channel, sender, 1, TType.LINK);
 				} else {
-					removePermit(channel,  sender);
+					removePermit(channel, sender);
 				}
-			} else if (symbols != -1 && message.matches("[\\W_\\s]{" + symbols + ",}")) {
+			} else if (symbols != -1
+					&& message.matches("[\\W_\\s]{" + symbols + ",}")) {
 				new Timeouts(channel, sender, 1, TType.SYMBOLS);
 			} else if (paragraph != -1 && message.length() >= paragraph) {
 				new Timeouts(channel, sender, 1, TType.PARAGRAPH);
-			} else if (emotes != -1 && message.matches("(:\\(|:\\)|:/|:D|:o|:p|:z|;\\)|;p|<3|>\\(|B\\)|o_o|R\\)|4Head|ANELE|ArsonNoSexy|AsianGlow|AtGL|AthenaPMS|AtIvy|BabyRage|AtWW|BatChest|BCWarrior|BibleThump|BigBrother|BionicBunion|BlargNaut|BloodTrail|BORT|BrainSlug|BrokeBack|BuddhaBar|CougarHunt|DAESuppy|DansGame|DatSheffy|DBstyle|DendiFace|DogFace|EagleEye|EleGiggle|EvilFetus|FailFish|FPSMarksman|FrankerZ|FreakinStinkin|FUNgineer|FunRun|FuzzyOtterOO|GasJoker|GingerPower|GrammarKing|HassaanChop|HassanChop|HeyGuys|HotPokket|HumbleLife|ItsBoshyTime|Jebaited|KZowl|JKanStyle|JonCarnage|KAPOW|Kappa|Keepo|KevinTurtle|Kippa|Kreygasm|KZassault|KZcover|KZguerilla|KZhelghast|KZskull|Mau5|mcaT|MechaSupes|MrDestructoid|MrDestructoid|MVGame|NightBat|NinjaTroll|NoNoSpot|noScope|NotAtk|OMGScoots|OneHand|OpieOP|OptimizePrime|panicBasket|PanicVis|PazPazowitz|PeoplesChamp|PermaSmug|PicoMause|PipeHype|PJHarley|PJSalt|PMSTwin|PogChamp|Poooound|PRChase|PunchTrees|PuppeyFace|RaccAttack|RalpherZ|RedCoat|ResidentSleeper|RitzMitz|RuleFive|Shazam|shazamicon|ShazBotstix|ShazBotstix|ShibeZ|SMOrc|SMSkull|SoBayed|SoonerLater|SriHead|SSSsss|StoneLightning|StrawBeary|SuperVinlin|SwiftRage|TF2John|TheRinger|TheTarFu|TheThing|ThunBeast|TinyFace|TooSpicy|TriHard|TTours|UleetBackup|UncleNox|UnSane|Volcania|WholeWheat|WinWaker|WTRuck|WutFace|YouWHY|\\(mooning\\)|\\(poolparty\\)|\\(puke\\)|:\\'\\(|:tf:|aPliS|BaconEffect|BasedGod|BroBalt|bttvNice|ButterSauce|cabbag3|CandianRage|CHAccepted|CiGrip|ConcernDoge|D:|DatSauce|FapFapFap|FishMoley|ForeverAlone|FuckYea|GabeN|HailHelix|HerbPerve|Hhhehehe|HHydro|iAMbh|iamsocal|iDog|JessSaiyan|JuliAwesome|KaRappa|KKona|LLuda|M&Mjc|ManlyScreams|NaM|OhGod|OhGodchanZ|OhhhKee|OhMyGoodness|PancakeMix|PedoBear|PedoNam|PokerFace|PoleDoge|RageFace|RebeccaBlack|RollIt!|rStrike|SexPanda|She'llBeRight|ShoopDaWhoop|SourPls|SuchFraud|SwedSwag|TaxiBro|tEh|ToasTy|TopHam|TwaT|UrnCrown|VisLaud|WatChuSay|WhatAYolk|YetiZ|PraiseIt|\\s){"	+ emotes + ",}")) {
+			} else if (emotes != -1
+					&& message
+							.matches("(:\\(|:\\)|:/|:D|:o|:p|:z|;\\)|;p|<3|>\\(|B\\)|o_o|R\\)|4Head|ANELE|ArsonNoSexy|AsianGlow|AtGL|AthenaPMS|AtIvy|BabyRage|AtWW|BatChest|BCWarrior|BibleThump|BigBrother|BionicBunion|BlargNaut|BloodTrail|BORT|BrainSlug|BrokeBack|BuddhaBar|CougarHunt|DAESuppy|DansGame|DatSheffy|DBstyle|DendiFace|DogFace|EagleEye|EleGiggle|EvilFetus|FailFish|FPSMarksman|FrankerZ|FreakinStinkin|FUNgineer|FunRun|FuzzyOtterOO|GasJoker|GingerPower|GrammarKing|HassaanChop|HassanChop|HeyGuys|HotPokket|HumbleLife|ItsBoshyTime|Jebaited|KZowl|JKanStyle|JonCarnage|KAPOW|Kappa|Keepo|KevinTurtle|Kippa|Kreygasm|KZassault|KZcover|KZguerilla|KZhelghast|KZskull|Mau5|mcaT|MechaSupes|MrDestructoid|MrDestructoid|MVGame|NightBat|NinjaTroll|NoNoSpot|noScope|NotAtk|OMGScoots|OneHand|OpieOP|OptimizePrime|panicBasket|PanicVis|PazPazowitz|PeoplesChamp|PermaSmug|PicoMause|PipeHype|PJHarley|PJSalt|PMSTwin|PogChamp|Poooound|PRChase|PunchTrees|PuppeyFace|RaccAttack|RalpherZ|RedCoat|ResidentSleeper|RitzMitz|RuleFive|Shazam|shazamicon|ShazBotstix|ShazBotstix|ShibeZ|SMOrc|SMSkull|SoBayed|SoonerLater|SriHead|SSSsss|StoneLightning|StrawBeary|SuperVinlin|SwiftRage|TF2John|TheRinger|TheTarFu|TheThing|ThunBeast|TinyFace|TooSpicy|TriHard|TTours|UleetBackup|UncleNox|UnSane|Volcania|WholeWheat|WinWaker|WTRuck|WutFace|YouWHY|\\(mooning\\)|\\(poolparty\\)|\\(puke\\)|:\\'\\(|:tf:|aPliS|BaconEffect|BasedGod|BroBalt|bttvNice|ButterSauce|cabbag3|CandianRage|CHAccepted|CiGrip|ConcernDoge|D:|DatSauce|FapFapFap|FishMoley|ForeverAlone|FuckYea|GabeN|HailHelix|HerbPerve|Hhhehehe|HHydro|iAMbh|iamsocal|iDog|JessSaiyan|JuliAwesome|KaRappa|KKona|LLuda|M&Mjc|ManlyScreams|NaM|OhGod|OhGodchanZ|OhhhKee|OhMyGoodness|PancakeMix|PedoBear|PedoNam|PokerFace|PoleDoge|RageFace|RebeccaBlack|RollIt!|rStrike|SexPanda|She'llBeRight|ShoopDaWhoop|SourPls|SuchFraud|SwedSwag|TaxiBro|tEh|ToasTy|TopHam|TwaT|UrnCrown|VisLaud|WatChuSay|WhatAYolk|YetiZ|PraiseIt|\\s){"
+									+ emotes + ",}")) {
 				new Timeouts(channel, sender, 1, TType.EMOTE);
 			}
 			ResultSet rs = Database.getSpam(channel.substring(1));
-			//System.out.println("Downloaded the spam check database.");
-                        try {
+			// System.out.println("Downloaded the spam check database.");
+			try {
 				while (rs.next()) {
-                                    //System.out.println("Spam checked for possible checks.");
+					// System.out.println("Spam checked for possible checks.");
 					if (message.matches("(" + rs.getString(1) + ")+")) {
-                                            //System.out.println("Spam checked and found true");
+						// System.out.println("Spam checked and found true");
 						new Timeouts(channel, sender, 1, TType.SPAM);
 					}
 				}
@@ -264,12 +274,12 @@ public class IRCBot extends PircBot {
 	}
 
 	public boolean isPermitted(String channel, String sender) {
-		ArrayList<Permit> ps=permits.get(sender);
-		if(ps == null) {
+		ArrayList<Permit> ps = permits.get(sender);
+		if (ps == null) {
 			return false;
 		}
-		for(Permit p: ps) {
-			if(p.getChannel().equalsIgnoreCase(channel)) {
+		for (Permit p : ps) {
+			if (p.getChannel().equalsIgnoreCase(channel)) {
 				return true;
 			}
 		}
@@ -279,7 +289,7 @@ public class IRCBot extends PircBot {
 	public void setWelcomeEnabled(String channel, boolean value) {
 		welcomeEnabled.put(channel, value);
 	}
-	
+
 	public void setConfirmationEnabled(String channel, boolean value) {
 		confirmationReplies.put(channel, value);
 	}
@@ -287,7 +297,7 @@ public class IRCBot extends PircBot {
 	public String getChatPostSeen(String target) {
 		return chatPostSeen.get(target);
 	}
-	
+
 	public void addPoll(String channel, me.jewsofhazard.pcmrbot.util.Poll poll) {
 		polls.put(channel, poll);
 	}
@@ -308,7 +318,8 @@ public class IRCBot extends PircBot {
 		return confirmationReplies.get(channel);
 	}
 
-	public void addRaffle(String channel, me.jewsofhazard.pcmrbot.util.Raffle raffle) {
+	public void addRaffle(String channel,
+			me.jewsofhazard.pcmrbot.util.Raffle raffle) {
 		raffles.put(channel, raffle);
 	}
 
@@ -319,19 +330,19 @@ public class IRCBot extends PircBot {
 	public me.jewsofhazard.pcmrbot.util.Raffle getRaffle(String string) {
 		return raffles.get(string);
 	}
-	
+
 	public void setSlowMode(String chanel, boolean slowMode) {
 		IRCBot.slowMode.put(chanel, slowMode);
 	}
-	
+
 	public boolean getSlowMode(String channel) {
 		return slowMode.get(channel);
 	}
-	
+
 	public void setSubMode(String chanel, boolean s) {
 		subMode.put(chanel, s);
 	}
-	
+
 	public boolean getSubscribersMode(String channel) {
 		return subMode.get(channel);
 	}
@@ -352,17 +363,19 @@ public class IRCBot extends PircBot {
 		subMode.remove(channel);
 	}
 
-	public void addVoteTimeOut(String channel, me.jewsofhazard.pcmrbot.util.VoteTimeOut voteTimeOut) {
+	public void addVoteTimeOut(String channel,
+			me.jewsofhazard.pcmrbot.util.VoteTimeOut voteTimeOut) {
 		voteTimeOuts.put(channel, voteTimeOut);
 	}
 
-	public me.jewsofhazard.pcmrbot.util.VoteTimeOut getVoteTimeOut(String channel) {
+	public me.jewsofhazard.pcmrbot.util.VoteTimeOut getVoteTimeOut(
+			String channel) {
 		return voteTimeOuts.get(channel);
 	}
 
 	public void addPermit(Permit permit, String user) {
 		ArrayList<Permit> p = permits.get(user);
-		if(p == null) {
+		if (p == null) {
 			p = new ArrayList<>();
 		}
 		p.add(permit);
@@ -371,33 +384,33 @@ public class IRCBot extends PircBot {
 
 	public void removePermit(Permit permit, String user) {
 		ArrayList<Permit> p = permits.get(user);
-		if(p == null) {
+		if (p == null) {
 			return;
 		}
 		p.remove(permit);
-		if(p.size() > 0) {
+		if (p.size() > 0) {
 			permits.put(user, p);
 		} else {
 			permits.remove(user);
 		}
 	}
-	
+
 	private void removePermit(String channel, String sender) {
 		ArrayList<Permit> ps = permits.get(sender);
-		if(ps == null) {
+		if (ps == null) {
 			return;
 		}
-		for(Permit p: ps) {
-			if(p.getChannel().equalsIgnoreCase(channel)) {
+		for (Permit p : ps) {
+			if (p.getChannel().equalsIgnoreCase(channel)) {
 				ps.remove(p);
 				break;
 			}
 		}
-		if(ps.size() > 0) {
+		if (ps.size() > 0) {
 			permits.put(sender, ps);
 		} else {
 			permits.remove(sender);
 		}
 	}
-	
+
 }
