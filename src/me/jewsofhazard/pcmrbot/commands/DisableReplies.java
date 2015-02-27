@@ -17,7 +17,7 @@
 
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class DisableReplies extends Command {
@@ -34,7 +34,7 @@ public class DisableReplies extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		MyBotMain.getBot().setConfirmationEnabled(channel, false);
+		Main.getBot().setConfirmationEnabled(channel, false);
 		return "%user% has disabled bot replies".replace("%user%", sender);
 	}
 

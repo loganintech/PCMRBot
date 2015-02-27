@@ -17,7 +17,7 @@
 
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class EnableWelcome extends Command {
@@ -35,7 +35,7 @@ public class EnableWelcome extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		MyBotMain.getBot().setWelcomeEnabled(channel, true);
+		Main.getBot().setWelcomeEnabled(channel, true);
 		return "Welcome messages have been enabled.";
 	}
 

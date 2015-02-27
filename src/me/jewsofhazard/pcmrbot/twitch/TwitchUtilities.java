@@ -210,7 +210,7 @@ public class TwitchUtilities {
 	 */
 	public static int followerCount(String channel) {
 		try {
-			return new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"channels"+channel.substring(1)).openStream()))).getAsJsonObject().getAsJsonPrimitive("followers").getAsInt();
+			return new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"channels/"+channel.substring(1)).openStream()))).getAsJsonObject().getAsJsonPrimitive("followers").getAsInt();
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
 			logger.log(Level.SEVERE, "An error occurred getting the follower count for "+channel.substring(1), e);
 		}
@@ -226,11 +226,23 @@ public class TwitchUtilities {
 	 */
 	public static int subscriberCount(String channel, String oAuth) {
 		try {
-			return new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"channels"+channel.substring(1)+"/subscriptions/?oauth_token="+oAuth).openStream()))).getAsJsonObject().getAsJsonPrimitive("_total").getAsInt();
+			return new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"channels/"+channel.substring(1)+"/subscriptions/?oauth_token="+oAuth).openStream()))).getAsJsonObject().getAsJsonPrimitive("_total").getAsInt();
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
 			logger.log(Level.SEVERE, "An error occurred getting the follower count for "+channel.substring(1), e);
 		}
 		return 0;
+	}
+	
+	public static boolean isLive(String channelNoHash) {
+		try {
+			new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"streams/"+channelNoHash).openStream()))).getAsJsonObject().getAsJsonArray("stream");
+			return true;
+		} catch (ClassCastException e) {
+			return false;
+		} catch (JsonSyntaxException | IOException e) {
+			logger.log(Level.SEVERE, "An error occurred checking if the streamer is live!", e);
+		}
+		return false;
 	}
 	
 }

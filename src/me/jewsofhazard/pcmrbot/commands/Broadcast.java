@@ -17,7 +17,7 @@
 
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Broadcast extends Command {
@@ -34,11 +34,11 @@ public class Broadcast extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		if(channel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
+		if(channel.equalsIgnoreCase(Main.getBotChannel())) {
 			String message=parameters[0];
-			for (String s : MyBotMain.getBot().getChannels()) {
-				if (!s.equalsIgnoreCase(MyBotMain.getBotChannel())) {
-					MyBotMain.getBot().sendMessage(s,	message);
+			for (String s : Main.getBot().getChannels()) {
+				if (!s.equalsIgnoreCase(Main.getBotChannel())) {
+					Main.getBot().sendMessage(s,	message);
 				}
 			}
 			return "I have sent %message% to all channels.".replace("%message%", message);

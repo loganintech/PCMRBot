@@ -61,7 +61,7 @@ public class IRCBot extends PircBot {
 	 *            - The IRC Channel we are connecting to.
 	 */
 	public IRCBot() {
-		this.setName(MyBotMain.getBotChannel().substring(1));
+		this.setName(Main.getBotChannel().substring(1));
 		initVariables();
 	}
 
@@ -98,7 +98,7 @@ public class IRCBot extends PircBot {
 			String hostname) {
 		try {
 			if (welcomeEnabled.get(channel)) {
-				if (!sender.equalsIgnoreCase(MyBotMain.getBotChannel()
+				if (!sender.equalsIgnoreCase(Main.getBotChannel()
 						.substring(1))) {
 					String msg = Database.getWelcomeMessage(
 							channel.substring(1)).replace("%user%", sender);
@@ -122,7 +122,7 @@ public class IRCBot extends PircBot {
 	public void onPart(String channel, String sender, String login,
 			String hostname) {
 		try {
-			sendMessage(MyBotMain.getBotChannel(),
+			sendMessage(Main.getBotChannel(),
 					String.format("%s has left %s's channel.", sender, channel));
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,
@@ -162,8 +162,7 @@ public class IRCBot extends PircBot {
 			if (reply != null) {
 				sendMessage(channel, reply);
 			}
-			if (!sender
-					.equalsIgnoreCase(MyBotMain.getBotChannel().substring(1))) {
+			if (!sender.equalsIgnoreCase(Main.getBotChannel().substring(1))) {
 				autoReplyCheck(channel, message);
 			}
 		} catch (Exception e) {
@@ -221,8 +220,7 @@ public class IRCBot extends PircBot {
 	}
 
 	public void checkSpam(String channel, String message, String sender) {
-		if (!Database.isMod(sender, channel.substring(1))
-				&& !Database.isWhitelisted(sender, channel.substring(1))) {
+		if (!Database.isMod(sender, channel.substring(1)) && !Database.isRegular(sender, channel.substring(1)) && !Database.isWhitelisted(sender, channel.substring(1))) {
 			int caps = Database.getOption(channel.substring(1),
 					TOptions.numCaps);
 			int symbols = Database.getOption(channel.substring(1),

@@ -17,7 +17,7 @@
 
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Leave extends Command {
@@ -34,8 +34,8 @@ public class Leave extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String...parameters){
-		if (!channel.equalsIgnoreCase(MyBotMain.getBotChannel())) {
-			MyBotMain.partChannel(channel);
+		if (!channel.equalsIgnoreCase(Main.getBotChannel())) {
+			Main.partChannel(channel);
 			return "I have disconnected from %channel%'s channel.".replace("%channel%", channel);
 		}
 		return "Sorry %user%, I cannot allow you to disconnect me from my home channel.".replace("%user%", sender);

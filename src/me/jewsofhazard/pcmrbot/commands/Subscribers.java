@@ -19,7 +19,7 @@ package me.jewsofhazard.pcmrbot.commands;
 
 import java.util.HashMap;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Subscribers extends Command {
@@ -38,18 +38,18 @@ public class Subscribers extends Command {
 	
 	public Subscribers() {
 		subscriberModes=new HashMap<>();
-		for(String s:MyBotMain.getBot().getChannels()) {
+		for(String s:Main.getBot().getChannels()) {
 			subscriberModes.put(s, false);
 		}
 	}
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		if (!MyBotMain.getBot().getSubscribersMode(channel)) {
-			MyBotMain.getBot().setSubMode(channel, true);
+		if (!Main.getBot().getSubscribersMode(channel)) {
+			Main.getBot().setSubMode(channel, true);
 			return "/subscribers";
 		}
-		MyBotMain.getBot().setSubMode(channel, false);
+		Main.getBot().setSubMode(channel, false);
 		return "/subscribersoff";
 	}
 }

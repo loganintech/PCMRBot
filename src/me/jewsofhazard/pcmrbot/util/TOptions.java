@@ -21,7 +21,7 @@ public enum TOptions {
 
 	welcomeMessage("welcomeMessage"), numCaps("numCaps"), numSymbols(
 			"numSymbols"), numEmotes("numEmotes"), paragraphLength(
-			"paragraphLength"), link("link");
+			"paragraphLength"), link("link"), regular("regular");
 
 	private final String optionID;
 
