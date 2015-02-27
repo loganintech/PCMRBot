@@ -20,12 +20,9 @@ package me.jewsofhazard.pcmrbot.commands;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Gabe extends Command {
-
-	private CLevel level=CLevel.Normal;
-
 	@Override
 	public CLevel getCommandLevel() {
-		return level;
+		return CLevel.Normal;
 	}
 	
 	@Override

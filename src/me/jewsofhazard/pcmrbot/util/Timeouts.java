@@ -95,7 +95,7 @@ public class Timeouts implements Runnable {
 			MyBotMain.getBot().sendMessage(channel,
 					"/timeout " + user + " " + time);
 			MyBotMain.getBot().sendMessage(channel,
-					type.getRandomMessage() + " First warning");
+					type.getRandomMessage() + " That's a warning!");
 		}
 	}
 }

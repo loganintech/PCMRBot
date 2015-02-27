@@ -42,7 +42,7 @@ public class MyBotMain implements Runnable{
 		new Thread(this).start();
 	}
 
-	/**
+	/** 
 	 * Performs all of the setup for the bot, both on first run, and all
 	 * subsequent runs.
 	 * 
@@ -118,9 +118,9 @@ public class MyBotMain implements Runnable{
 				Database.addMod(channel.substring(1), channel.substring(1));
 			}
 			Database.addOption(channel.substring(1), TOptions.welcomeMessage, "Welcome %user% to our channel, may you find it entertaining or flat out enjoyable.");
-			Database.addOption(channel.substring(1), TOptions.numCaps, "10");
-			Database.addOption(channel.substring(1), TOptions.numEmotes, "10");
-			Database.addOption(channel.substring(1), TOptions.numSymbols, "10");
+			Database.addOption(channel.substring(1), TOptions.numCaps, "20");
+			Database.addOption(channel.substring(1), TOptions.numEmotes, "20");
+			Database.addOption(channel.substring(1), TOptions.numSymbols, "20");
 			Database.addOption(channel.substring(1), TOptions.link, "0");
 			Database.addOption(channel.substring(1), TOptions.paragraphLength, "250");
 		}

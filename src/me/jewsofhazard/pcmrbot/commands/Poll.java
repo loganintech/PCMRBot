@@ -21,12 +21,9 @@ import me.jewsofhazard.pcmrbot.MyBotMain;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Poll extends Command {
-
-	private CLevel level=CLevel.Mod;
-
 	@Override
 	public CLevel getCommandLevel() {
-		return level;
+		return CLevel.Mod;
 	}
 	
 	@Override

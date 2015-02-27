@@ -21,11 +21,9 @@ import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Servers extends Command {
 
-	private CLevel level=CLevel.Normal;
-
 	@Override
 	public CLevel getCommandLevel() {
-		return level;
+		return CLevel.Normal;
 	}
 	
 	@Override
