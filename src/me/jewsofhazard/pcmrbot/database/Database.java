@@ -116,6 +116,20 @@ public class Database {
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE, String.format("Unable to create table %sWhitelist!", channelNoHash), ex);
 			}
+			try{
+                stmt2=conn.createStatement();
+                stmt2.closeOnCompletion();
+                stmt2.executeUpdate(String.format("CREATE TABLE %s.%sPoints(userID varchar(25), points INTEGER, PRIMARY KEY (userID))", DATABASE, channelNoHash));
+            }catch(SQLException ex){
+                logger.log(Level.SEVERE, "Unable to create table donald10101Points!\n", ex);
+            }
+            try{
+                stmt3=conn.createStatement();
+                stmt3.closeOnCompletion();
+                stmt3.executeUpdate(String.format("CREATE TABLE %s.%sRegulars(userID varchar(25), PRIMARY KEY (userID))", DATABASE, channelNoHash));
+            }catch(SQLException ex){
+                logger.log(Level.SEVERE, "Unable to create table donald10101Points!\n", ex);
+            }
 			return true;
 		}
 	}
@@ -388,5 +402,55 @@ public class Database {
 			logger.log(Level.SEVERE, "An error occurred checking if %user% is witelisted!".replace("%user%", sender), e);
 		}
 		return false;
+	}
+
+	public static void addPoints(String nick, String channelNoHash, int ammount) {
+		ResultSet rs = Database.executeQuery(String.format("SELECT * FROM %s.%sPoints WHERE userID=\'%s\'", DATABASE, channelNoHash, nick));
+		try {
+			if(!rs.next()){
+				Database.executeUpdate(String.format("INSERT INTO %s.%sPoints VALUES (\'%s\',1)", DATABASE, channelNoHash, nick));
+				return;
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "An Error occured updating "+nick+"'s points!\n", e);
+		}
+		try {
+			Database.executeUpdate(String.format("UPDATE %s.%sPoints SET userID=\'%s\',points=%d WHERE userID=\'%s\'", DATABASE, channelNoHash, nick, rs.getInt(2)+ammount, nick));
+			if(rs.getInt(2)+ammount==72) {
+				Database.executeUpdate(String.format("INSERT INTO %s, %sRegulars VALUES (\'%s\')", DATABASE, channelNoHash, nick));
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "An Error occured updating "+nick+"'s points!\n", e);
+		}
+	}
+
+	public static String getPoints(String sender, String substring) {
+		ResultSet rs = executeQuery(String.format("SELECT * FROM %s.%sPoints WHERE userID=\'%s\'", DATABASE, substring, sender));
+		try {
+			if(rs.next()) {
+				return rs.getInt(2)+"";
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "An error occurred getting a user's points.", e);
+		}
+		return null;
+	}
+
+	public static String topPlayers(int ammount, String channelNoHash) {
+		StringBuilder output = new StringBuilder();
+		output.append("The top " + ammount + " points holder(s) are: ");
+		ResultSet rs=executeQuery(String.format("SELECT * FROM %s.%sPoints ORDER BY points DESC", DATABASE, channelNoHash));
+		try {
+			while(rs.next()&&ammount>1){
+				if(!rs.getString(1).equalsIgnoreCase("pcmrbot") && !rs.getString(1).equalsIgnoreCase("pcmrbottester") && !rs.getString(1).equalsIgnoreCase("botduck") && !rs.getString(1).equalsIgnoreCase(channelNoHash)) {
+					output.append(rs.getString(1)+": "+rs.getInt(2) + ", ");
+					ammount--;
+				}
+			}
+			output.append(rs.getString(1)+": "+rs.getInt(2));
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Error occurred creating Top list!", e);
+		}
+		return output.toString();
 	}
 }
