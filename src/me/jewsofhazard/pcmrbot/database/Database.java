@@ -385,7 +385,7 @@ public class Database {
 		try {
 			return rs.next();
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "An error occurred checking if %user% is witelisted!".replace("%user%", sender), e);
+			logger.log(Level.SEVERE, "An error occurred checking if %user% is whitelisted!".replace("%user%", sender), e);
 		}
 		return false;
 	}
