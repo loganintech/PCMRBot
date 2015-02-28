@@ -105,6 +105,7 @@ public class TwitchUtilities {
 	public static boolean isFollower(String channel, String sender) {
 		try {
 			String nextUrl = "https://api.twitch.tv/kraken/users/"+sender+"/follows/channels/"+channel;
+                        System.out.println(nextUrl);
 			JsonObject following = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
 			try {
 				following.get("error");

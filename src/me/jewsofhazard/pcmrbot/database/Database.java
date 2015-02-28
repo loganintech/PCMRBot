@@ -136,7 +136,7 @@ public class Database {
             try{
                 stmt8=conn.createStatement();
                 stmt8.closeOnCompletion();
-                stmt8.executeUpdate(String.format("CREATE TABLE %s.%sCommands(command varchar(25), parameters varchar,PRIMARY KEY (command))", DATABASE, channelNoHash));
+                stmt8.executeUpdate(String.format("CREATE TABLE %s.%sCommands(command varchar(25), parameters varchar(25), PRIMARY KEY (command))", DATABASE, channelNoHash));
             }catch(SQLException ex){
                 logger.log(Level.SEVERE, "Unable to create table Commands!", ex);
             }
