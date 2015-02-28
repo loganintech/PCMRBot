@@ -107,12 +107,12 @@ public class TwitchUtilities {
 			String nextUrl = "https://api.twitch.tv/kraken/users/"+sender+"/follows/channels/"+channel;
                         System.out.println(nextUrl);
 			JsonObject following = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
-			try {
-				following.get("error");
-				return false;
-			} catch (JsonIOException e) {
-				return true;
-			}
+			if(following.get("error") != null){ //it finds it
+                            return false;
+                        }
+                        else{   //it doesnt
+                            return true;
+                        }
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
 			logger.log(Level.SEVERE, "An error occurred checking if "+sender+" is following "+channel.substring(1), e);
 		}
@@ -131,10 +131,9 @@ public class TwitchUtilities {
 			String userOAuth=Database.getUserOAuth(channel.substring(1));
 			String nextUrl = "https://api.twitch.tv/kraken/channels/"+channel.substring(0)+"/subscriptions/?oauth_token="+userOAuth;
 			JsonObject obj = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
-			try {
-				obj.get("error");
+			if(obj.get("error") != null) {  //ie it finds it
 				return false;
-			} catch (JsonIOException e) {
+			} else {    //it does not find it
 				int count = subscriberCount(channel, userOAuth);
 				int pages = count/25;
 				if(count%25!=0) {
