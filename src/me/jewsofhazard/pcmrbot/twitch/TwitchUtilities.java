@@ -104,7 +104,7 @@ public class TwitchUtilities {
 	 */
 	public static boolean isFollower(String channel, String sender) {
 		try {
-			String nextUrl = "https://api.twitch.tv/kraken/users/"+sender+"/follows/channels/"+channel.substring(1);
+			String nextUrl = "https://api.twitch.tv/kraken/users/"+sender+"/follows/channels/"+channel;
 			JsonObject following = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
 			try {
 				following.get("error");
@@ -128,7 +128,7 @@ public class TwitchUtilities {
 	public static boolean isSubscriber(String sender, String channel) {
 		try {
 			String userOAuth=Database.getUserOAuth(channel.substring(1));
-			String nextUrl = "https://api.twitch.tv/kraken/channels/"+channel.substring(1)+"/subscriptions/?oauth_token="+userOAuth;
+			String nextUrl = "https://api.twitch.tv/kraken/channels/"+channel.substring(0)+"/subscriptions/?oauth_token="+userOAuth;
 			JsonObject obj = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
 			try {
 				obj.get("error");

@@ -32,7 +32,7 @@ public class PointsRunnable implements Runnable {
 
 	public void run() {
 		while (currentUsers.containsKey(this.user)) {
-			if(TwitchUtilities.isLive(channel.substring(1))) {
+			if(TwitchUtilities.isLive(channel)) {
 				Database.addPoints(this.user, this.channel, 1);
 			}
 			try {

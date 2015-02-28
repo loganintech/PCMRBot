@@ -35,6 +35,7 @@ public class Raffle {
 		channel = c;
 		type = t;
 		participants = new ArrayList<>();
+                start();
 	}
 	
 	public Raffle start() {
@@ -67,6 +68,7 @@ public class Raffle {
 		} else {
 			Main.getBot().sendMessage(channel, "I am sorry %sender% you are not allowed to join this raffle.".replace("%sender%", sender));
 		}
+                
 	}
 
 	public void selectWinner() {
