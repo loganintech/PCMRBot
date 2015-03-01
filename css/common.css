@@ -82,12 +82,9 @@ commandTable {
 	height: 460px;
 	text-align: center;
 	background-color: 121212;
-	padding: 15px;
-	margin: 5px auto;
+
 	border: 1px solid #AAA;
-    -webkit-transition: height 1s; /* For Safari 3.1 to 6.0 */
-	transition: height 1s;
-	
+ 
 
 }
 
@@ -363,7 +360,8 @@ ul.navtabs{
 ul.navtabs li {
     margin: 0 5px;
     padding: 0 5px;
-	border-radius: 1em;
+	border-top-right-radius: 2em;
+	border-top-left-radius: 2em;
     display: inline-block;
 	background-color: #cccccc;
 }
@@ -374,4 +372,19 @@ ul.navtabs li:hover {
 
 ul.navtabs li.selected {
 	background-color: #0088cc;
+}
+
+div.load{
+    position: relative;
+	width: 100%;
+	height: 100%;
+    z-index: 99;
+}
+div.reloader{
+	width: 100%;
+	height: 100%;
+}
+div.men{
+	height: 22px;
+	text-align: center;
 }
