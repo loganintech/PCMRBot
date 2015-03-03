@@ -136,7 +136,7 @@ public class Database {
             try{
                 stmt8=conn.createStatement();
                 stmt8.closeOnCompletion();
-                stmt8.executeUpdate(String.format("CREATE TABLE %s.%sCommands(command varchar(25), parameters varchar(255), PRIMARY KEY (command))", DATABASE, channelNoHash));
+                stmt8.executeUpdate(String.format("CREATE TABLE %s.%sCommands(command varchar(25), parameters varchar(255), reply varchar(4000), PRIMARY KEY (command))", DATABASE, channelNoHash));
             }catch(SQLException ex){
                 logger.log(Level.SEVERE, "Unable to create table Commands!", ex);
             }
@@ -348,12 +348,13 @@ public class Database {
 		return executeQuery(String.format("SELECT * FROM %s.%sAutoReplies", DATABASE, channelNoHash));
 	}
 	
-	public static void addCommand(String channelNoHash, String command, String reply) {
+	public static void addCommand(String channelNoHash, String command, String parameters, String reply) {
 		PreparedStatement stmt = null;
 		try {
-			stmt = conn.prepareStatement(String.format("INSERT INTO %s.%sAutoReplies VALUES(? , ?)", DATABASE, channelNoHash));
+			stmt = conn.prepareStatement(String.format("INSERT INTO %s.%sAutoReplies VALUES(? , ?, ?)", DATABASE, channelNoHash));
 			stmt.setString(1, command);
-			stmt.setString(2, reply);
+			stmt.setString(2, parameters);
+			stmt.setString(3, reply);
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Unable to set option", e);
 		}

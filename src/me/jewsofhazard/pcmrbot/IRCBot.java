@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 import me.jewsofhazard.pcmrbot.commands.AddModerator;
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
+import me.jewsofhazard.pcmrbot.customcommands.CustomCommandParser;
 import me.jewsofhazard.pcmrbot.database.Database;
 import me.jewsofhazard.pcmrbot.util.DelayedReJoin;
 import me.jewsofhazard.pcmrbot.util.DelayedWelcome;
@@ -164,6 +165,15 @@ public class IRCBot extends PircBot {
 					channel.substring(1) + "|" + date.toString());
 
 			String reply = CommandParser.parse(command.toLowerCase(), sender,
+					channel, params);
+			if (reply != null) {
+				sendMessage(channel, reply);
+			}
+			if (!sender.equalsIgnoreCase(Main.getBotChannel().substring(1))) {
+				autoReplyCheck(channel, message);
+			}
+			
+			reply = CustomCommandParser.parse(command.toLowerCase(), sender,
 					channel, params);
 			if (reply != null) {
 				sendMessage(channel, reply);

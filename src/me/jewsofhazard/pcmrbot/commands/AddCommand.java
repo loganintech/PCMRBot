@@ -31,6 +31,8 @@ public class AddCommand extends Command {
 	public String getCommandText() {
 		return "addcom";
 	}
+	
+//	!addcom !welcome|{user}|Hey there, {user}! Welcome to the chat!
 
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
@@ -38,7 +40,7 @@ public class AddCommand extends Command {
 		try {
 			params[0].substring(0, params[0].indexOf('|'));
 		} catch (StringIndexOutOfBoundsException e) {}
-		Database.addAutoReply(channel.substring(1), params[0], params[1]);
-		return String.format("Added command to the database. When a user says %s in chat I will say %s", params[0], params[1]);
+		Database.addCommand(channel.substring(1), params[0], params[1], params[2]);
+		return String.format("Added command to the database.");
 	}
 }
