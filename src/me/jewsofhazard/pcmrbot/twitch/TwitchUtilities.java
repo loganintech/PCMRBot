@@ -66,7 +66,7 @@ public class TwitchUtilities {
 			connection.getInputStream();
 			return true;
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred updating the title for "+channelNoHash.substring(1), e);
+			logger.log(Level.SEVERE, "An error occurred updating the title for "+channelNoHash, e);
 			return false;
 		}
 	}
@@ -90,7 +90,7 @@ public class TwitchUtilities {
 			connection.getInputStream();
 			return true;
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred updating the game for "+channelNoHash.substring(1), e);
+			logger.log(Level.SEVERE, "An error occurred updating the game for "+channelNoHash, e);
 		}
 		return false;
 	}

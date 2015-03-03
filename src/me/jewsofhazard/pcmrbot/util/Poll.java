@@ -62,7 +62,7 @@ public class Poll {
 
 		}
 		Main.getBot().sendMessage(channel, "You have %length% seconds to vote.".replace("%length%", length+""));
-		new Timer(channel, length, this);
+		new DelayedVoteTask(length, this);
 		return this;
 	}
 

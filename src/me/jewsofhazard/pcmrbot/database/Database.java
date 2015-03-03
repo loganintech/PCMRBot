@@ -150,7 +150,7 @@ public class Database {
 	 * @param sqlCommand
 	 * @return - true if it successfully executes the update
 	 */
-	private static boolean executeUpdate(String sqlCommand) {
+	protected static boolean executeUpdate(String sqlCommand) {
 		Statement stmt = null;
 		try {
 			stmt = conn.createStatement();
@@ -173,7 +173,7 @@ public class Database {
 	 * @param sqlQuery
 	 * @return
 	 */
-	private static ResultSet executeQuery(String sqlQuery) {
+	protected static ResultSet executeQuery(String sqlQuery) {
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
@@ -196,7 +196,7 @@ public class Database {
 	 * @param stmt
 	 * @return - true if it successfully executes the update
 	 */
-	private static boolean executeUpdate(PreparedStatement stmt) {
+	protected static boolean executeUpdate(PreparedStatement stmt) {
 		try {
 			stmt.closeOnCompletion();
 		} catch (SQLException e) {
@@ -217,8 +217,7 @@ public class Database {
 	 * @param stmt
 	 * @return
 	 */
-	@SuppressWarnings("unused")
-	private static ResultSet executeQuery(PreparedStatement stmt) {
+	protected static ResultSet executeQuery(PreparedStatement stmt) {
 		ResultSet rs = null;
 		try {
 			stmt.closeOnCompletion();

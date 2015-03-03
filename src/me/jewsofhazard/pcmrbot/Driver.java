@@ -17,17 +17,10 @@
 
 package me.jewsofhazard.pcmrbot;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
 public class Driver {
 
-	public static void main(String[] args) throws IOException {
-		new JsonParser().parse(new JsonReader(new InputStreamReader(new URL("https://api.twitch.tv/kraken/streams/botduck").openStream()))).getAsJsonObject().getAsJsonArray("stream");
-	}
+	public static void main(String[] args) throws Exception {
 
+	}
 }

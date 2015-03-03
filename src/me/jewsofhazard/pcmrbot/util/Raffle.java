@@ -39,7 +39,7 @@ public class Raffle {
 	}
 	
 	public Raffle start() {
-		new Timer(channel, 300, this);
+		new DelayedVoteTask(300, this);
 		return this;
 	}
 	
