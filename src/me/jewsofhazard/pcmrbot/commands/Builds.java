@@ -5,28 +5,28 @@
  */
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.util.CLevel;
 
+import me.jewsofhazard.pcmrbot.util.CLevel;
 /**
  *
- * @author 4thPeriod
+ * @author Hazard
  */
-public class ComeBack extends Command{
+public class Builds extends Command{
     
-    
+   
 	public CLevel getCommandLevel() {
 		return CLevel.Normal;
 	}
 	
 	
 	public String getCommandText() {
-		return "comeback";
+		return "builds";
 	}
 	
 	
 	public String execute(String channel, String sender, String...parameters) {
 		
-                return String.format("%s COME BACK! YOU CAN BLAME IT ALL ON ME!", sender);
+                return "You can find custom builds and things at http://www.reddit.com/r/PCMasterRace/wiki/builds or https://reddit.com/r/buildapc";
             
 	}
     

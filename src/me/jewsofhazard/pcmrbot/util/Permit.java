@@ -20,7 +20,7 @@ package me.jewsofhazard.pcmrbot.util;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 
 public class Permit implements Runnable{
 
@@ -42,11 +42,11 @@ public class Permit implements Runnable{
 		} catch (InterruptedException e) {
 			logger.log(Level.SEVERE, "Unable to sleep", e);
 		}
-		MyBotMain.getBot().removePermit(this, user);
+		Main.getBot().removePermit(this, user);
 	}
 	
 	public void removePermit() {
-		MyBotMain.getBot().removePermit(this, user);
+		Main.getBot().removePermit(this, user);
 	}
 	
 	public String getChannel() {

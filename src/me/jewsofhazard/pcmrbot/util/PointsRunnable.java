@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.jewsofhazard.pcmrbot.database.Database;
+import me.jewsofhazard.pcmrbot.twitch.TwitchUtilities;
 
 public class PointsRunnable implements Runnable {
 	static final Logger logger = Logger.getLogger(PointsRunnable.class+"");
@@ -30,14 +31,10 @@ public class PointsRunnable implements Runnable {
 	}
 
 	public void run() {
-		Database.addPoints(this.user, this.channel, 1);
-		try {
-			Thread.sleep(300000L);
-		} catch (InterruptedException e) {
-			logger.log(Level.SEVERE, "Error adding points to user", e);
-		}
 		while (currentUsers.containsKey(this.user)) {
-			Database.addPoints(this.user, this.channel, 1);
+			if(TwitchUtilities.isLive(channel)) {
+				Database.addPoints(this.user, this.channel, 1);
+			}
 			try {
 				Thread.sleep(300000L);
 			} catch (InterruptedException e) {

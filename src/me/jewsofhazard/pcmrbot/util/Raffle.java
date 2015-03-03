@@ -20,7 +20,7 @@ package me.jewsofhazard.pcmrbot.util;
 import java.util.ArrayList;
 import java.util.Random;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.twitch.TwitchUtilities;
 
 public class Raffle {
@@ -35,44 +35,46 @@ public class Raffle {
 		channel = c;
 		type = t;
 		participants = new ArrayList<>();
+                start();
 	}
 	
 	public Raffle start() {
-		new Timer(channel, 300, this);
+		new DelayedVoteTask(300, this);
 		return this;
 	}
 	
 	public void enter(String sender) {
-
+      //      System.out.println(sender);
 		if (participants.contains(sender)) {
-			MyBotMain.getBot().sendMessage(channel,"%sender% is a dirty cheater and tried to join the raffle more than once, may he be smiten.".replace("%sender%", sender));
+			Main.getBot().sendMessage(channel,"%sender% is a dirty cheater and tried to join the raffle more than once, may he be smiten.".replace("%sender%", sender));
 			return;
 		}
 
-		if ((type.equals(ULevel.Follower)) && (TwitchUtilities.isFollower(channel, sender) || sender.equalsIgnoreCase(channel.substring(1)))) {
+		if ((type.equals(ULevel.Follower)) && (TwitchUtilities.isFollower(channel.substring(1), sender) || sender.equalsIgnoreCase(channel.substring(1)))) {
 			participants.add(sender);
-			if (MyBotMain.getBot().getConfirmationReplies(channel)) {
-				MyBotMain.getBot().sendMessage(channel, "%sender% has joined the raffle.".replace("%sender%", sender));
+			if (Main.getBot().getConfirmationReplies(channel)) {
+				Main.getBot().sendMessage(channel, "%sender% has joined the raffle.".replace("%sender%", sender));
 			}
-		} else if (type.equals(ULevel.Subscriber) && (TwitchUtilities.isSubscriber(channel, sender) || sender.equalsIgnoreCase(channel.substring(1)))) {
+		} else if (type.equals(ULevel.Subscriber) && (TwitchUtilities.isSubscriber(channel.substring(1), sender) || sender.equalsIgnoreCase(channel.substring(1)))) {
 			participants.add(sender);
-			if (MyBotMain.getBot().getConfirmationReplies(channel)) {
-				MyBotMain.getBot().sendMessage(channel, "%sender% has joined the raffle.".replace("%sender%", sender));
+			if (Main.getBot().getConfirmationReplies(channel)) {
+				Main.getBot().sendMessage(channel, "%sender% has joined the raffle.".replace("%sender%", sender));
 			}
 		} else if (type.equals(ULevel.Normal)) {
 			participants.add(sender);
-			if (MyBotMain.getBot().getConfirmationReplies(channel)) {
-				MyBotMain.getBot().sendMessage(channel, "%sender% has joined the raffle.".replace("%sender%", sender));
+			if (Main.getBot().getConfirmationReplies(channel)) {
+				Main.getBot().sendMessage(channel, "%sender% has joined the raffle.".replace("%sender%", sender));
 			}
 		} else {
-			MyBotMain.getBot().sendMessage(channel, "I am sorry %sender% you are not allowed to join this raffle.".replace("%sender%", sender));
+			Main.getBot().sendMessage(channel, "I am sorry %sender% you are not allowed to join this raffle.".replace("%sender%", sender));
 		}
+                
 	}
 
 	public void selectWinner() {
 		String winner = participants.get(new Random().nextInt(participants.size()));
-		MyBotMain.getBot().sendMessage(channel, "There raffle has closed. There are %amt% users in the raffle.".replace("%amt%", participants.size()+""));
-		MyBotMain.getBot().sendMessage(channel,	"The raffle winner is %winner%.".replace("%winner%", winner));
-		MyBotMain.getBot().removeRaffle(channel);
+		Main.getBot().sendMessage(channel, "There raffle has closed. There are %amt% users in the raffle.".replace("%amt%", participants.size()+""));
+		Main.getBot().sendMessage(channel,	"The raffle winner is %winner%.".replace("%winner%", winner));
+		Main.getBot().removeRaffle(channel);
 	}
 }

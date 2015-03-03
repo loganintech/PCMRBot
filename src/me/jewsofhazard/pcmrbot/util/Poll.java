@@ -20,7 +20,7 @@ package me.jewsofhazard.pcmrbot.util;
 import java.util.ArrayList;
 import java.util.Random;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 
 public class Poll {
 
@@ -47,13 +47,13 @@ public class Poll {
 
 		for (int i = 0; i < answers.length; i++) {
 
-			MyBotMain.getBot().sendMessage(channel, (i + 1) + ": " + answers[i]);
+			Main.getBot().sendMessage(channel, (i + 1) + ": " + answers[i]);
 			voting.add(new ArrayList<String>());
 			voting.get(i).add(answers[i]);
 
 		}
 
-		MyBotMain.getBot().sendMessage(channel, "Please input your choice by typing !vote {vote number}. Note, if you choose a number higher or lower than required, your vote will be discarded and you will be prohibited from voting this round.");
+		Main.getBot().sendMessage(channel, "Please input your choice by typing !vote {vote number}. Note, if you choose a number higher or lower than required, your vote will be discarded and you will be prohibited from voting this round.");
 
 		for (int i = 0; i < answers.length; i++) {
 
@@ -61,8 +61,8 @@ public class Poll {
 			voting.get(i).add(answers[i]);
 
 		}
-		MyBotMain.getBot().sendMessage(channel, "You have %length% seconds to vote.".replace("%length%", length+""));
-		new Timer(channel, length, this);
+		Main.getBot().sendMessage(channel, "You have %length% seconds to vote.".replace("%length%", length+""));
+		new DelayedVoteTask(length, this);
 		return this;
 	}
 
@@ -74,23 +74,23 @@ public class Poll {
 			}
 		}
 
-		MyBotMain.getBot().sendMessage(channel, "The community chose %choice%".replace("%choice%", voting.get(chosen).get(0)));
-		MyBotMain.getBot().removePoll(channel);
+		Main.getBot().sendMessage(channel, "The community chose %choice%".replace("%choice%", voting.get(chosen).get(0)));
+		Main.getBot().removePoll(channel);
 	}
 
 	public void vote(String sender, String v) {
 		boolean canVote = true;
 		for (int i = 0; i < voting.size(); i++) {
 			if (voting.get(i).contains(sender)) {
-				if (MyBotMain.getBot().getConfirmationReplies(channel)) {
-					MyBotMain.getBot().sendMessage(channel, "I am sorry %sender% you cannot vote more than once.".replace("%sender%", sender));
+				if (Main.getBot().getConfirmationReplies(channel)) {
+					Main.getBot().sendMessage(channel, "I am sorry %sender% you cannot vote more than once.".replace("%sender%", sender));
 				}
 				canVote = false;
 			}
 		}
 		if (ringazinUsers.contains(sender)) {
-			if (MyBotMain.getBot().getConfirmationReplies(channel)) {
-				MyBotMain.getBot().sendMessage(channel, "I am sorry %sender% you cannot vote more than once.".replace("%sender%", sender));
+			if (Main.getBot().getConfirmationReplies(channel)) {
+				Main.getBot().sendMessage(channel, "I am sorry %sender% you cannot vote more than once.".replace("%sender%", sender));
 			}
 			canVote = false;
 		}
@@ -103,14 +103,14 @@ public class Poll {
 			if (vote < answerCount + 1) {
 				voting.get(vote - 1).add(sender);
 			} else {
-				if (MyBotMain.getBot().getConfirmationReplies(channel)) {
-					MyBotMain.getBot().sendMessage(channel,"%sender% tried to break me, may hell forever reign upon him! (You cannot participate in this vote.)".replace("%sender%", sender));
+				if (Main.getBot().getConfirmationReplies(channel)) {
+					Main.getBot().sendMessage(channel,"%sender% tried to break me, may hell forever reign upon him! (You cannot participate in this vote.)".replace("%sender%", sender));
 				}
 				ringazinUsers.add(sender);
 				return;
 			}
-			if (MyBotMain.getBot().getConfirmationReplies(channel)) {
-				MyBotMain.getBot().sendMessage(channel,String.format("%s has voted for %s", sender, voting.get(vote - 1).get(0)));
+			if (Main.getBot().getConfirmationReplies(channel)) {
+				Main.getBot().sendMessage(channel,String.format("%s has voted for %s", sender, voting.get(vote - 1).get(0)));
 			}
 		}
 	}

@@ -17,7 +17,7 @@
 
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Vote extends Command {
@@ -33,7 +33,7 @@ public class Vote extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		MyBotMain.getBot().getPoll(channel).vote(sender, parameters[0]);
+		Main.getBot().getPoll(channel).vote(sender, parameters[0]);
 		return null;
 	}
 

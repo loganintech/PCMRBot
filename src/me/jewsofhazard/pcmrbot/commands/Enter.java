@@ -17,7 +17,7 @@
 
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Enter extends Command {
@@ -35,7 +35,7 @@ public class Enter extends Command {
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		try {
-			MyBotMain.getBot().getRaffle(channel).enter(sender);
+			Main.getBot().getRaffle(channel).enter(sender);
 		} catch(NullPointerException e) {
 			return "There is not currently a raffle happenning in %channel%".replace("%channel%", channel);
 		}

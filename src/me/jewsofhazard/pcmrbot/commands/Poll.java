@@ -17,7 +17,7 @@
 
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Poll extends Command {
@@ -38,7 +38,7 @@ public class Poll extends Command {
 		String[] answers = new String[voteOptions.length - 2];
 		if (answers.length < 2) {
 			return	"You must provide at least two answers!";
-		} else if (MyBotMain.getBot().hasPoll(channel)) {
+		} else if (Main.getBot().hasPoll(channel)) {
 			return "There is already a poll happenning in your channel, wait for it to complete first!";
 		}
 		
@@ -46,8 +46,8 @@ public class Poll extends Command {
 			answers[i - 2] = voteOptions[i];
 		}
 		
-		MyBotMain.getBot().addPoll(channel, new me.jewsofhazard.pcmrbot.util.Poll(channel, answers, Integer.valueOf(voteOptions[0])).start());
-		if(MyBotMain.getBot().getConfirmationReplies(channel)) {
+		Main.getBot().addPoll(channel, new me.jewsofhazard.pcmrbot.util.Poll(channel, answers, Integer.valueOf(voteOptions[0])).start());
+		if(Main.getBot().getConfirmationReplies(channel)) {
 			return voteOptions[1];
 		}
 		return null;

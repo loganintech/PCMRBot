@@ -17,12 +17,10 @@
 
 package me.jewsofhazard.pcmrbot;
 
-import java.io.IOException;
 
 public class Driver {
 
-	public static void main(String[] args) throws IOException {
-		System.out.println(System.getProperty("os.name"));
-	}
+	public static void main(String[] args) throws Exception {
 
+	}
 }

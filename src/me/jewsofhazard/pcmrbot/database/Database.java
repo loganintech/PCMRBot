@@ -26,7 +26,7 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.util.TOptions;
 
 public class Database {
@@ -75,6 +75,9 @@ public class Database {
 		Statement stmt3;
 		Statement stmt4;
 		Statement stmt5;
+		Statement stmt6;
+		Statement stmt7;
+		Statement stmt8;
 		try {
 			stmt = conn.createStatement();
 			stmt.closeOnCompletion();
@@ -117,18 +120,25 @@ public class Database {
 				logger.log(Level.SEVERE, String.format("Unable to create table %sWhitelist!", channelNoHash), ex);
 			}
 			try{
-                stmt2=conn.createStatement();
-                stmt2.closeOnCompletion();
-                stmt2.executeUpdate(String.format("CREATE TABLE %s.%sPoints(userID varchar(25), points INTEGER, PRIMARY KEY (userID))", DATABASE, channelNoHash));
+                stmt6=conn.createStatement();
+                stmt6.closeOnCompletion();
+                stmt6.executeUpdate(String.format("CREATE TABLE %s.%sPoints(userID varchar(25), points INTEGER, PRIMARY KEY (userID))", DATABASE, channelNoHash));
             }catch(SQLException ex){
-                logger.log(Level.SEVERE, "Unable to create table donald10101Points!\n", ex);
+                logger.log(Level.SEVERE, "Unable to create table Points!", ex);
             }
             try{
-                stmt3=conn.createStatement();
-                stmt3.closeOnCompletion();
-                stmt3.executeUpdate(String.format("CREATE TABLE %s.%sRegulars(userID varchar(25), PRIMARY KEY (userID))", DATABASE, channelNoHash));
+                stmt7=conn.createStatement();
+                stmt7.closeOnCompletion();
+                stmt7.executeUpdate(String.format("CREATE TABLE %s.%sRegulars(userID varchar(25), PRIMARY KEY (userID))", DATABASE, channelNoHash));
             }catch(SQLException ex){
-                logger.log(Level.SEVERE, "Unable to create table donald10101Points!\n", ex);
+                logger.log(Level.SEVERE, "Unable to create table Regulars!", ex);
+            }
+            try{
+                stmt8=conn.createStatement();
+                stmt8.closeOnCompletion();
+                stmt8.executeUpdate(String.format("CREATE TABLE %s.%sCommands(command varchar(25), parameters varchar(255), PRIMARY KEY (command))", DATABASE, channelNoHash));
+            }catch(SQLException ex){
+                logger.log(Level.SEVERE, "Unable to create table Commands!", ex);
             }
 			return true;
 		}
@@ -140,7 +150,7 @@ public class Database {
 	 * @param sqlCommand
 	 * @return - true if it successfully executes the update
 	 */
-	private static boolean executeUpdate(String sqlCommand) {
+	protected static boolean executeUpdate(String sqlCommand) {
 		Statement stmt = null;
 		try {
 			stmt = conn.createStatement();
@@ -163,7 +173,7 @@ public class Database {
 	 * @param sqlQuery
 	 * @return
 	 */
-	private static ResultSet executeQuery(String sqlQuery) {
+	protected static ResultSet executeQuery(String sqlQuery) {
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
@@ -186,7 +196,7 @@ public class Database {
 	 * @param stmt
 	 * @return - true if it successfully executes the update
 	 */
-	private static boolean executeUpdate(PreparedStatement stmt) {
+	protected static boolean executeUpdate(PreparedStatement stmt) {
 		try {
 			stmt.closeOnCompletion();
 		} catch (SQLException e) {
@@ -207,8 +217,7 @@ public class Database {
 	 * @param stmt
 	 * @return
 	 */
-	@SuppressWarnings("unused")
-	private static ResultSet executeQuery(PreparedStatement stmt) {
+	protected static ResultSet executeQuery(PreparedStatement stmt) {
 		ResultSet rs = null;
 		try {
 			stmt.closeOnCompletion();
@@ -339,12 +348,24 @@ public class Database {
 		return executeQuery(String.format("SELECT * FROM %s.%sAutoReplies", DATABASE, channelNoHash));
 	}
 	
+	public static void addCommand(String channelNoHash, String command, String reply) {
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement(String.format("INSERT INTO %s.%sAutoReplies VALUES(? , ?)", DATABASE, channelNoHash));
+			stmt.setString(1, command);
+			stmt.setString(2, reply);
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Unable to set option", e);
+		}
+		executeUpdate(stmt);
+	}
+	
 	public static ResultSet getSpam(String channelNoHash) {
 		return executeQuery(String.format("SELECT * FROM %s.%sSpam", DATABASE, channelNoHash));
 	}
 
 	public static boolean delModerator(String moderator, String channelNoHash) {
-		if(!MyBotMain.isDefaultMod(moderator, channelNoHash)) {
+		if(!Main.isDefaultMod(moderator, channelNoHash)) {
 			return executeUpdate(String.format("DELETE FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channelNoHash, moderator));
 		}
 		return false;
@@ -416,7 +437,7 @@ public class Database {
 		}
 		try {
 			Database.executeUpdate(String.format("UPDATE %s.%sPoints SET userID=\'%s\',points=%d WHERE userID=\'%s\'", DATABASE, channelNoHash, nick, rs.getInt(2)+ammount, nick));
-			if(rs.getInt(2)+ammount==72) {
+			if(rs.getInt(2)+ammount==getOption(channelNoHash, TOptions.regular)) {
 				Database.executeUpdate(String.format("INSERT INTO %s, %sRegulars VALUES (\'%s\')", DATABASE, channelNoHash, nick));
 			}
 		} catch (SQLException e) {
@@ -452,5 +473,23 @@ public class Database {
 			logger.log(Level.SEVERE, "Error occurred creating Top list!", e);
 		}
 		return output.toString();
+	}
+
+	public static boolean isRegular(String sender, String channelNoHash) {
+		ResultSet rs=Database.executeQuery(String.format("SELECT * FROM %s.%sRegulars WHERE userID=\'%s\'", DATABASE, channelNoHash, sender));
+		try {
+			return rs.next();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "User is not a regular!", e);
+		}
+		return false;
+	}
+
+	public static boolean addRegular(String channelNoHash, String regular) {
+		return executeUpdate(String.format("INSERT INTO %s.%sRegulars VALUES (\'%s\')", DATABASE, channelNoHash, regular));
+	}
+
+	public static boolean delRegular(String channelNoHash, String regular) {
+		return executeUpdate(String.format("DELETE FROM %s.%sRegulars WHERE userID=\'%s\'", DATABASE, channelNoHash, regular));
 	}
 }

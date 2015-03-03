@@ -31,14 +31,14 @@ import me.jewsofhazard.pcmrbot.util.TFileReader;
 
 import org.jibble.pircbot.IrcException;
 
-public class MyBotMain implements Runnable{
+public class Main implements Runnable{
 	
 	private static IRCBot bot;
 	private static String[] args;
 	private static final String botChannel = "#pcmrbot";
-	private static final Logger logger = Logger.getLogger(MyBotMain.class + "");
+	private static final Logger logger = Logger.getLogger(Main.class + "");
 	
-	public MyBotMain() {
+	public Main() {
 		new Thread(this).start();
 	}
 
@@ -50,8 +50,8 @@ public class MyBotMain implements Runnable{
 	 *            - the oAuth for the bot is passed on the command-line
 	 */
 	public static void main(String[] args) {
-		MyBotMain.args=args;
-		new MyBotMain();
+		Main.args=args;
+		new Main();
 		try(Scanner scan=new Scanner(System.in)) {
 			while(true) {
 				String message=scan.nextLine();
@@ -122,6 +122,7 @@ public class MyBotMain implements Runnable{
 			Database.addOption(channel.substring(1), TOptions.numEmotes, "20");
 			Database.addOption(channel.substring(1), TOptions.numSymbols, "20");
 			Database.addOption(channel.substring(1), TOptions.link, "0");
+			Database.addOption(channel.substring(1), TOptions.regular, "288");
 			Database.addOption(channel.substring(1), TOptions.paragraphLength, "250");
 		}
 		

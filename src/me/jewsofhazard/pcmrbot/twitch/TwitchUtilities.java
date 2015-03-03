@@ -66,7 +66,7 @@ public class TwitchUtilities {
 			connection.getInputStream();
 			return true;
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred updating the title for "+channelNoHash.substring(1), e);
+			logger.log(Level.SEVERE, "An error occurred updating the title for "+channelNoHash, e);
 			return false;
 		}
 	}
@@ -90,7 +90,7 @@ public class TwitchUtilities {
 			connection.getInputStream();
 			return true;
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred updating the game for "+channelNoHash.substring(1), e);
+			logger.log(Level.SEVERE, "An error occurred updating the game for "+channelNoHash, e);
 		}
 		return false;
 	}
@@ -104,14 +104,15 @@ public class TwitchUtilities {
 	 */
 	public static boolean isFollower(String channel, String sender) {
 		try {
-			String nextUrl = "https://api.twitch.tv/kraken/users/"+sender+"/follows/channels/"+channel.substring(1);
+			String nextUrl = "https://api.twitch.tv/kraken/users/"+sender+"/follows/channels/"+channel;
+                        System.out.println(nextUrl);
 			JsonObject following = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
-			try {
-				following.get("error");
-				return false;
-			} catch (JsonIOException e) {
-				return true;
-			}
+			if(following.get("error") != null){ //it finds it
+                            return false;
+                        }
+                        else{   //it doesnt
+                            return true;
+                        }
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
 			logger.log(Level.SEVERE, "An error occurred checking if "+sender+" is following "+channel.substring(1), e);
 		}
@@ -128,12 +129,11 @@ public class TwitchUtilities {
 	public static boolean isSubscriber(String sender, String channel) {
 		try {
 			String userOAuth=Database.getUserOAuth(channel.substring(1));
-			String nextUrl = "https://api.twitch.tv/kraken/channels/"+channel.substring(1)+"/subscriptions/?oauth_token="+userOAuth;
+			String nextUrl = "https://api.twitch.tv/kraken/channels/"+channel.substring(0)+"/subscriptions/?oauth_token="+userOAuth;
 			JsonObject obj = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
-			try {
-				obj.get("error");
+			if(obj.get("error") != null) {  //ie it finds it
 				return false;
-			} catch (JsonIOException e) {
+			} else {    //it does not find it
 				int count = subscriberCount(channel, userOAuth);
 				int pages = count/25;
 				if(count%25!=0) {
@@ -210,7 +210,7 @@ public class TwitchUtilities {
 	 */
 	public static int followerCount(String channel) {
 		try {
-			return new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"channels"+channel.substring(1)).openStream()))).getAsJsonObject().getAsJsonPrimitive("followers").getAsInt();
+			return new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"channels/"+channel.substring(1)).openStream()))).getAsJsonObject().getAsJsonPrimitive("followers").getAsInt();
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
 			logger.log(Level.SEVERE, "An error occurred getting the follower count for "+channel.substring(1), e);
 		}
@@ -226,11 +226,23 @@ public class TwitchUtilities {
 	 */
 	public static int subscriberCount(String channel, String oAuth) {
 		try {
-			return new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"channels"+channel.substring(1)+"/subscriptions/?oauth_token="+oAuth).openStream()))).getAsJsonObject().getAsJsonPrimitive("_total").getAsInt();
+			return new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"channels/"+channel.substring(1)+"/subscriptions/?oauth_token="+oAuth).openStream()))).getAsJsonObject().getAsJsonPrimitive("_total").getAsInt();
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
 			logger.log(Level.SEVERE, "An error occurred getting the follower count for "+channel.substring(1), e);
 		}
 		return 0;
+	}
+	
+	public static boolean isLive(String channelNoHash) {
+		try {
+			new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"streams/"+channelNoHash).openStream()))).getAsJsonObject().getAsJsonArray("stream");
+			return true;
+		} catch (ClassCastException e) {
+			return false;
+		} catch (JsonSyntaxException | IOException e) {
+			logger.log(Level.SEVERE, "An error occurred checking if the streamer is live!", e);
+		}
+		return false;
 	}
 	
 }

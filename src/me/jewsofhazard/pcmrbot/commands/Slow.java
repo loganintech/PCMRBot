@@ -17,7 +17,7 @@
 
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Slow extends Command {
@@ -33,8 +33,8 @@ public class Slow extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String...parameters) {
-		if (!MyBotMain.getBot().getSlowMode(channel)) {
-			MyBotMain.getBot().setSlowMode(channel, true);
+		if (!Main.getBot().getSlowMode(channel)) {
+			Main.getBot().setSlowMode(channel, true);
 			try {
 				int time = Integer.valueOf(parameters[0]);
 				return "/slow "+time;
@@ -42,7 +42,7 @@ public class Slow extends Command {
 				return "/slow";
 			}
 		} else {
-			MyBotMain.getBot().setSlowMode(channel, false);
+			Main.getBot().setSlowMode(channel, false);
 			return "/slowoff";
 		}
 	}

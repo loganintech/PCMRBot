@@ -17,7 +17,7 @@
 
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.MyBotMain;
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Seen extends Command {
@@ -35,7 +35,7 @@ public class Seen extends Command {
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		String target = parameters[0];
-		String seen=MyBotMain.getBot().getChatPostSeen(target);
+		String seen=Main.getBot().getChatPostSeen(target);
 		if (seen !=null) {
 			String[] info = seen.split("[|]");
 			return String.format("%s, I last saw %s in %s on %s.", sender, target, info[0], info[1]);
