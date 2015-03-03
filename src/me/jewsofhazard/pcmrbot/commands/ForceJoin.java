@@ -35,7 +35,7 @@ public class ForceJoin extends Command {
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		if(channel.equalsIgnoreCase(Main.getBotChannel())) {
-			Main.joinChannel(parameters[0]);
+			Main.joinChannel(parameters[0], false);
 			return "Forcefully joining %channel%".replace("%channel%", parameters[0]);
 		}
 		return "You can only preform this command from the main bot channel!";

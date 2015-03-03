@@ -85,13 +85,13 @@ public class Main implements Runnable{
 		} catch (IOException | IrcException e) {
 			logger.log(Level.SEVERE, "An error occurred while connecting to Twitch IRC", e);
 		}
-		joinChannel(getBotChannel());
+		joinChannel(getBotChannel(), false);
 		CommandParser.init();
 		
 		File f = new File("connectedChannels.txt");
 		if (f.exists()) {
 			for (String s : TFileReader.readFile(f)) {
-				joinChannel(s);
+				joinChannel(s, true);
 			}
 			f.delete();
 		}
@@ -101,7 +101,7 @@ public class Main implements Runnable{
 	 * Performs all of the setup for the bot in the channel specified, both on
 	 * first run, and all subsequent runs.
 	 */
-	public static void joinChannel(String channel) {
+	public static void joinChannel(String channel, boolean isReJoin) {
 
 		if(bot.isWatchingChannel(channel)) {
 			return;
@@ -131,6 +131,7 @@ public class Main implements Runnable{
 		bot.setConfirmationEnabled(channel, true);
 		bot.setSlowMode(channel, false);
 		bot.setSubMode(channel, false);
+		bot.setReJoin(channel, isReJoin);
 		CommandsPage.createCommandsHTML(channel.substring(1));
 		if (firstTime) {
 			bot.onFirstJoin(channel);

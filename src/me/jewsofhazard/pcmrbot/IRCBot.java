@@ -28,6 +28,8 @@ import java.util.logging.Logger;
 import me.jewsofhazard.pcmrbot.commands.AddModerator;
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
 import me.jewsofhazard.pcmrbot.database.Database;
+import me.jewsofhazard.pcmrbot.util.DelayedReJoin;
+import me.jewsofhazard.pcmrbot.util.DelayedWelcome;
 import me.jewsofhazard.pcmrbot.util.Permit;
 import me.jewsofhazard.pcmrbot.util.PointsRunnable;
 import me.jewsofhazard.pcmrbot.util.TOptions;
@@ -48,10 +50,12 @@ public class IRCBot extends PircBot {
 	private static HashMap<String, Boolean> confirmationReplies;
 	private static HashMap<String, Boolean> slowMode;
 	private static HashMap<String, Boolean> subMode;
+	private static HashMap<String, Boolean> isReJoin;
 	private static HashMap<String, me.jewsofhazard.pcmrbot.util.Poll> polls;
 	private static HashMap<String, me.jewsofhazard.pcmrbot.util.Raffle> raffles;
 	private static HashMap<String, me.jewsofhazard.pcmrbot.util.VoteTimeOut> voteTimeOuts;
 	private static HashMap<String, ArrayList<Permit>> permits;
+	private static HashMap<String, ArrayList<String>> welcomes;
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
 
 	/**
@@ -71,6 +75,7 @@ public class IRCBot extends PircBot {
 		chatPostSeen = new HashMap<>();
 		slowMode = new HashMap<>();
 		subMode = new HashMap<>();
+		isReJoin = new HashMap<>();
 		polls = new HashMap<>();
 		raffles = new HashMap<>();
 		permits = new HashMap<>();
@@ -97,13 +102,14 @@ public class IRCBot extends PircBot {
 	public void onJoin(String channel, String sender, String login,
 			String hostname) {
 		try {
-			if (welcomeEnabled.get(channel)) {
+			if (welcomeEnabled.get(channel) && !isReJoin.containsKey(channel)) {
 				if (!sender.equalsIgnoreCase(Main.getBotChannel()
 						.substring(1))) {
 					String msg = Database.getWelcomeMessage(
 							channel.substring(1)).replace("%user%", sender);
-					if (!msg.equalsIgnoreCase("none")) {
+					if (!msg.equalsIgnoreCase("none") && !welcomes.get(sender).contains(channel)) {
 						sendMessage(channel, msg);
+						addWelcome(channel, sender);
 					}
 				} else {
 					sendMessage(
@@ -411,4 +417,42 @@ public class IRCBot extends PircBot {
 		}
 	}
 
+	public void setReJoin(String channel, boolean reJoin) {
+		if(reJoin) {
+			isReJoin.put(channel, reJoin);
+			new DelayedReJoin(channel);
+		}
+	}
+	
+	public void removeReJoin(String channel) {
+		isReJoin.remove(channel);
+	}
+
+	public void addWelcome(String channel, String user) {
+		ArrayList<String> p = welcomes.get(user);
+		if (p == null) {
+			p = new ArrayList<>();
+		}
+		p.add(channel);
+		welcomes.put(user, p);
+		new DelayedWelcome(channel, user);
+	}
+
+	public void removeWelcome(String channel, String user) {
+		ArrayList<String> ws = welcomes.get(user);
+		if (ws == null) {
+			return;
+		}
+		for (String s : ws) {
+			if (s.equalsIgnoreCase(channel)) {
+				ws.remove(s);
+				break;
+			}
+		}
+		if (ws.size() > 0) {
+			welcomes.put(user, ws);
+		} else {
+			welcomes.remove(user);
+		}
+	}
 }
