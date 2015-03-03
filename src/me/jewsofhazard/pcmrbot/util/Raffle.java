@@ -44,18 +44,18 @@ public class Raffle {
 	}
 	
 	public void enter(String sender) {
-
+      //      System.out.println(sender);
 		if (participants.contains(sender)) {
 			Main.getBot().sendMessage(channel,"%sender% is a dirty cheater and tried to join the raffle more than once, may he be smiten.".replace("%sender%", sender));
 			return;
 		}
 
-		if ((type.equals(ULevel.Follower)) && (TwitchUtilities.isFollower(channel, sender) || sender.equalsIgnoreCase(channel.substring(1)))) {
+		if ((type.equals(ULevel.Follower)) && (TwitchUtilities.isFollower(channel.substring(1), sender) || sender.equalsIgnoreCase(channel.substring(1)))) {
 			participants.add(sender);
 			if (Main.getBot().getConfirmationReplies(channel)) {
 				Main.getBot().sendMessage(channel, "%sender% has joined the raffle.".replace("%sender%", sender));
 			}
-		} else if (type.equals(ULevel.Subscriber) && (TwitchUtilities.isSubscriber(channel, sender) || sender.equalsIgnoreCase(channel.substring(1)))) {
+		} else if (type.equals(ULevel.Subscriber) && (TwitchUtilities.isSubscriber(channel.substring(1), sender) || sender.equalsIgnoreCase(channel.substring(1)))) {
 			participants.add(sender);
 			if (Main.getBot().getConfirmationReplies(channel)) {
 				Main.getBot().sendMessage(channel, "%sender% has joined the raffle.".replace("%sender%", sender));
