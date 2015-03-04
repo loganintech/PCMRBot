@@ -168,11 +168,13 @@ public class IRCBot extends PircBot {
 
 			}
 
-			String command = message.substring(1, message.length());
-			try {
-				command = message.substring(1, message.indexOf(' '));
-			} catch (StringIndexOutOfBoundsException e) {
-
+			if(message.substring(0, 1).equals("!"){
+				String command = message.substring(1, message.length());
+				try {
+					command = message.substring(1, message.indexOf(' '));
+				} catch (StringIndexOutOfBoundsException e) {
+	
+				}
 			}
 
 			Date date = new Date();
