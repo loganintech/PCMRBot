@@ -38,16 +38,19 @@ public class Main implements Runnable{
 	private static final String botChannel = "#pcmrbot";
 	private static final Logger logger = Logger.getLogger(Main.class + "");
 	
+	/**
+	 * Starts a new thread for the bot to exists in so we can pass
+	 * bot commands on the command line.
+	 */
 	public Main() {
 		new Thread(this).start();
 	}
-
-	/** 
-	 * Performs all of the setup for the bot, both on first run, and all
-	 * subsequent runs.
+	
+	/**
 	 * 
 	 * @param args
-	 *            - the oAuth for the bot is passed on the command-line
+	 *            [0] - Twitch OAuth
+	 *            [1] - Database Password
 	 */
 	public static void main(String[] args) {
 		Main.args=args;
@@ -72,7 +75,10 @@ public class Main implements Runnable{
 			}
 		}
 	}
-		
+
+	/** 
+	 * Performs all of the setup for the bot on first run.
+	 */
 	@Override
 	public void run() {
 		Database.initDBConnection(args[1]);
@@ -98,8 +104,7 @@ public class Main implements Runnable{
 	}
 
 	/**
-	 * Performs all of the setup for the bot in the channel specified, both on
-	 * first run, and all subsequent runs.
+	 * Performs all of the setup for the bot in the channel specified.
 	 */
 	public static void joinChannel(String channel, boolean isReJoin) {
 
@@ -138,6 +143,11 @@ public class Main implements Runnable{
 		}
 	}
 	
+	/**
+	 * Makes the bot leave the channel specified
+	 * 
+	 * @param channel - channel to be left
+	 */
 	public static void partChannel(String channel) {
 		bot.partChannel(channel);
 		bot.removeWelcomeEnabled(channel);
@@ -146,14 +156,27 @@ public class Main implements Runnable{
 		bot.removeSubMode(channel);
 	}
 	
+	/**
+	 * @return - the instance of IRCBot
+	 */
 	public static IRCBot getBot() {
 		return bot;
 	}
 
+	/**
+	 * @return - the main channel we are running in
+	 */
 	public static String getBotChannel() {
 		return botChannel;
 	}
 
+	/**
+	 * @param moderator - name of the person to check
+	 * @param channelNoHash - name of the channel without the
+	 * leading #
+	 * @return true if the person passed is a moderator added when
+	 * the table is set up to begin with
+	 */
 	public static boolean isDefaultMod(String moderator, String channelNoHash) {
 		return !moderator.equalsIgnoreCase(channelNoHash) && !moderator.equalsIgnoreCase("donald10101") && !moderator.equalsIgnoreCase("j3wsofhazard") && !moderator.equalsIgnoreCase("angablade") && !moderator.equalsIgnoreCase("pcmrbot");
 	}

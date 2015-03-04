@@ -30,6 +30,10 @@ import java.util.logging.Logger;
 public class TFileWriter {
   static final Logger logger = Logger.getLogger(TFileWriter.class+"");
   
+  /**
+   * @param f - file to be written to
+   * @param strings - ArrayList of strings to be written, each one on a new line
+   */
   public static void writeFile(File f, ArrayList<String> strings) {
     if (!f.exists()) {
       try
@@ -59,6 +63,10 @@ public class TFileWriter {
     }
   }
   
+  /**
+   * @param f - file to be written to
+   * @param strings - Array of strings to be written, each one on a new line
+   */
   public static void writeFile(File f, String... output) {
     ArrayList<String> strings = new ArrayList<>();
     if (!f.exists()) {
@@ -92,6 +100,10 @@ public class TFileWriter {
     }
   }
   
+  /**
+   * @param f - file to be overwritten
+   * @param strings - ArrayList of strings to be written, each one on a new line
+   */
   public static void overWriteFile(File f, ArrayList<String> strings) {
     if (f.exists()) {
       f.delete();
@@ -120,6 +132,10 @@ public class TFileWriter {
     }
   }
   
+  /**
+   * @param f - file to be overwritten
+   * @param strings - string to be written, each one on a new line
+   */
   public static void overWriteFile(File f, String output) {
     if (f.exists()) {
       f.delete();

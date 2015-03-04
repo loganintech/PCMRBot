@@ -45,7 +45,7 @@ public class Subscribers extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		if (!Main.getBot().getSubscribersMode(channel)) {
+		if (!Main.getBot().getSubMode(channel)) {
 			Main.getBot().setSubMode(channel, true);
 			return "/subscribers";
 		}

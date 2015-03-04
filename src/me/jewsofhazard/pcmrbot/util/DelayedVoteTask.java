@@ -27,36 +27,44 @@ import java.util.TimerTask;
 public class DelayedVoteTask extends TimerTask {
 
 	private Object type;
-	
+
 	private static final Timer timer = new Timer();
 
 	/**
-	 * Creates a new instance of the Timer class.
-	 * 
-	 * @param channel
-	 *            - The channel this timer is for
 	 * @param time
-	 *            - The time (in seconds) until this Timer will expire
+	 *            - delay before we close the poll
+	 * @param p
+	 *            - Poll object
 	 */
 	public DelayedVoteTask(long time, Poll p) {
 		this.type = p;
 		timer.schedule(this, time);
 	}
 
+	/**
+	 * @param time
+	 *            - delay before we close the Raffle
+	 * @param r
+	 *            - Raffle object
+	 */
 	public DelayedVoteTask(int time, Raffle r) {
 		this.type = r;
 		timer.schedule(this, time);
 	}
-	
 
-
+	/**
+	 * @param time
+	 *            - delay before we close the Time Out Vote
+	 * @param v
+	 *            - VoteTimeOut object
+	 */
 	public DelayedVoteTask(int time, VoteTimeOut v) {
 		this.type = v;
 		timer.schedule(this, time);
 	}
 
 	/**
-	 * Sleeps for time seconds then tells the IRCBot to tally the votes.
+	 * Decides what type of vote this is then counts the votes/chooses a winner
 	 */
 	public void run() {
 		if (type instanceof Poll) {

@@ -28,6 +28,10 @@ import java.util.logging.Logger;
 public class TFileReader {
 	static Logger logger = Logger.getLogger(TFileReader.class + "");
 
+	/**
+	 * @param f - file to be read
+	 * @return ArrayList of lines in the file
+	 */
 	public static ArrayList<String> readFile(File f) {
 		FileInputStream fis = null;
 		try {
@@ -46,6 +50,10 @@ public class TFileReader {
 		return buffer;
 	}
 
+	/**
+	 * @param f - file to be read
+	 * @return all of the lines of the file concatenated together
+	 */
 	public static String readFileAsString(File f) {
 		FileInputStream fis = null;
 		try {
