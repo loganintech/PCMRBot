@@ -12,6 +12,9 @@ import me.jewsofhazard.pcmrbot.util.DelayedTitleTask;
 public class ReadScheduleTable {
 	private static final Logger logger = Logger.getLogger(ReadScheduleTable.class+"");
 	
+	/**
+	 * Creates the delayed task for the pcmr titles
+	 */
 	public static void createDelayedTasks() {
 		switch(Calendar.getInstance(TimeZone.getTimeZone("PST")).get(Calendar.DAY_OF_WEEK)) {
 		case Calendar.SUNDAY: 
@@ -37,6 +40,9 @@ public class ReadScheduleTable {
 		}
 	}
 
+	/**
+	 * @param i - the day of the week in number form
+	 */
 	private static void readTable(int i) {
 		ResultSet rs = Database.executeQuery(String.format("SELECT * FROM %s.pcmrSchedule", Database.DATABASE));
 		try {

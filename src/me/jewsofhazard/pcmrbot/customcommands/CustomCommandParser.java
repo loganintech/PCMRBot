@@ -10,6 +10,13 @@ import me.jewsofhazard.pcmrbot.database.Database;
 public class CustomCommandParser {
 	private static final Logger logger = Logger.getLogger(CustomCommandParser.class+"");
 	
+	/**
+	 * @param command - command without the leading !
+	 * @param sender - person who sent the command
+	 * @param channel - channel the command was sent in
+	 * @param parameters - parameters passed with the command
+	 * @return formatted if the command is valid, null otherwise
+	 */
 	public static String parse(String command, String sender, String channel, String parameters) {
 		ResultSet rs = Database.getCustomCommands(channel.substring(1));
 		

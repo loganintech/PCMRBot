@@ -161,40 +161,34 @@ public class IRCBot extends PircBot {
 
 			checkSpam(channel, message, sender);
 
-			String params = "";
-			try {
-				params = message.substring(message.indexOf(' ') + 1);
-			} catch (StringIndexOutOfBoundsException e) {
+			
 
-			}
-
-			if(message.substring(0, 1).equals("!"){
+			if(message.charAt(0) == '!'){
 				String command = message.substring(1, message.length());
 				try {
 					command = message.substring(1, message.indexOf(' '));
 				} catch (StringIndexOutOfBoundsException e) {
 	
 				}
-			}
+				String params = "";
+				try {
+					params = message.substring(message.indexOf(' ') + 1);
+				} catch (StringIndexOutOfBoundsException e) {
 
-			Date date = new Date();
+				}
+				String reply = CommandParser.parse(command.toLowerCase(), sender,
+						channel, params);
+				if (reply != null) {
+					sendMessage(channel, reply);
+				}
+				reply = CustomCommandParser.parse(command.toLowerCase(), sender,
+						channel, params);
+				if (reply != null) {
+					sendMessage(channel, reply);
+				}
+			}
 			chatPostSeen.put(sender,
-					channel.substring(1) + "|" + date.toString());
-
-			String reply = CommandParser.parse(command.toLowerCase(), sender,
-					channel, params);
-			if (reply != null) {
-				sendMessage(channel, reply);
-			}
-			if (!sender.equalsIgnoreCase(Main.getBotChannel().substring(1))) {
-				autoReplyCheck(channel, message);
-			}
-			
-			reply = CustomCommandParser.parse(command.toLowerCase(), sender,
-					channel, params);
-			if (reply != null) {
-				sendMessage(channel, reply);
-			}
+					channel.substring(1) + "|" + new Date().toString());
 			if (!sender.equalsIgnoreCase(Main.getBotChannel().substring(1))) {
 				autoReplyCheck(channel, message);
 			}
