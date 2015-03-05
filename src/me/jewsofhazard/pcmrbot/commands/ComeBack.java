@@ -23,11 +23,7 @@ public class ComeBack extends Command{
 		return "comeback";
 	}
 	
-	
 	public String execute(String channel, String sender, String...parameters) {
-		
-                return String.format("%s COME BACK! YOU CAN BLAME IT ALL ON ME!", sender);
-            
+		return String.format("%s COME BACK! YOU CAN BLAME IT ALL ON ME!", sender);    
 	}
-    
 }

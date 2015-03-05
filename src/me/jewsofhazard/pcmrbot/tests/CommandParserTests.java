@@ -18,8 +18,6 @@
 package me.jewsofhazard.pcmrbot.tests;
 
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
-import me.jewsofhazard.pcmrbot.customcommands.CustomCommandParser;
-import me.jewsofhazard.pcmrbot.database.Database;
 
 import org.junit.Test;
 
@@ -30,8 +28,6 @@ public class CommandParserTests {
 
 	@Test
 	public static void test(String pass) {
-		Database.initDBConnection(pass);
-		String result = CustomCommandParser.parse("welcome", "donald10101", "#donald10101", "joe");
-		System.out.println(result);
+		
 	}
 }

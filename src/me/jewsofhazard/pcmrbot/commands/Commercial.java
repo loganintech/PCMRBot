@@ -34,7 +34,7 @@ public class Commercial extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		if(parameters.length<2) {
+		if(parameters.length == 0) {
 			TwitchUtilities.runCommercial(channel.substring(1));
 			return "Running a default length commercial on %channel%".replace("%channel%", channel);
 		}

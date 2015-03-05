@@ -37,7 +37,7 @@ public class GenerateCommandsPage extends Command {
 		if(CommandsPage.createCommandsHTML(channel.substring(1))) {
 			return "Created commands page for your custom commands! http://pcmrbot.no-ip.info/commands/%channel%.html".replace("%channel%", channel.substring(1));
 		}
-		return "It appears you don't have any custom commands! Use !addcom <commandName>|<reply> to create one";
+		return "It appears you don't have any custom commands! Use !addcom <commandName> \"<reply>\" [parameter1] [parameter2]... to create one";
 	}
 
 }

@@ -17,6 +17,7 @@
 
 package me.jewsofhazard.pcmrbot.commands;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
@@ -61,12 +62,33 @@ public class CommandParser {
 	 * @param sender - person who sent the command
 	 * @param channel - Channel the command was sent in
 	 * @param parameters - parameters sent along with the command
-	 * @return {@link Command#execute(String, String, String...)} or null if the command does not exist
+	 * @return {@link Command#execute(String, String, String[])} or null if the command does not exist
 	 */
-	public static String parse(String command, String sender, String channel, String parameters) {
+	public static String parse(String command, String sender, String channel, String[] parameters) {
 		Command c=commands.get(command);
 		if(c != null && hasAccess(c, sender, channel)) {
-			return c.execute(channel, sender, parameters);
+			ArrayList<String> passed = new ArrayList<>();
+			int i=0;
+			while(i < parameters.length) {
+				if(parameters[i].startsWith("\"")) {
+					String temp=parameters[i].replace("\"", "") + " ";
+					if(parameters[i].endsWith("\"")) {
+						passed.add(parameters[i].replace("\"", ""));
+						continue;
+					}
+					while(!parameters[i].endsWith("\"")) {
+						temp+=parameters[i] + " ";
+						i++;
+					}
+					temp+=parameters[i].replace("\"", "");
+					i++;
+					passed.add(temp);
+					continue;
+				}
+				passed.add(parameters[i]);
+				i++;
+			}
+			return c.execute(channel, sender, (String[]) passed.toArray());
 		}
 		return null;
 	}

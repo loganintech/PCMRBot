@@ -34,19 +34,16 @@ public class AddAutoReply extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters){
-		String[] cutUp = parameters[0].split("[|]");
 		StringBuilder keywords = new StringBuilder();
-		for (int i = 0; i < cutUp.length - 2; i++) {
-
-			keywords.append(cutUp[i] + ",");
-
+		for (int i = 0; i < parameters.length - 2; i++) {
+			keywords.append(parameters[i] + ",");
 		}
-		if(cutUp.length != 0) {
-			keywords.append(cutUp[cutUp.length - 2]);
+		if(parameters.length != 0) {
+			keywords.append(parameters[parameters.length - 2]);
 		} else {
 			keywords.append(parameters[0]);
 		}
-		String reply = cutUp[cutUp.length - 1];
+		String reply = parameters[parameters.length - 1];
 		Database.addAutoReply(channel.substring(1), keywords.toString(), reply);
 		return String.format("Added auto reply: \"%s\"! Which will be said when all of the following key words are said in %s: %s", reply, channel.substring(1), keywords.toString());
 	}

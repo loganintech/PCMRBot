@@ -172,12 +172,12 @@ public class IRCBot extends PircBot {
 
 				}
 				String reply = CommandParser.parse(command.toLowerCase(), sender,
-						channel, params);
+						channel, params.split(" "));
 				if (reply != null) {
 					sendMessage(channel, reply);
 				}
 				reply = CustomCommandParser.parse(command.toLowerCase(), sender,
-						channel, params);
+						channel, params.split(" "));
 				if (reply != null) {
 					sendMessage(channel, reply);
 				}

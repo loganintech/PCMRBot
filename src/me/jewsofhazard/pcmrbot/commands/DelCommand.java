@@ -34,11 +34,7 @@ public class DelCommand extends Command {
 
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		String[] params = parameters[0].split("[|]");
-		try {
-			params[0].substring(0, params[0].indexOf('|'));
-		} catch (StringIndexOutOfBoundsException e) {}
-		Database.delAutoReply(channel.substring(1), params[0]);
+		Database.delCommand(channel.substring(1), parameters[0]);
 		return "Removed command from the database.";
 	}
 

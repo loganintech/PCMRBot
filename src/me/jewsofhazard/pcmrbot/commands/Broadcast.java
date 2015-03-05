@@ -38,7 +38,7 @@ public class Broadcast extends Command {
 			String message=parameters[0];
 			for (String s : Main.getBot().getChannels()) {
 				if (!s.equalsIgnoreCase(Main.getBotChannel())) {
-					Main.getBot().sendMessage(s,	message);
+					Main.getBot().sendMessage(s, message);
 				}
 			}
 			return "I have sent %message% to all channels.".replace("%message%", message);
