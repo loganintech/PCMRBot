@@ -34,11 +34,15 @@ public class DelAutoReply extends Command {
 
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		String keywords = parameters[0].replace("|", ",");
-		if(Database.delAutoReply(channel.substring(1), keywords)) {
-			return "Successfully removed the auto reply associated with the keywords: %kw%".replace("%kw%", keywords);
+		StringBuilder keywords = new StringBuilder();
+		for(int i = 0;i < parameters.length - 1;i++) {
+			keywords.append(parameters[i] + ",");
 		}
-		return "There was an issue removing the auto reply associated with the keywords: %kw%! Did you pass all of the keywords?".replace("%kw%", keywords);
+		keywords.append(parameters[parameters.length-1]);
+		if(Database.delAutoReply(channel.substring(1), keywords.toString())) {
+			return "Successfully removed the auto reply associated with the keywords: %kw%".replace("%kw%", keywords.toString());
+		}
+		return "There was an issue removing the auto reply associated with the keywords: %kw%! Did you pass all of the keywords?".replace("%kw%", keywords.toString());
 	}
 
 }

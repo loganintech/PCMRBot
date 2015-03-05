@@ -89,7 +89,7 @@ public class IRCBot extends PircBot {
 	protected void onOp(String channel, String sourceNick, String sourceLogin,
 			String sourceHostname, String recipient) {
 		try {
-			new AddModerator().execute(recipient, channel);
+			new AddModerator().execute(Main.getBotChannel().substring(1), channel, new String[] {recipient});
 		} catch (Exception e) {
 			logger.log(Level.WARNING,
 					"An error was thrown while executing onOp() in " + channel,
@@ -159,25 +159,25 @@ public class IRCBot extends PircBot {
 		try {
 			checkSpam(channel, message, sender);
 			if(message.charAt(0) == '!'){
-				String command = message.substring(1, message.length());
-				try {
-					command = message.substring(1, message.indexOf(' '));
-				} catch (StringIndexOutOfBoundsException e) {
-	
-				}
 				String params = "";
 				try {
 					params = message.substring(message.indexOf(' ') + 1);
 				} catch (StringIndexOutOfBoundsException e) {
 
 				}
+				String command = message.substring(1, message.length());
+				try {
+					command = message.substring(1, message.indexOf(' '));
+				} catch (StringIndexOutOfBoundsException e) {
+	
+				}
 				String reply = CommandParser.parse(command.toLowerCase(), sender,
-						channel, params);
+						channel, params.split(" "));
 				if (reply != null) {
 					sendMessage(channel, reply);
 				}
 				reply = CustomCommandParser.parse(command.toLowerCase(), sender,
-						channel, params);
+						channel, params.split(" "));
 				if (reply != null) {
 					sendMessage(channel, reply);
 				}

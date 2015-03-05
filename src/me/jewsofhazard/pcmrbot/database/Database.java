@@ -441,7 +441,8 @@ public class Database {
 	 * @param keywords - keywords of the auto reply
 	 * @return true if the auto reply is removed
 	 */
-	public static boolean delAutoReply(String channelNoHash, String keywords) {PreparedStatement stmt = null;
+	public static boolean delAutoReply(String channelNoHash, String keywords) {
+		PreparedStatement stmt = null;
 		try {
 			stmt = conn.prepareStatement(String.format("DELETE FROM %s.%sAutoReplies WHERE keyWord=?", DATABASE, channelNoHash));
 			stmt.setString(1, keywords);
@@ -620,5 +621,16 @@ public class Database {
 	 */
 	public static boolean delRegular(String channelNoHash, String regular) {
 		return executeUpdate(String.format("DELETE FROM %s.%sRegulars WHERE userID=\'%s\'", DATABASE, channelNoHash, regular));
+	}
+
+	public static boolean delCommand(String channelNoHash, String command) {
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement(String.format("DELETE FROM %s.%sCommands WHERE command=?", DATABASE, channelNoHash));
+			stmt.setString(1, command);
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Unable to set option", e);
+		}
+		return executeUpdate(stmt);
 	}
 }

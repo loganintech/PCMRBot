@@ -36,8 +36,11 @@ public class AddCommand extends Command {
 
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		String[] params = parameters[0].split("[|]");
-		Database.addCommand(channel.substring(1), params[0], params[1], params[2]);
+		StringBuilder params = new StringBuilder();
+		for(int i = 2;i < parameters.length;i++) {
+			params.append(parameters[i] + " ");
+		}
+		Database.addCommand(channel.substring(1), parameters[0], params.toString(), parameters[1]);
 		return "Added command to the database.";
 	}
 }

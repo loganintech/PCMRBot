@@ -12,21 +12,16 @@ public class RNG extends Command {
 
 	@Override
 	public CLevel getCommandLevel() {
-
 		return CLevel.Normal;
-
 	}
 
 	@Override
 	public String getCommandText() {
-
 		return "rng";
-
 	}
 
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-
 		try {
 			Random rand = new Random();
 			return "Your random number is "
@@ -35,7 +30,6 @@ public class RNG extends Command {
 		} catch (NumberFormatException e) {
 			return "You have to type a valid number.";
 		}
-
 	}
 
 }

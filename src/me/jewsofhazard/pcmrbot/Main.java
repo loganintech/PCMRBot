@@ -35,7 +35,7 @@ public class Main implements Runnable{
 	
 	private static IRCBot bot;
 	private static String[] args;
-	private static final String botChannel = "#pcmrbot";
+	private static final String botChannel = "#botduck";
 	private static final Logger logger = Logger.getLogger(Main.class + "");
 	
 	/**
@@ -64,14 +64,13 @@ public class Main implements Runnable{
 				} catch(StringIndexOutOfBoundsException e) {
 					
 				}
-				
 				String command=message.substring(1, message.length());
 				try {
 					command = message.substring(1, message.indexOf(' '));
 				} catch(StringIndexOutOfBoundsException e) {
 					
 				}
-				CommandParser.parse(command, getBotChannel().substring(1), getBotChannel(), params);
+				CommandParser.parse(command, getBotChannel().substring(1), getBotChannel(), params.split(" "));
 			}
 		}
 	}
