@@ -64,7 +64,6 @@ public class Main implements Runnable{
 				} catch(StringIndexOutOfBoundsException e) {
 					
 				}
-				
 				String command=message.substring(1, message.length());
 				try {
 					command = message.substring(1, message.indexOf(' '));

@@ -88,11 +88,11 @@ public class CommandParser {
 				passed.add(parameters[i]);
 				i++;
 			}
-			return c.execute(channel, sender, (String[]) passed.toArray());
+			return c.execute(channel, sender, toStringArray(passed));
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @param c - Command object that matches what was passed
 	 * @param sender - user who sent the command
@@ -109,5 +109,13 @@ public class CommandParser {
 			return true;
 		}
 		return false;
+	}
+	
+	private static String[] toStringArray(ArrayList<String> passed) {
+		String[] result = new String[passed.size()];
+		for(int i=0;i<passed.size();i++) {
+			result[i] = passed.get(i);
+		}
+		return result;
 	}
 }

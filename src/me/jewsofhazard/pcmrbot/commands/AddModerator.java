@@ -38,7 +38,7 @@ public class AddModerator extends Command {
 	 * 
 	 * @return a formatted message with the results of the method
 	 */
-	public String execute(String channel, String sender, String...parameters){
+	public String execute(String channel, String sender, String... parameters){
 		String moderator=parameters[0];
 		if (Database.isMod(moderator, channel.substring(1))) {
 			return "%mod% is already a moderator!".replace("%mod%", moderator);
