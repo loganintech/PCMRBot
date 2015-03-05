@@ -36,7 +36,7 @@ public class Permit extends Command {
 	public String execute(String channel, String sender, String... parameters) {
 		String target=parameters[0];
 		if(!Main.getBot().isPermitted(channel, target)) {
-			Main.getBot().addPermit(new me.jewsofhazard.pcmrbot.util.Permit(target, channel), target);
+			Main.getBot().addPermit(new me.jewsofhazard.pcmrbot.util.DelayedPermitTask(target, channel), target);
 			return "Permitted %sender% to post a link! You have three minutes".replace("%sender%", target);
 		}
 		return "%sender% has already been permitted to post a link!".replace("%sender%", target);

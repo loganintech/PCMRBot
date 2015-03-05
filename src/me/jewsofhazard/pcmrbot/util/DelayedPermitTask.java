@@ -17,38 +17,39 @@
 
 package me.jewsofhazard.pcmrbot.util;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import me.jewsofhazard.pcmrbot.Main;
 
-public class Permit implements Runnable{
+public class DelayedPermitTask extends TimerTask{
 
 	private String user;
 	private String channel;
 	
-	private static final Logger logger = Logger.getLogger(Permit.class+""); 
+	private static final Timer timer = new Timer();
 	
-	public Permit(String u, String c) {
+	/**
+	 * @param u - user being permitted
+	 * @param c - channel the permit is in
+	 */
+	public DelayedPermitTask(String u, String c) {
 		this.user = u;
 		this.channel = c;
-		new Thread(this).start();
+		timer.schedule(this, 180000L);
 	}
 	
+	/**
+	 * removes the user from the permit list
+	 */
 	@Override
 	public void run() {
-		try {
-			Thread.sleep(180000L);
-		} catch (InterruptedException e) {
-			logger.log(Level.SEVERE, "Unable to sleep", e);
-		}
 		Main.getBot().removePermit(this, user);
 	}
 	
-	public void removePermit() {
-		Main.getBot().removePermit(this, user);
-	}
-	
+	/**
+	 * @return the channel this permit is for
+	 */
 	public String getChannel() {
 		return channel;
 	}
