@@ -19,17 +19,24 @@ public class CustomCommandParser {
 	 */
 	public static String parse(String command, String sender, String channel, String parameters) {
 		ResultSet rs = Database.getCustomCommands(channel.substring(1));
-		
 		try {
 			while(rs.next()) {
-				if(rs.getString(1).equalsIgnoreCase(command)) {
+				if(rs.getString(1).substring(1).equalsIgnoreCase(command)) {
 					String reply = rs.getString(3);
 					String[] passed = parameters.split("[|]");
 					String[] params = rs.getString(2).split(" ");
-					for(int i = 0;i < params.length;i++) {
-						reply.replace(params[i], passed[i]);
+					System.out.println(params.length);
+					System.out.println(params[0]);
+					System.out.println(passed.length);
+					System.out.println(passed[0]);
+					if(passed.length == params.length) {
+						System.out.println("blah");
+						for(int i = 0;i < passed.length;i++) {
+							System.out.println("test");
+							reply = reply.replace(params[i], passed[i]);
+						}
+						return reply;
 					}
-					return reply;
 				}
 			}
 		} catch (SQLException e) {

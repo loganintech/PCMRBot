@@ -17,10 +17,12 @@
 
 package me.jewsofhazard.pcmrbot;
 
+import me.jewsofhazard.pcmrbot.tests.CommandParserTests;
+
 
 public class Driver {
 
 	public static void main(String[] args) throws Exception {
-
+		CommandParserTests.test(args[0]);
 	}
 }

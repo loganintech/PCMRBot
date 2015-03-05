@@ -37,10 +37,7 @@ public class AddCommand extends Command {
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		String[] params = parameters[0].split("[|]");
-		try {
-			params[0].substring(0, params[0].indexOf('|'));
-		} catch (StringIndexOutOfBoundsException e) {}
 		Database.addCommand(channel.substring(1), params[0], params[1], params[2]);
-		return String.format("Added command to the database.");
+		return "Added command to the database.";
 	}
 }

@@ -156,13 +156,8 @@ public class IRCBot extends PircBot {
 	@Override
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message) {
-
 		try {
-
 			checkSpam(channel, message, sender);
-
-			
-
 			if(message.charAt(0) == '!'){
 				String command = message.substring(1, message.length());
 				try {

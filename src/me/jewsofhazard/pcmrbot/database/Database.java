@@ -406,7 +406,7 @@ public class Database {
 	public static void addCommand(String channelNoHash, String command, String parameters, String reply) {
 		PreparedStatement stmt = null;
 		try {
-			stmt = conn.prepareStatement(String.format("INSERT INTO %s.%sAutoReplies VALUES(? , ?, ?)", DATABASE, channelNoHash));
+			stmt = conn.prepareStatement(String.format("INSERT INTO %s.%sCommands VALUES(? , ?, ?)", DATABASE, channelNoHash));
 			stmt.setString(1, command);
 			stmt.setString(2, parameters);
 			stmt.setString(3, reply);
@@ -456,7 +456,7 @@ public class Database {
 	 * @return result set of custom commands
 	 */
 	public static ResultSet getCustomCommands(String channelNoHash) {
-		return executeQuery(String.format("SELECT * FROM %s.%sAutoReplies WHERE keyWord LIKE '!%%'", DATABASE, channelNoHash));
+		return executeQuery(String.format("SELECT * FROM %s.%sCommands WHERE command LIKE '!%%'", DATABASE, channelNoHash));
 	}
 
 	/**
