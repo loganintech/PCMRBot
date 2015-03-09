@@ -1,0 +1,32 @@
+[09-Mar-2015 09:26:24 America/Chicago] PHP Fatal error:  Bad SQL: UPDATE userOAuth SET userID=''donald10101'',oAuth=''1z2npgaxoqwwfrwqhxhazsj1sawgg9'' WHERE userID=''donald10101'' Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'donald10101'',oAuth=''1z2npgaxoqwwfrwqhxhazsj1sawgg9'' WHERE userID=''donald1010' at line 1 in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 30
+[09-Mar-2015 09:28:53 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 7
+[09-Mar-2015 09:28:53 America/Chicago] PHP Notice:  Undefined index: user_name in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 9
+[09-Mar-2015 09:28:53 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 37
+[09-Mar-2015 09:31:30 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 7
+[09-Mar-2015 09:31:31 America/Chicago] PHP Notice:  Undefined index: user_name in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 9
+[09-Mar-2015 09:31:31 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 19
+[09-Mar-2015 09:32:46 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 7
+[09-Mar-2015 09:32:47 America/Chicago] PHP Notice:  Undefined index: user_name in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 9
+[09-Mar-2015 09:32:47 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 19
+[09-Mar-2015 09:33:46 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 7
+[09-Mar-2015 09:33:46 America/Chicago] PHP Notice:  Undefined index: user_name in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 9
+[09-Mar-2015 09:33:46 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 20
+[09-Mar-2015 09:34:22 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 7
+[09-Mar-2015 09:34:22 America/Chicago] PHP Notice:  Undefined index: user_name in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 9
+[09-Mar-2015 09:34:22 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 20
+[09-Mar-2015 09:35:25 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 7
+[09-Mar-2015 09:35:26 America/Chicago] PHP Notice:  Undefined index: user_name in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 9
+[09-Mar-2015 09:35:26 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 20
+[09-Mar-2015 09:35:55 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 7
+[09-Mar-2015 09:35:55 America/Chicago] PHP Notice:  Undefined index: user_name in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 9
+[09-Mar-2015 09:35:55 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 30
+[09-Mar-2015 09:36:10 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 7
+[09-Mar-2015 09:36:10 America/Chicago] PHP Notice:  Undefined index: user_name in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 9
+[09-Mar-2015 09:36:10 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 30
+[09-Mar-2015 09:36:10 America/Chicago] PHP Fatal error:  Bad SQL: INSERT INTO userOAuth (userID, oAuth) VALUES ('','') Error: Duplicate entry '' for key 'PRIMARY' in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 36
+[09-Mar-2015 09:36:25 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 7
+[09-Mar-2015 09:36:25 America/Chicago] PHP Notice:  Undefined index: user_name in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 9
+[09-Mar-2015 09:36:25 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 30
+[09-Mar-2015 09:36:25 America/Chicago] PHP Fatal error:  Bad SQL: INSERT INTO userOAuth (userID, oAuth) VALUES ('','') Error: Duplicate entry '' for key 'PRIMARY' in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 36
+[09-Mar-2015 09:37:19 America/Chicago] PHP Notice:  Undefined index: oAuth in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 30
+[09-Mar-2015 09:37:19 America/Chicago] PHP Fatal error:  Bad SQL: INSERT INTO userOAuth (userID, oAuth) VALUES ('donald10101','') Error: Duplicate entry 'donald10101' for key 'PRIMARY' in J:\Software Development\Personal\PCMRBot\PCMRBot\authorize\insert.php on line 36
