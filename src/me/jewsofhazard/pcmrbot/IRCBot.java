@@ -159,25 +159,22 @@ public class IRCBot extends PircBot {
 		try {
 			checkSpam(channel, message, sender);
 			if(message.charAt(0) == '!'){
-				String params = "";
-				try {
-					params = message.substring(message.indexOf(' ') + 1);
-				} catch (StringIndexOutOfBoundsException e) {
-
-				}
-				String command = message.substring(1, message.length());
+				String[] params = message.substring(message.indexOf(' ') + 1).split(" ");
+				String command;
 				try {
 					command = message.substring(1, message.indexOf(' '));
-				} catch (StringIndexOutOfBoundsException e) {
-	
+				} catch(StringIndexOutOfBoundsException e) {
+					command = message.substring(1, message.length());
 				}
-				String reply = CommandParser.parse(command.toLowerCase(), sender,
-						channel, params.split(" "));
+				if(command.equalsIgnoreCase(params[0].substring(1))) {
+					params = new String[0];
+				}
+				String reply = CommandParser.parse(command, sender, channel, params);
 				if (reply != null) {
 					sendMessage(channel, reply);
 				}
 				reply = CustomCommandParser.parse(command.toLowerCase(), sender,
-						channel, params.split(" "));
+						channel, params);
 				if (reply != null) {
 					sendMessage(channel, reply);
 				}

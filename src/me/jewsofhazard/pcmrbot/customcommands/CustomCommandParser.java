@@ -34,6 +34,7 @@ public class CustomCommandParser {
 								passed.add(parameters[i].replace("\"", ""));
 								continue;
 							}
+							i++;
 							while(!parameters[i].endsWith("\"")) {
 								temp+=parameters[i] + " ";
 								i++;

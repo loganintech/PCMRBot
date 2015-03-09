@@ -1,3 +1,0 @@
-With James not being on teamspeak so much I thought this might be a good idea.
-Before we continue, we should implement a way to automatically add or update databases that would run like
-an sh file or something that will check if a channel is missing a database and if so, create it.

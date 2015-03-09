@@ -57,20 +57,18 @@ public class Main implements Runnable{
 		new Main();
 		try(Scanner scan=new Scanner(System.in)) {
 			while(true) {
-				String message=scan.nextLine();
-				String params="";
-				try {
-					params = message.substring(message.indexOf(' ') + 1);
-				} catch(StringIndexOutOfBoundsException e) {
-					
-				}
-				String command=message.substring(1, message.length());
+				String message = scan.nextLine();
+				String[] params = message.substring(message.indexOf(' ') + 1).split(" ");
+				String command;
 				try {
 					command = message.substring(1, message.indexOf(' '));
 				} catch(StringIndexOutOfBoundsException e) {
-					
+					command = message.substring(1, message.length());
 				}
-				CommandParser.parse(command, getBotChannel().substring(1), getBotChannel(), params.split(" "));
+				if(command.equalsIgnoreCase(params[0].substring(1))) {
+					params = new String[0];
+				}
+				CommandParser.parse(command, getBotChannel().substring(1), getBotChannel(), params);
 			}
 		}
 	}
