@@ -53,7 +53,6 @@ public class CommandParser {
 			} catch (Exception e) {
 				logger.log(Level.WARNING, "An error occurred initializing a command", e);
 			}
-
 		}
 	}
 	
@@ -68,6 +67,9 @@ public class CommandParser {
 		Command c=commands.get(command);
 		if(c != null && hasAccess(c, sender, channel)) {
 			ArrayList<String> passed = new ArrayList<>();
+			for(String s:parameters) {
+				logger.info(s);
+			}
 			int i=0;
 			while(i < parameters.length) {
 				if(parameters[i].startsWith("\"")) {
@@ -76,6 +78,7 @@ public class CommandParser {
 						passed.add(parameters[i].replace("\"", ""));
 						continue;
 					}
+					i++;
 					while(!parameters[i].endsWith("\"")) {
 						temp+=parameters[i] + " ";
 						i++;
