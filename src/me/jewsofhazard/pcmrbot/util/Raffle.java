@@ -25,12 +25,18 @@ import me.jewsofhazard.pcmrbot.twitch.TwitchUtilities;
 
 public class Raffle {
 
-	// Let it be known, Mr_chris is the
-	// first user to ever win the raffle.
+	/**
+	 * Let it be known, Mr_chris is the
+	 * first user to ever win a raffle.
+	 */
 	private ArrayList<String> participants;
 	private String channel;
 	private ULevel type;
 	
+	/**
+	 * @param c - channel the raffle is for
+	 * @param t - User Level for this raffle
+	 */
 	public Raffle(String c, ULevel t) {
 		channel = c;
 		type = t;
@@ -38,13 +44,19 @@ public class Raffle {
                 start();
 	}
 	
+	/**
+	 * Creates a Delayed Raffle Task
+	 * @return this raffle
+	 */
 	public Raffle start() {
-		new Timer(channel, 300, this);
+		new DelayedVoteTask(300, this);
 		return this;
 	}
 	
+	/**
+	 * @param sender - person to enter into the raffle
+	 */
 	public void enter(String sender) {
-      //      System.out.println(sender);
 		if (participants.contains(sender)) {
 			Main.getBot().sendMessage(channel,"%sender% is a dirty cheater and tried to join the raffle more than once, may he be smiten.".replace("%sender%", sender));
 			return;
@@ -71,6 +83,9 @@ public class Raffle {
                 
 	}
 
+	/**
+	 * Selects a random winner for this raffle
+	 */
 	public void selectWinner() {
 		String winner = participants.get(new Random().nextInt(participants.size()));
 		Main.getBot().sendMessage(channel, "There raffle has closed. There are %amt% users in the raffle.".replace("%amt%", participants.size()+""));

@@ -31,14 +31,16 @@ public class AddCommand extends Command {
 	public String getCommandText() {
 		return "addcom";
 	}
+	
+//	!addcom !welcome|{user}|Hey there, {user}! Welcome to the chat!
 
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		String[] params = parameters[0].split("[|]");
-		try {
-			params[0].substring(0, params[0].indexOf('|'));
-		} catch (StringIndexOutOfBoundsException e) {}
-		Database.addAutoReply(channel.substring(1), params[0], params[1]);
-		return String.format("Added command to the database. When a user says %s in chat I will say %s", params[0], params[1]);
+		StringBuilder params = new StringBuilder();
+		for(int i = 2;i < parameters.length;i++) {
+			params.append(parameters[i] + " ");
+		}
+		Database.addCommand(channel.substring(1), parameters[0], params.toString(), parameters[1]);
+		return "Added command to the database.";
 	}
 }

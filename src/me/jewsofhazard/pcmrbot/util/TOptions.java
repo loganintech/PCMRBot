@@ -25,10 +25,16 @@ public enum TOptions {
 
 	private final String optionID;
 
+	/**
+	 * @return the optionID in text form
+	 */
 	public String getOptionID() {
 		return optionID;
 	}
 
+	/**
+	 * @param id - option ID in text form
+	 */
 	TOptions(String id) {
 		optionID = id;
 	}

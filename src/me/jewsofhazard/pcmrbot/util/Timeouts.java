@@ -31,6 +31,12 @@ public class Timeouts implements Runnable {
 	private int time;
 	private TType type;
 
+	/**
+	 * @param c - channel to time the user out in
+	 * @param u - user to be timed out
+	 * @param t - length of time
+	 * @param type - Timeout Type
+	 */
 	public Timeouts(String c, String u, int t, TType type) {
 		channel = c;
 		user = u;
@@ -39,6 +45,9 @@ public class Timeouts implements Runnable {
 		new Thread(this).start();
 	}
 
+	/**
+	 * Decides how to handle timing the user out
+	 */
 	@Override
 	public void run() {
 		try {
@@ -46,39 +55,39 @@ public class Timeouts implements Runnable {
 		} catch (InterruptedException e) {
 			logger.log(Level.SEVERE, "Unable to timeout user: " + user, e);
 		}
-		if (type.previousOffender(user)) {
-			if (type.getOffender(user) == 1) {
+		if (type.previousOffender(user, channel)) {
+			if (type.getOffender(user, channel) == 1) {
 				Main.getBot().sendMessage(channel,
 						"/timeout " + user + " 300");
 				Main.getBot().sendMessage(
 						channel,
 						type.getRandomMessage()
 								+ " Second warning, 5 minute timeout!");
-				type.updateOffender(user, 2);
-			} else if (type.getOffender(user) == 2) {
+				type.updateOffender(user, channel, 2);
+			} else if (type.getOffender(user, channel) == 2) {
 				Main.getBot().sendMessage(channel,
 						"/timeout " + user + " 600");
 				Main.getBot().sendMessage(
 						channel,
 						type.getRandomMessage()
 								+ "Third warning, 10 minute timeout!");
-				type.updateOffender(user, 3);
-			} else if (type.getOffender(user) == 3) {
+				type.updateOffender(user, channel, 3);
+			} else if (type.getOffender(user, channel) == 3) {
 				Main.getBot().sendMessage(channel,
 						"/timeout " + user + " 900");
 				Main.getBot().sendMessage(
 						channel,
 						type.getRandomMessage()
 								+ " Fourth warning, 15 minute timeout!");
-				type.updateOffender(user, 4);
-			} else if (type.getOffender(user) == 4) {
+				type.updateOffender(user, channel, 4);
+			} else if (type.getOffender(user, channel) == 4) {
 				Main.getBot().sendMessage(channel,
 						"/timeout " + user + " 1200");
 				Main.getBot().sendMessage(
 						channel,
 						type.getRandomMessage()
 								+ " Fifth warning, 20 minute timeout!");
-				type.updateOffender(user, 5);
+				type.updateOffender(user, channel, 5);
 			} else {
 				Main.getBot().sendMessage(channel,
 						"/timeout " + user + " 7200");
@@ -88,10 +97,10 @@ public class Timeouts implements Runnable {
 								channel,
 								type.getRandomMessage()
 										+ " Sixth warning, 2 hour timeout! You dun' goofed!");
-				type.removeOffender(user);
+				type.removeOffender(user, channel);
 			}
 		} else {
-			type.updateOffender(user, 1);
+			type.updateOffender(user, channel, 1);
 			Main.getBot().sendMessage(channel,
 					"/timeout " + user + " " + time);
 			Main.getBot().sendMessage(channel,

@@ -27,27 +27,33 @@ public class VoteTimeOut {
 	private String kickee;
 	private ArrayList<String> kickers;
 	
+	/**
+	 * @param c - channel this vote is in
+	 * @param k - person to be timed out
+	 */
 	public VoteTimeOut(String c, String k) {
 		channel = c;
 		kickee = k;
 		kickers= new ArrayList<>();
-		new Timer(channel, 120, this);
+		new DelayedVoteTask(120, this);
 	}
 
+	/**
+	 * Counts the votes and decides whether or not to time them out
+	 */
 	public void count() {
-
 		if (((double)kickers.size() / Main.getBot().getUsers(channel).length) >= .55) {
-
 			Main.getBot().sendMessage(channel, "The community has chosen to kick %out%.".replace("%out%", kickee));
-
+			Main.getBot().sendMessage(channel, "/timeout "+kickee+" 1200");
 		} else {
-
 			Main.getBot().sendMessage(channel, "The community has chosen to spare %safe%.".replace("%safe%", kickee));
-
 		}
-
 	}
 
+	/**
+	 * @param sender - user who voted to kick
+	 * @return a formatted message to send to the channel
+	 */
 	public String addVote(String sender) {
 		if (kickers.contains(sender)) {
 			return String.format("%s tried to kick %s twice. Do they have a personal vendetta? That is for me to know.", sender, channel);

@@ -30,29 +30,70 @@ public enum TType {
 			"A bit long winded aren't we? (Too many characters in your message)");
 
 	private final String[] messages;
-	private final HashMap<String, Integer> offenders;
+	private final HashMap<String, HashMap<String,Integer>> offenders;
 
+	/**
+	 * @return a random message for this type of timeout
+	 */
 	public String getRandomMessage() {
 		Random rand = new Random();
 		return messages[rand.nextInt(messages.length)];
 	}
 
-	public boolean previousOffender(String u) {
-		return offenders.containsKey(u);
+	/**
+	 * @param u - user who might be a previous offender
+	 * @param c - channel the user is in
+	 * @return true if they are a previous offender, false otherwise
+	 */
+	public boolean previousOffender(String u, String c) {
+		return offenders.containsKey(u) && offenders.get(u).containsKey(c);
 	}
 
-	public void updateOffender(String u, int o) {
+	/**
+	 * @param u - user who is an offender
+	 * @param c - channel the user is in
+	 * @param n - number of offenses
+	 */
+	public void updateOffender(String u, String c, int n) {
+		HashMap<String, Integer> o = offenders.get(u);
+		if(o == null) {
+			o = new HashMap<>();
+		}
+		o.put(c, n);
 		offenders.put(u, o);
 	}
 
-	public int getOffender(String u) {
-		return offenders.get(u);
+	/**
+	 * @param u - user who is an offender
+	 * @param c - channel the user is in
+	 * @return number of offenses, -1 if none
+	 */
+	public int getOffender(String u, String c) {
+		HashMap<String, Integer> o = offenders.get(u);
+		if(o == null) {
+			return -1;
+		}
+		return o.get(c);
 	}
 
-	public void removeOffender(String u) {
-		offenders.remove(u);
+	/**
+	 * @param u - user to be removed
+	 * @param c - channel to be removed from the users list
+	 */
+	public void removeOffender(String u, String c) {
+		HashMap<String, Integer> o = offenders.get(u);
+		if(o == null) {
+			return;
+		}
+		o.remove(c);
+		if(o.size()==0) {
+			offenders.remove(u);
+		}
 	}
 
+	/**
+	 * @param m - Array of messages
+	 */
 	TType(String... m) {
 		messages = m;
 		offenders = new HashMap<>();

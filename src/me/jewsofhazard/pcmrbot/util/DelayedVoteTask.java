@@ -17,70 +17,56 @@
 
 package me.jewsofhazard.pcmrbot.util;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  *
  * @author Hazard
  */
-public class Timer implements Runnable {
+public class DelayedVoteTask extends TimerTask {
 
-	@SuppressWarnings("unused")
-	private String channel;
-	private long time;
 	private Object type;
 
-	private static final Logger logger = Logger.getLogger(Timer.class + "");
+	private static final Timer timer = new Timer();
 
 	/**
-	 * Creates a new instance of the Timer class.
-	 * 
-	 * @param channel
-	 *            - The channel this timer is for
 	 * @param time
-	 *            - The time (in seconds) until this Timer will expire
+	 *            - delay before we close the poll
+	 * @param p
+	 *            - Poll object
 	 */
-	public Timer(String channel, long time, Poll p) {
-		this.time = time;
+	public DelayedVoteTask(long time, Poll p) {
 		this.type = p;
-		this.channel = channel;
-		new Thread(this).start();
+		timer.schedule(this, time);
 	}
-
-	public Timer(String channel, int time, Raffle r) {
-		this.time = time;
-		this.type = r;
-		this.channel = channel;
-		new Thread(this).start();
-	}
-	
-
-
-	public Timer(String channel, int time, VoteTimeOut v) {
-		this.time = time;
-		this.type = v;
-		this.channel = channel;
-		new Thread(this).start();
-	}
-
-	// public Timer(String channel, int time, String k) {
-	// this.time = time;
-	// this.type = k;
-	// this.channel = channel;
-	// new Thread(this).start();
-	// }
 
 	/**
-	 * Sleeps for time seconds then tells the IRCBot to tally the votes.
+	 * @param time
+	 *            - delay before we close the Raffle
+	 * @param r
+	 *            - Raffle object
+	 */
+	public DelayedVoteTask(int time, Raffle r) {
+		this.type = r;
+		timer.schedule(this, time);
+	}
+
+	/**
+	 * @param time
+	 *            - delay before we close the Time Out Vote
+	 * @param v
+	 *            - VoteTimeOut object
+	 */
+	public DelayedVoteTask(int time, VoteTimeOut v) {
+		this.type = v;
+		timer.schedule(this, time);
+	}
+
+	/**
+	 * Decides what type of vote this is then counts the votes/chooses a winner
 	 */
 	public void run() {
-
-		try {
-			Thread.sleep(time * 1000);
-		} catch (InterruptedException ex) {
-			logger.log(Level.SEVERE, "An error occurred while sleping!", ex);
-		}
 		if (type instanceof Poll) {
 			((Poll) type).count();
 		} else if (type instanceof Raffle) {
@@ -88,7 +74,6 @@ public class Timer implements Runnable {
 		} else if (type instanceof VoteTimeOut) {
 			((VoteTimeOut) type).count();
 		}
-
 	}
 
 }

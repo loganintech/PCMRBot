@@ -31,6 +31,10 @@ public class CommandsPage {
 	
 	private static final Logger logger = Logger.getLogger(CommandsPage.class+"");
 	
+	/**
+	 * @param channelNoHash - channel without the leading #
+	 * @return true if the page is created, false otherwise
+	 */
 	public static boolean createCommandsHTML(String channelNoHash) {
 		String tableBody = generateTableBodyHTML(channelNoHash);
 		if(tableBody != null) {
@@ -44,6 +48,9 @@ public class CommandsPage {
 		return false;
 	}
 
+	/**
+	 * @return template based on OS
+	 */
 	private static String getTemplate() {
 		if(System.getProperty("os.name").toLowerCase().contains("win")) {
 			return TFileReader.readFileAsString(new File("C:/Apache2/htdocs/commands/commandsTemplate.html"));
@@ -51,6 +58,10 @@ public class CommandsPage {
 		return TFileReader.readFileAsString(new File("/var/www/commands/commandsTemplate.html"));
 	}
 
+	/**
+	 * @param channelNoHash - channel without the leading #
+	 * @return table body
+	 */
 	private static String generateTableBodyHTML(String channelNoHash) {
 		StringBuilder tableBody = new StringBuilder();
 		ResultSet rs=Database.getCustomCommands(channelNoHash);
@@ -68,6 +79,10 @@ public class CommandsPage {
 		return null;
 	}
 	
+	/**
+	 * @param channelNoHash - channel without the leading #
+	 * @return true if the channel has a commands page
+	 */
 	public static boolean pageExists(String channelNoHash) {
 		if(System.getProperty("os.name").toLowerCase().contains("win")) {
 			return new File("C:/Apache2/htdocs/commands/%channel%.html".replace("%channel%", channelNoHash)).exists();
@@ -75,6 +90,11 @@ public class CommandsPage {
 		return new File("/var/www/commands/commandsTemplate.html".replace("%channel%", channelNoHash)).exists();
 	}
 
+	/**
+	 * @param command - command to put in the table
+	 * @param reply - reply to go in column two
+	 * @return the table
+	 */
 	private static String generateTableRow(String command, String reply) {
 		StringBuilder tr = new StringBuilder();
 		tr.append("<tr id=\"%com%\">".replace("%com%", command))

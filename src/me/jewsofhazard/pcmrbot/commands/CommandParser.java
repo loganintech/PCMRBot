@@ -17,6 +17,7 @@
 
 package me.jewsofhazard.pcmrbot.commands;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
@@ -32,6 +33,10 @@ public class CommandParser {
 	private static HashMap<String, Command> commands;
 	private static final Logger logger=Logger.getLogger(CommandParser.class+"");
 	
+	/**
+	 * Gets and stores all of the commands in a HashMap for easier use.
+	 * @author Jared314
+	 */
 	public static void init() {
 		commands=new HashMap<>();
 		Reflections r = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath()));
@@ -52,16 +57,49 @@ public class CommandParser {
 		}
 	}
 	
-	public static String parse(String command, String sender, String channel, String parameters) {
+	/**
+	 * @param command - command that was sent without the leading !
+	 * @param sender - person who sent the command
+	 * @param channel - Channel the command was sent in
+	 * @param parameters - parameters sent along with the command
+	 * @return {@link Command#execute(String, String, String[])} or null if the command does not exist
+	 */
+	public static String parse(String command, String sender, String channel, String[] parameters) {
 		Command c=commands.get(command);
-		
 		if(c != null && hasAccess(c, sender, channel)) {
-			return c.execute(channel, sender, parameters);
+			ArrayList<String> passed = new ArrayList<>();
+			int i=0;
+			while(i < parameters.length) {
+				if(parameters[i].startsWith("\"")) {
+					String temp=parameters[i].replace("\"", "") + " ";
+					if(parameters[i].endsWith("\"")) {
+						passed.add(parameters[i].replace("\"", ""));
+						continue;
+					}
+					while(!parameters[i].endsWith("\"")) {
+						temp+=parameters[i] + " ";
+						i++;
+					}
+					temp+=parameters[i].replace("\"", "");
+					i++;
+					passed.add(temp);
+					continue;
+				}
+				passed.add(parameters[i]);
+				i++;
+			}
+			return c.execute(channel, sender, toStringArray(passed));
 		}
 		return null;
 	}
-	
-	private static boolean hasAccess(ICommand c, String sender, String channel) {
+
+	/**
+	 * @param c - Command object that matches what was passed
+	 * @param sender - user who sent the command
+	 * @param channel - channel the command was sent in
+	 * @return true if the user has valid access
+	 */
+	private static boolean hasAccess(Command c, String sender, String channel) {
 		switch(c.getCommandLevel()) {
 		case Mod:
 			return Database.isMod(sender, channel.substring(1));
@@ -71,5 +109,13 @@ public class CommandParser {
 			return true;
 		}
 		return false;
+	}
+	
+	private static String[] toStringArray(ArrayList<String> passed) {
+		String[] result = new String[passed.size()];
+		for(int i=0;i<passed.size();i++) {
+			result[i] = passed.get(i);
+		}
+		return result;
 	}
 }

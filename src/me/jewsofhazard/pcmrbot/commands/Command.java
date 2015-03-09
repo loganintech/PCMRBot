@@ -19,17 +19,24 @@ package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
-public abstract class Command implements ICommand {
+public abstract class Command {
 
-	
-
-	@Override
+	/**
+	 * @return the level that the user must be to perform the command
+	 */
 	public abstract CLevel getCommandLevel();
 
-	@Override
+	/**
+	 * @return the command without the leading ! or parameters
+	 */
 	public abstract String getCommandText();
 
-	@Override
+	/**
+	 * @param channel - channel the command was sent in
+	 * @param sender - user who sent the command
+	 * @param parameters - parameters sent with the command
+	 * @return a formatted message to send to the channel or null if no message is required
+	 */
 	public abstract String execute(String channel, String sender, String... parameters);
 
 }

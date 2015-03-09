@@ -66,7 +66,7 @@ public class TwitchUtilities {
 			connection.getInputStream();
 			return true;
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred updating the title for "+channelNoHash.substring(1), e);
+			logger.log(Level.SEVERE, "An error occurred updating the title for "+channelNoHash, e);
 			return false;
 		}
 	}
@@ -90,7 +90,7 @@ public class TwitchUtilities {
 			connection.getInputStream();
 			return true;
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred updating the game for "+channelNoHash.substring(1), e);
+			logger.log(Level.SEVERE, "An error occurred updating the game for "+channelNoHash, e);
 		}
 		return false;
 	}
@@ -156,6 +156,10 @@ public class TwitchUtilities {
 		return false;
 	}
 	
+	/**
+	 * @param channelNoHash - channel to run the commercial in without the leading #
+	 * @return true if the commercial runs successfully
+	 */
 	public static boolean runCommercial(String channelNoHash) {
 		String USER_AGENT = "Mozilla/5.0";
 		String oauth_token=Database.getUserOAuth(channelNoHash);
@@ -175,10 +179,14 @@ public class TwitchUtilities {
 			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channelNoHash, e);
 		}
 		con.setRequestProperty("User-agent", USER_AGENT);
-		
 		return false;
 	}
 	
+	/**
+	 * @param channelNoHash - channel to run the commercial in without the leading #
+	 * @param length - commercial length
+	 * @return true if the commercial runs successfully
+	 */
 	public static boolean runCommercial(String channelNoHash, int length) {
 		String USER_AGENT = "Mozilla/5.0";
 		String oauth_token=Database.getUserOAuth(channelNoHash);
@@ -198,7 +206,6 @@ public class TwitchUtilities {
 			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channelNoHash, e);
 		}
 		con.setRequestProperty("User-agent", USER_AGENT);
-		
 		return false;
 	}
 	
@@ -233,6 +240,10 @@ public class TwitchUtilities {
 		return 0;
 	}
 	
+	/**
+	 * @param channelNoHash - channel to run the commercial in wothout the leading  #
+	 * @return true if the channel is live, false otherwise
+	 */
 	public static boolean isLive(String channelNoHash) {
 		try {
 			new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"streams/"+channelNoHash).openStream()))).getAsJsonObject().getAsJsonArray("stream");

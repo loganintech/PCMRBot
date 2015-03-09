@@ -35,5 +35,4 @@ public class Clear extends Command {
 	public String execute(String channel, String sender, String... parameters) {
 		return "/clear";
 	}
-
 }

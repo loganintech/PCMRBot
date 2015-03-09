@@ -33,22 +33,19 @@ public class Poll extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		String[] voteOptions = parameters[0].split("[|]");
-		
-		String[] answers = new String[voteOptions.length - 2];
+		String[] answers = new String[parameters.length - 2];
 		if (answers.length < 2) {
 			return	"You must provide at least two answers!";
 		} else if (Main.getBot().hasPoll(channel)) {
 			return "There is already a poll happenning in your channel, wait for it to complete first!";
 		}
-		
-		for (int i = 2; i < voteOptions.length; i++) {
-			answers[i - 2] = voteOptions[i];
+		for (int i = 2; i < parameters.length; i++) {
+			answers[i - 2] = parameters[i];
 		}
 		
-		Main.getBot().addPoll(channel, new me.jewsofhazard.pcmrbot.util.Poll(channel, answers, Integer.valueOf(voteOptions[0])).start());
+		Main.getBot().addPoll(channel, new me.jewsofhazard.pcmrbot.util.Poll(channel, answers, Integer.valueOf(parameters[0])).start());
 		if(Main.getBot().getConfirmationReplies(channel)) {
-			return voteOptions[1];
+			return parameters[1];
 		}
 		return null;
 	}

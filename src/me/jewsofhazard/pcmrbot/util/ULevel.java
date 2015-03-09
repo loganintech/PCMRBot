@@ -20,6 +20,10 @@ package me.jewsofhazard.pcmrbot.util;
 public enum ULevel {
 	Normal,Follower,Subscriber;
 
+	/**
+	 * @param level - User Level as String
+	 * @return User Level Object
+	 */
 	public static ULevel getTypeFromString(String level) {
 		level=level.toLowerCase();
 		if(level.endsWith("s")) {

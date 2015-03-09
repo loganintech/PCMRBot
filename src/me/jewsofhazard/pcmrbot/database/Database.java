@@ -136,7 +136,7 @@ public class Database {
             try{
                 stmt8=conn.createStatement();
                 stmt8.closeOnCompletion();
-                stmt8.executeUpdate(String.format("CREATE TABLE %s.%sCommands(command varchar(25), parameters varchar(25), PRIMARY KEY (command))", DATABASE, channelNoHash));
+                stmt8.executeUpdate(String.format("CREATE TABLE %s.%sCommands(command varchar(25), parameters varchar(255), reply varchar(4000), PRIMARY KEY (command))", DATABASE, channelNoHash));
             }catch(SQLException ex){
                 logger.log(Level.SEVERE, "Unable to create table Commands!", ex);
             }
@@ -150,7 +150,7 @@ public class Database {
 	 * @param sqlCommand
 	 * @return - true if it successfully executes the update
 	 */
-	private static boolean executeUpdate(String sqlCommand) {
+	protected static boolean executeUpdate(String sqlCommand) {
 		Statement stmt = null;
 		try {
 			stmt = conn.createStatement();
@@ -173,7 +173,7 @@ public class Database {
 	 * @param sqlQuery
 	 * @return
 	 */
-	private static ResultSet executeQuery(String sqlQuery) {
+	protected static ResultSet executeQuery(String sqlQuery) {
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
@@ -196,7 +196,7 @@ public class Database {
 	 * @param stmt
 	 * @return - true if it successfully executes the update
 	 */
-	private static boolean executeUpdate(PreparedStatement stmt) {
+	protected static boolean executeUpdate(PreparedStatement stmt) {
 		try {
 			stmt.closeOnCompletion();
 		} catch (SQLException e) {
@@ -217,8 +217,7 @@ public class Database {
 	 * @param stmt
 	 * @return
 	 */
-	@SuppressWarnings("unused")
-	private static ResultSet executeQuery(PreparedStatement stmt) {
+	protected static ResultSet executeQuery(PreparedStatement stmt) {
 		ResultSet rs = null;
 		try {
 			stmt.closeOnCompletion();
@@ -243,6 +242,10 @@ public class Database {
 		executeUpdate(String.format("CREATE TABLE %s.%sAutoReplies(keyWord varchar(255), reply varchar(255), PRIMARY KEY (keyWord))", DATABASE, channelNoHash));
 	}
 	
+	/**
+	 * @param user - user to get the oauth for
+	 * @return oauth code for the specified user
+	 */
 	public static String getUserOAuth(String user) {
 		ResultSet rs=executeQuery(String.format("SELECT * FROM "+DATABASE+".userOAuth WHERE userID=\'%s\'", user));
 		try {
@@ -255,6 +258,11 @@ public class Database {
 		return null;
 	}
 
+	/**
+	 * @param channelNoHash - channel to get the option for without the leading #
+	 * @param option - Timeout Option
+	 * @return value if the option
+	 */
 	public static int getOption(String channelNoHash, TOptions option) {
 		ResultSet rs=executeQuery(String.format("SELECT * FROM %s.%sOptions WHERE optionID=\'%s\'", DATABASE, channelNoHash, option.getOptionID()));
 		try {
@@ -268,6 +276,10 @@ public class Database {
 		return -1;
 	}
 	
+	/**
+	 * @param channelNoHash - channel to get the welcome message for, without the leading #
+	 * @return The welcome message
+	 */
 	public static String getWelcomeMessage(String channelNoHash) {
 		ResultSet rs=executeQuery(String.format("SELECT * FROM %s.%sOptions WHERE optionID=\'%s\'", DATABASE, channelNoHash, TOptions.welcomeMessage));
 		try {
@@ -281,6 +293,12 @@ public class Database {
 		return null;
 	}
 
+	/**
+	 * @param channelNoHash - channel to set the welcome message for, without the leading #
+	 * @param option - timeout option
+	 * @param value - new welcome message
+	 * @return true if the message is set successfully
+	 */
 	public static boolean setWelcomeMessage(String channelNoHash, TOptions option, String value) {
 		PreparedStatement stmt = null;
 		try {
@@ -294,6 +312,12 @@ public class Database {
 		return executeUpdate(stmt);
 	}
 
+	/**
+	 * @param channelNoHash - channel to set the option for, without the leading #
+	 * @param option - timeout option
+	 * @param value - value to set for the option
+	 * @return true if the message is set successfully
+	 */
 	public static boolean setOption(String channelNoHash, TOptions option, int value) {
 		PreparedStatement stmt = null;
 		try {
@@ -307,6 +331,12 @@ public class Database {
 		return executeUpdate(stmt);
 	}
 	
+	/**
+	 * @param channelNoHash - channel to add the option for, without the leading #
+	 * @param option - timeout option
+	 * @param value - value to set the option to
+	 * @return true if the option is added successfully
+	 */
 	public static boolean addOption(String channelNoHash, TOptions option, String value) {
 		PreparedStatement stmt = null;
 		try {
@@ -319,6 +349,11 @@ public class Database {
 		return executeUpdate(stmt);
 	}
 
+	/**
+	 * @param moderator - person to check if their a moderator
+	 * @param channelNoHash - channel to check if their a moderator in, without the leading #
+	 * @return true if user is a moderator in channel
+	 */
 	public static boolean isMod(String moderator, String channelNoHash) {
 		ResultSet rs = executeQuery(String.format("SELECT * FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channelNoHash, moderator));
 		try {
@@ -329,10 +364,19 @@ public class Database {
 		return false;
 	}
 	
+	/**
+	 * @param moderator - moderator to add
+	 * @param channelNoHash - channel to add the mod to, without the #
+	 */
 	public static void addMod(String moderator, String channelNoHash) {
 		executeUpdate(String.format("INSERT INTO %s.%sMods VALUES(\'%s\')", DATABASE, channelNoHash, moderator));
 	}
 	
+	/**
+	 * @param channelNoHash - channel to add the auto reply to
+	 * @param keywords - keywords to trigger the auto reply
+	 * @param reply - auto reply to be sent on trigger
+	 */
 	public static void addAutoReply(String channelNoHash, String keywords, String reply) {
 		PreparedStatement stmt = null;
 		try {
@@ -345,26 +389,46 @@ public class Database {
 		executeUpdate(stmt);
 	}
 
+	/**
+	 * @param channelNoHash - channel to get the auto replies for, without the leading #
+	 * @return a result set of the auto replies
+	 */
 	public static ResultSet getAutoReplies(String channelNoHash) {
 		return executeQuery(String.format("SELECT * FROM %s.%sAutoReplies", DATABASE, channelNoHash));
 	}
 	
-	public static void addCommand(String channelNoHash, String command, String reply) {
+	/**
+	 * @param channelNoHash - channel to add the command for, without the leading #
+	 * @param command - command to be added
+	 * @param parameters - parameters that should be passed
+	 * @param reply - reply to be sent on command
+	 */
+	public static void addCommand(String channelNoHash, String command, String parameters, String reply) {
 		PreparedStatement stmt = null;
 		try {
-			stmt = conn.prepareStatement(String.format("INSERT INTO %s.%sAutoReplies VALUES(? , ?)", DATABASE, channelNoHash));
+			stmt = conn.prepareStatement(String.format("INSERT INTO %s.%sCommands VALUES(? , ?, ?)", DATABASE, channelNoHash));
 			stmt.setString(1, command);
-			stmt.setString(2, reply);
+			stmt.setString(2, parameters);
+			stmt.setString(3, reply);
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Unable to set option", e);
 		}
 		executeUpdate(stmt);
 	}
 	
+	/**
+	 * @param channelNoHash - channel to get spam for
+	 * @return result set of spam words
+	 */
 	public static ResultSet getSpam(String channelNoHash) {
 		return executeQuery(String.format("SELECT * FROM %s.%sSpam", DATABASE, channelNoHash));
 	}
 
+	/**
+	 * @param moderator - moderator to remove
+	 * @param channelNoHash - channel to remove the moderator from, without the leading #
+	 * @return true if the moderator is removed
+	 */
 	public static boolean delModerator(String moderator, String channelNoHash) {
 		if(!Main.isDefaultMod(moderator, channelNoHash)) {
 			return executeUpdate(String.format("DELETE FROM %s.%sMods WHERE userID=\'%s\'", DATABASE, channelNoHash, moderator));
@@ -372,7 +436,13 @@ public class Database {
 		return false;
 	}
 
-	public static boolean delAutoReply(String channelNoHash, String keywords) {PreparedStatement stmt = null;
+	/**
+	 * @param channelNoHash - channel to delete the auto reply from, without the leading #
+	 * @param keywords - keywords of the auto reply
+	 * @return true if the auto reply is removed
+	 */
+	public static boolean delAutoReply(String channelNoHash, String keywords) {
+		PreparedStatement stmt = null;
 		try {
 			stmt = conn.prepareStatement(String.format("DELETE FROM %s.%sAutoReplies WHERE keyWord=?", DATABASE, channelNoHash));
 			stmt.setString(1, keywords);
@@ -382,10 +452,19 @@ public class Database {
 		return executeUpdate(stmt);
 	}
 
+	/**
+	 * @param channelNoHash - channel to get the custom commands for, without the leading #
+	 * @return result set of custom commands
+	 */
 	public static ResultSet getCustomCommands(String channelNoHash) {
-		return executeQuery(String.format("SELECT * FROM %s.%sAutoReplies WHERE keyWord LIKE '!%%'", DATABASE, channelNoHash));
+		return executeQuery(String.format("SELECT * FROM %s.%sCommands WHERE command LIKE '!%%'", DATABASE, channelNoHash));
 	}
 
+	/**
+	 * @param channelNoHash - channel to add spam to, without the leading #
+	 * @param word - word to add to the table
+	 * @return true if the word is added
+	 */
 	public static boolean addSpam(String channelNoHash, String word) {
 		PreparedStatement stmt = null;
 		try {
@@ -394,9 +473,14 @@ public class Database {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Unable to set option", e);
 		}
-		return executeUpdate(String.format("INSERT INTO %s.%sSpam VALUES(\'%s\')", DATABASE, channelNoHash, word));
+		return executeUpdate(stmt);
 	}
 	
+	/**
+	 * @param channelNoHash - channel to delete the spam from, without the leading #
+	 * @param word - word to delete
+	 * @return true if the word is deleted
+	 */
 	public static boolean delSpam(String channelNoHash, String word) {
 		PreparedStatement stmt = null;
 		try {
@@ -405,17 +489,32 @@ public class Database {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Unable to set option", e);
 		}
-		return executeUpdate(String.format("DELETE FROM %s.%sSpam WHERE word=\'%s\'", DATABASE, channelNoHash, word));
+		return executeUpdate(stmt);
 	}
 
+	/**
+	 * @param channelNoHash - channel to add the whitelist to, whithout the leading #
+	 * @param target - person to add to the whitelist
+	 * @return true if they are added successfully
+	 */
 	public static boolean addToWhiteList(String channelNoHash, String target) {
 		return executeUpdate(String.format("INSERT INTO %s.%sWhitelist VALUES(\'%s\')", DATABASE, channelNoHash, target));
 	}
 
+	/**
+	 * @param channelNoHash - channel to delete the whitelist for, without the leading #
+	 * @param target - person to remove
+	 * @return true if successfully removed
+	 */
 	public static boolean delWhitelist(String channelNoHash, String target) {
 		return executeUpdate(String.format("DELETE FROM %s.%sWhitelist WHERE userID=\'%s\'", DATABASE, channelNoHash, target));
 	}
 
+	/**
+	 * @param sender - person to check
+	 * @param channelNoHash - channel to check for, without the leading #
+	 * @return true if the user is in the whitelist
+	 */
 	public static boolean isWhitelisted(String sender, String channelNoHash) {
 		ResultSet rs = executeQuery(String.format("SELECT * FROM %s.%sWhitelist WHERE userID=\'%s\'", DATABASE, channelNoHash, sender));
 		try {
@@ -426,6 +525,11 @@ public class Database {
 		return false;
 	}
 
+	/**
+	 * @param nick - person to add points to
+	 * @param channelNoHash - channel the user is in, without the leading #
+	 * @param ammount - the number of points to add
+	 */
 	public static void addPoints(String nick, String channelNoHash, int ammount) {
 		ResultSet rs = Database.executeQuery(String.format("SELECT * FROM %s.%sPoints WHERE userID=\'%s\'", DATABASE, channelNoHash, nick));
 		try {
@@ -446,8 +550,13 @@ public class Database {
 		}
 	}
 
-	public static String getPoints(String sender, String substring) {
-		ResultSet rs = executeQuery(String.format("SELECT * FROM %s.%sPoints WHERE userID=\'%s\'", DATABASE, substring, sender));
+	/**
+	 * @param sender - person to get points for
+	 * @param channelNoHash - channel the user is in, without the leading #
+	 * @return number of points the user has
+	 */
+	public static String getPoints(String sender, String channelNoHash) {
+		ResultSet rs = executeQuery(String.format("SELECT * FROM %s.%sPoints WHERE userID=\'%s\'", DATABASE, channelNoHash, sender));
 		try {
 			if(rs.next()) {
 				return rs.getInt(2)+"";
@@ -458,6 +567,11 @@ public class Database {
 		return null;
 	}
 
+	/**
+	 * @param ammount - number of players to get
+	 * @param channelNoHash - channel the people are in
+	 * @return formatted string of top x players
+	 */
 	public static String topPlayers(int ammount, String channelNoHash) {
 		StringBuilder output = new StringBuilder();
 		output.append("The top " + ammount + " points holder(s) are: ");
@@ -476,6 +590,11 @@ public class Database {
 		return output.toString();
 	}
 
+	/**
+	 * @param sender - person to check if is regular
+	 * @param channelNoHash - channel the person is in, without the leading #
+	 * @return true if {@link sender} is a regular in {@link channelNoHash}
+	 */
 	public static boolean isRegular(String sender, String channelNoHash) {
 		ResultSet rs=Database.executeQuery(String.format("SELECT * FROM %s.%sRegulars WHERE userID=\'%s\'", DATABASE, channelNoHash, sender));
 		try {
@@ -486,11 +605,32 @@ public class Database {
 		return false;
 	}
 
+	/**
+	 * @param channelNoHash - channel the person is in, without the leading #
+	 * @param regular - person to add to the list
+	 * @return true if adding is successful
+	 */
 	public static boolean addRegular(String channelNoHash, String regular) {
 		return executeUpdate(String.format("INSERT INTO %s.%sRegulars VALUES (\'%s\')", DATABASE, channelNoHash, regular));
 	}
 
+	/**
+	 * @param channelNoHash - channel the person is in, without the leading #
+	 * @param regular - person to remove from the list
+	 * @return true if deletion is successful
+	 */
 	public static boolean delRegular(String channelNoHash, String regular) {
 		return executeUpdate(String.format("DELETE FROM %s.%sRegulars WHERE userID=\'%s\'", DATABASE, channelNoHash, regular));
+	}
+
+	public static boolean delCommand(String channelNoHash, String command) {
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement(String.format("DELETE FROM %s.%sCommands WHERE command=?", DATABASE, channelNoHash));
+			stmt.setString(1, command);
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Unable to set option", e);
+		}
+		return executeUpdate(stmt);
 	}
 }
