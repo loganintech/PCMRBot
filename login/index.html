@@ -40,10 +40,10 @@ Do the following if you're using your customized build of modernizr (http://www.
 			}
 			if (status.authenticated) {
 				Twitch.api({method: 'channel'}, function(error, channel) {
-					window.location.replace("../controlpanel?user=" + channel.display_name);
+					window.location.href = "../controlpanel?user=";
 				});
 			} else {
-				window.location.replace("../authorize");
+				window.location.href = "../authorize";
 			}
 		});
 	});
