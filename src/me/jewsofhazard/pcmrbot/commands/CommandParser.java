@@ -64,12 +64,10 @@ public class CommandParser {
 	 * @return {@link Command#execute(String, String, String[])} or null if the command does not exist
 	 */
 	public static String parse(String command, String sender, String channel, String[] parameters) {
+		command = command.toLowerCase();
 		Command c=commands.get(command);
 		if(c != null && hasAccess(c, sender, channel)) {
 			ArrayList<String> passed = new ArrayList<>();
-			for(String s:parameters) {
-				logger.info(s);
-			}
 			int i=0;
 			while(i < parameters.length) {
 				if(parameters[i].startsWith("\"")) {

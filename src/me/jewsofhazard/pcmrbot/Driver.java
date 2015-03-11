@@ -17,12 +17,14 @@
 
 package me.jewsofhazard.pcmrbot;
 
-import me.jewsofhazard.pcmrbot.tests.CommandParserTests;
+import me.jewsofhazard.pcmrbot.database.Database;
+import me.jewsofhazard.pcmrbot.database.ReadScheduleTable;
 
 
 public class Driver {
 
 	public static void main(String[] args) throws Exception {
-		CommandParserTests.test(args[0]);
+		Database.initDBConnection(args[0]);
+		ReadScheduleTable.createDelayedTasks();
 	}
 }

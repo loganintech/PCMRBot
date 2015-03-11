@@ -80,6 +80,7 @@ public class IRCBot extends PircBot {
 		polls = new HashMap<>();
 		raffles = new HashMap<>();
 		permits = new HashMap<>();
+		welcomes = new HashMap<>();
 	}
 
 	/**
@@ -112,7 +113,7 @@ public class IRCBot extends PircBot {
 						.substring(1))) {
 					String msg = Database.getWelcomeMessage(
 							channel.substring(1)).replace("%user%", sender);
-					if (!msg.equalsIgnoreCase("none") && !welcomes.get(sender).contains(channel)) {
+					if (!msg.equalsIgnoreCase("none") && !recentlyWelcomed(sender, channel)) {
 						sendMessage(channel, msg);
 						addWelcome(channel, sender);
 					}
@@ -591,5 +592,18 @@ public class IRCBot extends PircBot {
 		} else {
 			welcomes.remove(user);
 		}
+	}
+
+	/**
+	 * @param sender - person who joined
+	 * @param channel - channel they joined
+	 * @return true if they have joined this channel in the last 30 minutes, false otherwise
+	 */
+	private boolean recentlyWelcomed(String sender, String channel) {
+		ArrayList<String> p = welcomes.get(sender);
+		if (p == null) {
+			return false;
+		}
+		return p.contains(channel);
 	}
 }
