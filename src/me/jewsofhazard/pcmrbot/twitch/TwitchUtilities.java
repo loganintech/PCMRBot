@@ -40,57 +40,73 @@ import com.google.gson.stream.JsonReader;
 public class TwitchUtilities {
 
 	private final static String BASE_URL = "https://api.twitch.tv/kraken/";
-	private final static String CHARSET = StandardCharsets.UTF_8.name(); 
-	
-	private final static Logger logger = Logger.getLogger(TwitchUtilities.class+"");
-	
+	private final static String CHARSET = StandardCharsets.UTF_8.name();
+
+	private final static Logger logger = Logger.getLogger(TwitchUtilities.class
+			+ "");
+
 	/**
 	 * Changes the title on streamers page
 	 * 
-	 * @param channelNoHash - channel to change the title on
-	 * @param title - title to be changed to
+	 * @param channelNoHash
+	 *            - channel to change the title on
+	 * @param title
+	 *            - title to be changed to
 	 */
 	public static boolean updateTitle(String channelNoHash, String title) {
-		String url = BASE_URL+"channels/"+channelNoHash+"/";
-		String _method="put";
-		String oauth_token=Database.getUserOAuth(channelNoHash);
+		String url = BASE_URL + "channels/" + channelNoHash + "/";
+		String _method = "put";
+		String oauth_token = Database.getUserOAuth(channelNoHash);
 		String query = null;
 		URLConnection connection = null;
-		if(oauth_token==null){
+		if (oauth_token == null) {
 			return false;
 		}
 		try {
-			query = String.format("channel[status]=%s&_method=%s&oauth_token=%s", URLEncoder.encode(title, CHARSET), URLEncoder.encode(_method, CHARSET), URLEncoder.encode(oauth_token, CHARSET));
+			query = String.format(
+					"channel[status]=%s&_method=%s&oauth_token=%s",
+					URLEncoder.encode(title, CHARSET),
+					URLEncoder.encode(_method, CHARSET),
+					URLEncoder.encode(oauth_token, CHARSET));
 			connection = new URL(url + "?" + query).openConnection();
 			connection.setRequestProperty("Accept-Charset", CHARSET);
 			connection.getInputStream();
 			return true;
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred updating the title for "+channelNoHash, e);
+			logger.log(
+					Level.SEVERE,
+					"An error occurred updating the title for " + channelNoHash,
+					e);
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Changes the game on the streamers page
 	 * 
-	 * @param channelNoHash - channel to change the game on
-	 * @param game - game to be changed to
+	 * @param channelNoHash
+	 *            - channel to change the game on
+	 * @param game
+	 *            - game to be changed to
 	 */
 	public static boolean updateGame(String channelNoHash, String game) {
-		String url = BASE_URL+"channels/"+channelNoHash+"/";
-		String _method="put";
-		String oauth_token=Database.getUserOAuth(channelNoHash);
+		String url = BASE_URL + "channels/" + channelNoHash + "/";
+		String _method = "put";
+		String oauth_token = Database.getUserOAuth(channelNoHash);
 		String query = null;
 		URLConnection connection = null;
 		try {
-			query = String.format("channel[game]=%s&_method=%s&oauth_token=%s", URLEncoder.encode(game, CHARSET), URLEncoder.encode(_method, CHARSET), URLEncoder.encode(oauth_token, CHARSET));
+			query = String.format("channel[game]=%s&_method=%s&oauth_token=%s",
+					URLEncoder.encode(game, CHARSET),
+					URLEncoder.encode(_method, CHARSET),
+					URLEncoder.encode(oauth_token, CHARSET));
 			connection = new URL(url + "?" + query).openConnection();
 			connection.setRequestProperty("Accept-Charset", CHARSET);
 			connection.getInputStream();
 			return true;
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred updating the game for "+channelNoHash, e);
+			logger.log(Level.SEVERE, "An error occurred updating the game for "
+					+ channelNoHash, e);
 		}
 		return false;
 	}
@@ -100,21 +116,24 @@ public class TwitchUtilities {
 	 * 
 	 * @param sender
 	 * @param channel
-	 * @return - true if sender is following channel 
+	 * @return - true if sender is following channel
 	 */
 	public static boolean isFollower(String channel, String sender) {
 		try {
-			String nextUrl = "https://api.twitch.tv/kraken/users/"+sender+"/follows/channels/"+channel;
-                        System.out.println(nextUrl);
-			JsonObject following = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
-			if(following.get("error") != null){ //it finds it
-                            return false;
-                        }
-                        else{   //it doesnt
-                            return true;
-                        }
+			String nextUrl = "https://api.twitch.tv/kraken/users/" + sender
+					+ "/follows/channels/" + channel;
+			System.out.println(nextUrl);
+			JsonObject following = new JsonParser().parse(
+					new JsonReader(new InputStreamReader(new URL(nextUrl)
+							.openStream()))).getAsJsonObject();
+			if (following.get("error") != null) {
+				return false;
+			} else {
+				return true;
+			}
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
-			logger.log(Level.SEVERE, "An error occurred checking if "+sender+" is following "+channel.substring(1), e);
+			logger.log(Level.SEVERE, "An error occurred checking if " + sender
+					+ " is following " + channel.substring(1), e);
 		}
 		return false;
 	}
@@ -128,87 +147,114 @@ public class TwitchUtilities {
 	 */
 	public static boolean isSubscriber(String sender, String channel) {
 		try {
-			String userOAuth=Database.getUserOAuth(channel.substring(1));
-			String nextUrl = "https://api.twitch.tv/kraken/channels/"+channel.substring(0)+"/subscriptions/?oauth_token="+userOAuth;
-			JsonObject obj = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
-			if(obj.get("error") != null) {  //ie it finds it
+			String userOAuth = Database.getUserOAuth(channel.substring(1));
+			String nextUrl = "https://api.twitch.tv/kraken/channels/"
+					+ channel.substring(0) + "/subscriptions/?oauth_token="
+					+ userOAuth;
+			JsonObject obj = new JsonParser().parse(
+					new JsonReader(new InputStreamReader(new URL(nextUrl)
+							.openStream()))).getAsJsonObject();
+			if (obj.get("error") != null) { // ie it finds it
 				return false;
-			} else {    //it does not find it
+			} else { // it does not find it
 				int count = subscriberCount(channel, userOAuth);
-				int pages = count/25;
-				if(count%25!=0) {
+				int pages = count / 25;
+				if (count % 25 != 0) {
 					pages++;
 				}
-				for(int i=0;i<pages;i++) {
-					for(int j=0;j<25;j++) {
-						if(sender.equalsIgnoreCase(obj.getAsJsonArray("subscriptions").get(j).getAsJsonObject().getAsJsonPrimitive("display_name").getAsString())) {
+				for (int i = 0; i < pages; i++) {
+					for (int j = 0; j < 25; j++) {
+						if (sender.equalsIgnoreCase(obj
+								.getAsJsonArray("subscriptions").get(j)
+								.getAsJsonObject()
+								.getAsJsonPrimitive("display_name")
+								.getAsString())) {
 							return true;
 						}
 					}
-					nextUrl =URLEncoder.encode(obj.getAsJsonArray("_links").get(1).getAsJsonPrimitive().getAsString()+"?oauth_token="+userOAuth, CHARSET);
-					obj = new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(nextUrl).openStream()))).getAsJsonObject();
+					nextUrl = URLEncoder.encode(obj.getAsJsonArray("_links")
+							.get(1).getAsJsonPrimitive().getAsString()
+							+ "?oauth_token=" + userOAuth, CHARSET);
+					obj = new JsonParser().parse(
+							new JsonReader(new InputStreamReader(new URL(
+									nextUrl).openStream()))).getAsJsonObject();
 				}
 				return false;
 			}
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
-			logger.log(Level.SEVERE, "An error occurred checking if "+sender+" is following "+channel.substring(1), e);
+			logger.log(Level.SEVERE, "An error occurred checking if " + sender
+					+ " is following " + channel.substring(1), e);
 		}
 		return false;
 	}
-	
+
 	/**
-	 * @param channelNoHash - channel to run the commercial in without the leading #
+	 * @param channelNoHash
+	 *            - channel to run the commercial in without the leading #
 	 * @return true if the commercial runs successfully
 	 */
 	public static boolean runCommercial(String channelNoHash) {
 		String USER_AGENT = "Mozilla/5.0";
-		String oauth_token=Database.getUserOAuth(channelNoHash);
-		String url = BASE_URL+"channels/"+channelNoHash+"/commercial/?oauth_token="+oauth_token;
+		String oauth_token = Database.getUserOAuth(channelNoHash);
+		String url = BASE_URL + "channels/" + channelNoHash
+				+ "/commercial/?oauth_token=" + oauth_token;
 		URL obj = null;
 		try {
 			obj = new URL(url);
 		} catch (MalformedURLException e) {
-			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channelNoHash, e);
+			logger.log(Level.SEVERE,
+					"An error occurred trying to start a commercial for "
+							+ channelNoHash, e);
 		}
-		
+
 		HttpsURLConnection con = null;
 		try {
 			con = (HttpsURLConnection) obj.openConnection();
 			con.setRequestMethod("POST");
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channelNoHash, e);
+			logger.log(Level.SEVERE,
+					"An error occurred trying to start a commercial for "
+							+ channelNoHash, e);
 		}
 		con.setRequestProperty("User-agent", USER_AGENT);
 		return false;
 	}
-	
+
 	/**
-	 * @param channelNoHash - channel to run the commercial in without the leading #
-	 * @param length - commercial length
+	 * @param channelNoHash
+	 *            - channel to run the commercial in without the leading #
+	 * @param length
+	 *            - commercial length
 	 * @return true if the commercial runs successfully
 	 */
 	public static boolean runCommercial(String channelNoHash, int length) {
 		String USER_AGENT = "Mozilla/5.0";
-		String oauth_token=Database.getUserOAuth(channelNoHash);
-		String url = BASE_URL+"channels/"+channelNoHash+"/commercial/?oauth_token="+oauth_token+"&length="+length;
+		String oauth_token = Database.getUserOAuth(channelNoHash);
+		String url = BASE_URL + "channels/" + channelNoHash
+				+ "/commercial/?oauth_token=" + oauth_token + "&length="
+				+ length;
 		URL obj = null;
 		try {
 			obj = new URL(url);
 		} catch (MalformedURLException e) {
-			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channelNoHash, e);
+			logger.log(Level.SEVERE,
+					"An error occurred trying to start a commercial for "
+							+ channelNoHash, e);
 		}
-		
+
 		HttpsURLConnection con = null;
 		try {
 			con = (HttpsURLConnection) obj.openConnection();
 			con.setRequestMethod("POST");
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "An error occurred trying to start a commercial for "+channelNoHash, e);
+			logger.log(Level.SEVERE,
+					"An error occurred trying to start a commercial for "
+							+ channelNoHash, e);
 		}
 		con.setRequestProperty("User-agent", USER_AGENT);
 		return false;
 	}
-	
+
 	/**
 	 * Gets the amount of people following the specified channel
 	 * 
@@ -217,13 +263,19 @@ public class TwitchUtilities {
 	 */
 	public static int followerCount(String channel) {
 		try {
-			return new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"channels/"+channel.substring(1)).openStream()))).getAsJsonObject().getAsJsonPrimitive("followers").getAsInt();
+			return new JsonParser()
+					.parse(new JsonReader(new InputStreamReader(new URL(
+							BASE_URL + "channels/" + channel.substring(1))
+							.openStream()))).getAsJsonObject()
+					.getAsJsonPrimitive("followers").getAsInt();
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
-			logger.log(Level.SEVERE, "An error occurred getting the follower count for "+channel.substring(1), e);
+			logger.log(Level.SEVERE,
+					"An error occurred getting the follower count for "
+							+ channel.substring(1), e);
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Gets the amount of people subscribed to the specified channel
 	 * 
@@ -233,27 +285,40 @@ public class TwitchUtilities {
 	 */
 	public static int subscriberCount(String channel, String oAuth) {
 		try {
-			return new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"channels/"+channel.substring(1)+"/subscriptions/?oauth_token="+oAuth).openStream()))).getAsJsonObject().getAsJsonPrimitive("_total").getAsInt();
+			return new JsonParser()
+					.parse(new JsonReader(new InputStreamReader(new URL(
+							BASE_URL + "channels/" + channel.substring(1)
+									+ "/subscriptions/?oauth_token=" + oAuth)
+							.openStream()))).getAsJsonObject()
+					.getAsJsonPrimitive("_total").getAsInt();
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
-			logger.log(Level.SEVERE, "An error occurred getting the follower count for "+channel.substring(1), e);
+			logger.log(Level.SEVERE,
+					"An error occurred getting the follower count for "
+							+ channel.substring(1), e);
 		}
 		return 0;
 	}
-	
+
 	/**
-	 * @param channelNoHash - channel to run the commercial in wothout the leading  #
+	 * @param channelNoHash
+	 *            - channel to run the commercial in wothout the leading #
 	 * @return true if the channel is live, false otherwise
 	 */
 	public static boolean isLive(String channelNoHash) {
 		try {
-			new JsonParser().parse(new JsonReader(new InputStreamReader(new URL(BASE_URL+"streams/"+channelNoHash).openStream()))).getAsJsonObject().getAsJsonArray("stream");
+			new JsonParser()
+					.parse(new JsonReader(
+							new InputStreamReader(new URL(BASE_URL + "streams/"
+									+ channelNoHash).openStream())))
+					.getAsJsonObject().getAsJsonArray("stream");
 			return true;
 		} catch (ClassCastException e) {
 			return false;
 		} catch (JsonSyntaxException | IOException e) {
-			logger.log(Level.SEVERE, "An error occurred checking if the streamer is live!", e);
+			logger.log(Level.SEVERE,
+					"An error occurred checking if the streamer is live!", e);
 		}
 		return false;
 	}
-	
+
 }

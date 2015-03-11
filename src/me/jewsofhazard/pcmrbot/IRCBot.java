@@ -108,19 +108,19 @@ public class IRCBot extends PircBot {
 	public void onJoin(String channel, String sender, String login,
 			String hostname) {
 		try {
+			if (sender.equalsIgnoreCase(Main.getBotChannel()
+				.substring(1))) {
+				sendMessage(
+						channel,
+						"I have joined the channel and will stay with you unless you tell me to !leave or my creators do not shut me down properly because they are cruel people with devious minds.");
+				return;
+			}
 			if (welcomeEnabled.get(channel) && !isReJoin.containsKey(channel)) {
-				if (!sender.equalsIgnoreCase(Main.getBotChannel()
-						.substring(1))) {
-					String msg = Database.getWelcomeMessage(
-							channel.substring(1)).replace("%user%", sender);
-					if (!msg.equalsIgnoreCase("none") && !recentlyWelcomed(sender, channel)) {
-						sendMessage(channel, msg);
-						addWelcome(channel, sender);
-					}
-				} else {
-					sendMessage(
-							channel,
-							"I have joined the channel and will stay with you unless you tell me to !leave or my creators do not shut me down properly because they are cruel people with devious minds.");
+				String msg = Database.getWelcomeMessage(
+						channel.substring(1)).replace("%user%", sender);
+				if (!msg.equalsIgnoreCase("none") && !recentlyWelcomed(sender, channel)) {
+					sendMessage(channel, msg);
+					addWelcome(channel, sender);
 				}
 			}
 			new PointsRunnable(sender, channel.substring(1));
