@@ -12,11 +12,13 @@ import me.jewsofhazard.pcmrbot.util.DelayedTitleTask;
 public class ReadScheduleTable {
 	private static final Logger logger = Logger.getLogger(ReadScheduleTable.class+"");
 	
+	private static final Calendar PST_CALENDAR = Calendar.getInstance(TimeZone.getTimeZone("PST8PDT"));
+	
 	/**
 	 * Creates the delayed task for the pcmr titles
 	 */
 	public static void createDelayedTasks() {
-		switch(Calendar.getInstance(TimeZone.getTimeZone("PST")).get(Calendar.DAY_OF_WEEK)) {
+		switch(PST_CALENDAR.get(Calendar.DAY_OF_WEEK)) {
 		case Calendar.SUNDAY: 
 			readTable(1);
 			break;
@@ -47,36 +49,32 @@ public class ReadScheduleTable {
 		ResultSet rs = Database.executeQuery(String.format("SELECT * FROM %s.pcmrSchedule", Database.DATABASE));
 		try {
 			while(rs.next()) {
-				System.out.println(rs.getInt(1));
-				System.out.println(rs.getString(3));
 				if(rs.getInt(1) >= i && !rs.getString(3).equalsIgnoreCase("null")) {
-					Calendar c = Calendar.getInstance(TimeZone.getTimeZone("PST"));
-					int date = c.get(Calendar.DATE) + (rs.getInt(1) - i);
+					Calendar c = Calendar.getInstance(TimeZone.getTimeZone("PST8PDT"));
+					int day = c.get(Calendar.DATE) + (rs.getInt(1) - i);
 					int month = c.get(Calendar.MONTH);
 					int year = c.get(Calendar.YEAR);
-					if(date / c.getActualMaximum(Calendar.MONTH) > 0) {
+					if(day / c.getMaximum(Calendar.DATE) > 0) {
 						month++;
-						if(month / c.getActualMaximum(Calendar.YEAR) > 0) {
+						if(month / c.getMaximum(Calendar.MONTH) > 0) {
 							year++;
 							month = 0;
 						}
-						date = date % c.getActualMaximum(Calendar.MONTH);
+						if(day > c.getMaximum(Calendar.DATE)) {
+							day = day % c.getMaximum(Calendar.DATE);
+						}
 					}
-					System.out.println(rs.getInt(1));
-					System.out.println(rs.getString(4));
-					int hour = Integer.valueOf(rs.getString(4).substring(0, rs.getString(4).indexOf(":")));
+					int hour = Integer.valueOf(rs.getString(4).substring(0, rs.getString(4).indexOf(":"))) + 12;
 					int minute = Integer.valueOf(rs.getString(4).substring(rs.getString(4).indexOf(":") + 1, rs.getString(4).indexOf(" ")));
-					c.set(Calendar.AM_PM, Calendar.AM);
-					c.set(year, month, date, hour, minute, 0);
-					new DelayedTitleTask(rs.getString(2)+" playing "+rs.getString(3), rs.getString(3), c.getTimeInMillis() - Calendar.getInstance(TimeZone.getTimeZone("PST")).getTimeInMillis());
+					c.set(year, month, day, hour, minute, 0);
+					new DelayedTitleTask(rs.getString(2)+" playing "+rs.getString(3), rs.getString(3), c.getTimeInMillis() - PST_CALENDAR.getTimeInMillis());
 					minute -= 30;
 					if(minute < 0) {
 						hour--;
-						minute = 60 - Math.abs(minute - 30);
+						minute = 60 - Math.abs(minute);
 					}
-					c.set(year, month, date, hour, minute, 0);
-					c.set(Calendar.AM_PM, Calendar.AM);
-					new DelayedTitleTask("Starting soon "+rs.getString(2)+" playing "+rs.getString(3), rs.getString(3), c.getTimeInMillis() - Calendar.getInstance(TimeZone.getTimeZone("PST")).getTimeInMillis());
+					c.set(year, month, day, hour, minute, 0);
+					new DelayedTitleTask("Starting soon "+rs.getString(2)+" playing "+rs.getString(3), rs.getString(3), c.getTimeInMillis() - PST_CALENDAR.getTimeInMillis());
 				}
 			}
 		} catch (SQLException e) {
