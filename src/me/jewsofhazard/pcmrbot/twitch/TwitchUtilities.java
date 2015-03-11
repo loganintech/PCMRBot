@@ -310,10 +310,10 @@ public class TwitchUtilities {
 					.parse(new JsonReader(
 							new InputStreamReader(new URL(BASE_URL + "streams/"
 									+ channelNoHash).openStream())))
-					.getAsJsonObject().getAsJsonArray("stream");
-			return true;
-		} catch (ClassCastException e) {
+					.getAsJsonObject().getAsJsonObject("stream").getAsJsonNull();
 			return false;
+		} catch (IllegalStateException | ClassCastException e) {
+			return true;
 		} catch (JsonSyntaxException | IOException e) {
 			logger.log(Level.SEVERE,
 					"An error occurred checking if the streamer is live!", e);
