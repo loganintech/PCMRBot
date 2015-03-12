@@ -49,7 +49,7 @@ public class Raffle {
 	 * @return this raffle
 	 */
 	public Raffle start() {
-		new DelayedVoteTask(300, this);
+		new DelayedVoteTask(300000, this);
 		return this;
 	}
 	

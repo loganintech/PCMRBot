@@ -35,7 +35,7 @@ public class VoteTimeOut {
 		channel = c;
 		kickee = k;
 		kickers= new ArrayList<>();
-		new DelayedVoteTask(120, this);
+		new DelayedVoteTask(120000, this);
 	}
 
 	/**

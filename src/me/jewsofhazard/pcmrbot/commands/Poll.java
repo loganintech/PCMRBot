@@ -42,11 +42,7 @@ public class Poll extends Command {
 		for (int i = 2; i < parameters.length; i++) {
 			answers[i - 2] = parameters[i];
 		}
-		
-		Main.getBot().addPoll(channel, new me.jewsofhazard.pcmrbot.util.Poll(channel, answers, Integer.valueOf(parameters[0])).start());
-		if(Main.getBot().getConfirmationReplies(channel)) {
-			return parameters[1];
-		}
+		Main.getBot().addPoll(channel, new me.jewsofhazard.pcmrbot.util.Poll(channel, parameters[1], answers, Integer.valueOf(parameters[0])).start());
 		return null;
 	}
 

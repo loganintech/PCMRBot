@@ -31,6 +31,7 @@ public class Poll {
 	private ArrayList<ArrayList<String>> voting;
 
 	private String channel;
+	private String question;
 	private String[] answers;
 	int answerCount;
 	private int length;
@@ -40,8 +41,9 @@ public class Poll {
 	 * @param a - possible answers
 	 * @param l - the length of time the poll should last
 	 */
-	public Poll(String c, String[] a, int l) {
+	public Poll(String c, String q, String[] a, int l) {
 		channel = c;
+		question = q;
 		answers = a;
 		answerCount = answers.length;
 		length = l;
@@ -54,6 +56,7 @@ public class Poll {
 	public Poll start() {
 		ringazinUsers = new ArrayList<>();
 		voting = new ArrayList<>();
+		Main.getBot().sendMessage(channel, question);
 		for (int i = 0; i < answers.length; i++) {
 			Main.getBot().sendMessage(channel, (i + 1) + ": " + answers[i]);
 			voting.add(new ArrayList<String>());
@@ -71,7 +74,7 @@ public class Poll {
 				channel,
 				"You have %length% seconds to vote.".replace("%length%", length
 						+ ""));
-		new DelayedVoteTask(length, this);
+		new DelayedVoteTask(length * 1000, this);
 		return this;
 	}
 
