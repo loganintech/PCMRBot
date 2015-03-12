@@ -32,8 +32,14 @@ public class LMGTFY extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String...parameters) {
-		if (!parameters[0].substring(0, 7).equals("!lmgtfy")) {
+		if (parameters.length == 1) {
 			return "http://lmgtfy.com?q=" + parameters[0].replace(' ', '+');
+		} else if (parameters.length > 1) {
+			StringBuilder sb = new StringBuilder();
+			for(String s:parameters) {
+				sb.append("+" + s);
+			}
+			return "http://lmgtfy.com?q=" + sb.toString();
 		} else {
 			return "You need to add something to search.";
 		}
