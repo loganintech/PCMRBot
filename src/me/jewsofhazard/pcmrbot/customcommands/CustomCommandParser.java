@@ -35,11 +35,17 @@ public class CustomCommandParser {
 								continue;
 							}
 							i++;
+							boolean endQuote = true;
 							while(!parameters[i].endsWith("\"")) {
 								temp+=parameters[i] + " ";
 								i++;
+								if(i >= parameters.length) {
+									endQuote = false;
+								}
 							}
-							temp+=parameters[i].replace("\"", "");
+							if(endQuote) {
+								temp+=parameters[i].replace("\"", "");
+							}
 							i++;
 							passed.add(temp);
 							continue;

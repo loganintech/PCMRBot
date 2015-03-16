@@ -5,15 +5,21 @@
  */
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.Main;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import me.jewsofhazard.pcmrbot.database.Database;
 import me.jewsofhazard.pcmrbot.util.CLevel;
-import java.util.ArrayList;
 
 /**
  *
  * @author Hazard
  */
 public class Mods extends Command{
+	
+	private static final Logger logger = Logger.getLogger(Mods.class+"");
     
         @Override
 	public CLevel getCommandLevel() {
@@ -27,20 +33,16 @@ public class Mods extends Command{
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-	me.jewsofhazard.pcmrbot.IRCBot bot = new me.jewsofhazard.pcmrbot.IRCBot();
-        me.jewsofhazard.pcmrbot.database.Database database = new me.jewsofhazard.pcmrbot.database.Database();
-        
-        String list = "";
-        
-        for(int i = 0; i < bot.getUsers(channel).length; i++){
-        
-        if(database.isMod(bot.getUsers(channel)[i].getNick(), channel.substring(1))){}
-        
-        list += bot.getUsers(channel)[i].getNick() + " ";
-        
-        }
-            
-            return "The mods of this channel: " + list;
+        ResultSet rs=Database.getMods(channel.substring(1));
+        StringBuilder sb = new StringBuilder();
+        try {
+			while(rs.next()) {
+				sb.append(rs.getString(1)+", ");
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "There was an issue getting the mods for the channel", e);
+		}
+        return "The mods of this channel: " + sb.toString().substring(0, sb.toString().length()-2);
             
 	}
     

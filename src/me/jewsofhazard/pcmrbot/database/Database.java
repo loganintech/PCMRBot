@@ -633,4 +633,8 @@ public class Database {
 		}
 		return executeUpdate(stmt);
 	}
+
+	public static ResultSet getMods(String channelNoHash) {
+		return executeQuery(String.format("SELECT * FROM %s.%sMods", DATABASE, channelNoHash));
+	}
 }
