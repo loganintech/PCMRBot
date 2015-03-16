@@ -5,23 +5,19 @@
  */
 package me.jewsofhazard.pcmrbot.commands;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.database.Database;
 import me.jewsofhazard.pcmrbot.util.CLevel;
+
+import org.jibble.pircbot.User;
 
 /**
  *
  * @author Hazard
  */
 public class Mods extends Command{
-	
-	private static final Logger logger = Logger.getLogger(Mods.class+"");
     
-        @Override
+    @Override
 	public CLevel getCommandLevel() {
 		return CLevel.Normal;
 	}
@@ -33,16 +29,13 @@ public class Mods extends Command{
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-        ResultSet rs=Database.getMods(channel.substring(1));
-        StringBuilder sb = new StringBuilder();
-        try {
-			while(rs.next()) {
-				sb.append(rs.getString(1)+", ");
+		User[] users= Main.getBot().getUsers(channel);
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < users.length; i++){
+			if(Database.isMod(users[i].getNick(), channel.substring(1))){}
+				sb.append(users[i].getNick() + ",");
 			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "There was an issue getting the mods for the channel", e);
-		}
-        return "The mods of this channel: " + sb.toString().substring(0, sb.toString().length()-2);
+        return "The mods of this channel: " + sb.toString().substring(0, sb.toString().length()-1);
             
 	}
     
