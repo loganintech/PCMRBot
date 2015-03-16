@@ -43,7 +43,10 @@ public class Raffle extends Command {
 			return "Improper raffle type! Valid choices are \"everyone\", \"followers\" \"subscribers\"";
 		}
 		Main.getBot().addRaffle(channel, new me.jewsofhazard.pcmrbot.util.Raffle(channel, level));
-		return "Raffle started for %level%s".replace("%level%", level.toString());
+		if(level == ULevel.Normal) {
+			return "Raffle started for everyone!";
+		}
+		return "Raffle started for %level%s!".replace("%level%", level.toString());
 	}
 
 }

@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
 import me.jewsofhazard.pcmrbot.database.Database;
+import me.jewsofhazard.pcmrbot.database.ReadScheduleTable;
 import me.jewsofhazard.pcmrbot.util.CommandsPage;
 import me.jewsofhazard.pcmrbot.util.TOptions;
 import me.jewsofhazard.pcmrbot.util.TFileReader;
@@ -35,7 +36,7 @@ public class Main implements Runnable{
 	
 	private static IRCBot bot;
 	private static String[] args;
-	private static final String botChannel = "#pcmrbot";
+	private static final String botChannel = "#pcmrbottester";
 	private static final Logger logger = Logger.getLogger(Main.class + "");
 	
 	/**
@@ -79,6 +80,7 @@ public class Main implements Runnable{
 	@Override
 	public void run() {
 		Database.initDBConnection(args[1]);
+		ReadScheduleTable.createDelayedTasks();
 		bot = new IRCBot();
 
 		bot.setVerbose(true);

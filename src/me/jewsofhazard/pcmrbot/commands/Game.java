@@ -34,18 +34,14 @@ public class Game extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String...parameters) {
-            
-            String game = parameters[0];
-            for(int i = 1; i < parameters.length; i++){
-            
-                game = game + parameters[i];
-                
+            StringBuilder sb = new StringBuilder();
+            for(String s:parameters) {
+            	sb.append(s);
             }
-            
 		if (TwitchUtilities.updateGame(channel.substring(1),
-				game)) {
+				sb.toString())) {
 			return "Successfully changed the stream game to \""
-							+ game + "\"!";
+							+ sb.toString() + "\"!";
 		} else {
 			return "I am not authorized to do that visit http://pcmrbot.no-ip.info/authorize to allow me to do this and so much more!";
 		}
