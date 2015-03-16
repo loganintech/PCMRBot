@@ -33,19 +33,15 @@ public class Title extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String...parameters) {
-            String title = parameters[0];
-            for(int i = 1; i < parameters.length; i++){
-            
-                title = title + parameters[i];
-                
+            StringBuilder sb = new StringBuilder();
+            for(String s:parameters){
+            	sb.append(s);
             }
-            
-            
 		if (TwitchUtilities.updateTitle(channel.substring(1),
-				title)) {
-			return "Successfully changed the stream title to \"%title%\"!".replace("%title%", title);
+				sb.toString())) {
+			return "Successfully changed the stream title to \"%title%\"!".replace("%title%", sb.toString());
 		} else {
-			return "I am not authorized to do that visit http://pcmrbot.no-ip.info/authorize to allow me to do this and so much more!";
+			return "I am not authorized to do that, visit http://pcmrbot.no-ip.info/authorize to allow me to do this and so much more!";
 		}
 	}
 
