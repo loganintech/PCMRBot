@@ -41,7 +41,7 @@ public class Raffle {
 		channel = c;
 		type = t;
 		participants = new ArrayList<>();
-                start();
+		start();
 	}
 	
 	/**

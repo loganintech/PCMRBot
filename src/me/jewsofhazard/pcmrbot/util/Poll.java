@@ -65,7 +65,7 @@ public class Poll {
 		Main.getBot()
 				.sendMessage(
 						channel,
-						"Please input your choice by typing !vote {vote number}. Note, if you choose a number higher or lower than required, your vote will be discarded and you will be prohibited from voting this round.");
+						"Please input your choice by typing !vote {vote number}.");
 		for (int i = 0; i < answers.length; i++) {
 			voting.add(new ArrayList<String>());
 			voting.get(i).add(answers[i]);

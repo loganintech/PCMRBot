@@ -44,9 +44,8 @@ public class Raffle extends Command {
 		}
 		Main.getBot().addRaffle(channel, new me.jewsofhazard.pcmrbot.util.Raffle(channel, level));
 		if(level == ULevel.Normal) {
-			return "Raffle started for everyone!";
+			return "Raffle started for everyone! Type !enter to enter!";
 		}
-		return "Raffle started for %level%s!".replace("%level%", level.toString());
+		return "Raffle started for %level%s! Type !enter to enter!".replace("%level%", level.toString());
 	}
-
 }
