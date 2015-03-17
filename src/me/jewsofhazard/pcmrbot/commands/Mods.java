@@ -33,9 +33,9 @@ public class Mods extends Command{
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < users.length; i++){
 			if(Database.isMod(users[i].getNick(), channel.substring(1))){}
-				sb.append(users[i].getNick() + ",");
+				sb.append(users[i].getNick() + ", ");
 			}
-        return "The mods of this channel: " + sb.toString().substring(0, sb.toString().length()-1);
+        return "The present mods of this channel are " + sb.toString().substring(0, sb.toString().length()-1);
             
 	}
     
