@@ -35,7 +35,7 @@ public class Title extends Command {
 	public String execute(String channel, String sender, String...parameters) {
             StringBuilder sb = new StringBuilder();
             for(String s:parameters){
-            	sb.append(s);
+            	sb.append(s + " ");
             }
 		if (TwitchUtilities.updateTitle(channel.substring(1),
 				sb.toString())) {
