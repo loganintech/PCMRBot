@@ -18,7 +18,7 @@
 package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.util.CLevel;
-
+ 
 public class Me extends Command {
 
 	@Override
@@ -33,7 +33,11 @@ public class Me extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		return "/me %message%".replace("%message%", parameters[0]);
+                StringBuilder sb = new StringBuilder();
+                for(String s:parameters){
+                    sb.append(s + " ");
+                }
+		return "/me %message%".replace("%message%", sb.toString());
 	}
 
 }
