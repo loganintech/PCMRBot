@@ -36,6 +36,7 @@ import me.jewsofhazard.pcmrbot.util.PointsRunnable;
 import me.jewsofhazard.pcmrbot.util.TOptions;
 import me.jewsofhazard.pcmrbot.util.TType;
 import me.jewsofhazard.pcmrbot.util.Timeouts;
+import org.apache.commons.validator.routines.UrlValidator;
 
 import org.jibble.pircbot.PircBot;
 
@@ -266,31 +267,34 @@ public class IRCBot extends PircBot {
 			int emotes = Database.getOption(channel.substring(1),
 					TOptions.numEmotes);
 
-			if (caps != -1 && message.matches("[A-Z\\s]{" + caps + ",}")) {
-                            System.out.println("The bot has deemed the caps in a message to be to much.");
-				new Timeouts(channel, sender, 1, TType.CAPS);
-			} else if (link != -1
-					&& (message
-							.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})") || message
-							.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?"))) {
+                        String [] checks = {"http","https","ftp","www"};
+                        UrlValidator urlValidate = new UrlValidator(checks);
+			if (urlValidate.isValid(message) && link != -1)
+                                /*(message
+                                        .matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})") || message
+                                        .matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?"))
+					&& link != -1)*/ {
 				if (!isPermitted(channel, sender)) {
-                                    System.out.println("The links are being timed out.");
+                                    //System.out.println("The links are being timed out.");
 					new Timeouts(channel, sender, 1, TType.LINK);
 				} else {
 					removePermit(channel, sender);
-				}
+				}                        
+                        }  else if (caps != -1 && message.matches("[A-Z\\s]{" + caps + ",}")) {
+                            //System.out.println("The bot has deemed the caps in a message to be to much.");
+				new Timeouts(channel, sender, 1, TType.CAPS);
 			} else if (symbols != -1
 					&& message.matches("[\\W_\\s]{" + symbols + ",}")) {
-                            System.out.println("The bot has deemed the symbols in a message to be to much.");
+                           // System.out.println("The bot has deemed the symbols in a message to be to much.");
 				new Timeouts(channel, sender, 1, TType.SYMBOLS);
 			} else if (paragraph != -1 && message.length() >= paragraph) {
-                            System.out.println("The bot has deemed the letters in a paragraph to be to much.");
+                            //System.out.println("The bot has deemed the letters in a paragraph to be to much.");
 				new Timeouts(channel, sender, 1, TType.PARAGRAPH);
 			} else if (emotes != -1
 					&& message
 							.matches("(:\\(|:\\)|:/|:D|:o|:p|:z|;\\)|;p|<3|>\\(|B\\)|o_o|R\\)|4Head|ANELE|ArsonNoSexy|AsianGlow|AtGL|AthenaPMS|AtIvy|BabyRage|AtWW|BatChest|BCWarrior|BibleThump|BigBrother|BionicBunion|BlargNaut|BloodTrail|BORT|BrainSlug|BrokeBack|BuddhaBar|CougarHunt|DAESuppy|DansGame|DatSheffy|DBstyle|DendiFace|DogFace|EagleEye|EleGiggle|EvilFetus|FailFish|FPSMarksman|FrankerZ|FreakinStinkin|FUNgineer|FunRun|FuzzyOtterOO|GasJoker|GingerPower|GrammarKing|HassaanChop|HassanChop|HeyGuys|HotPokket|HumbleLife|ItsBoshyTime|Jebaited|KZowl|JKanStyle|JonCarnage|KAPOW|Kappa|Keepo|KevinTurtle|Kippa|Kreygasm|KZassault|KZcover|KZguerilla|KZhelghast|KZskull|Mau5|mcaT|MechaSupes|MrDestructoid|MrDestructoid|MVGame|NightBat|NinjaTroll|NoNoSpot|noScope|NotAtk|OMGScoots|OneHand|OpieOP|OptimizePrime|panicBasket|PanicVis|PazPazowitz|PeoplesChamp|PermaSmug|PicoMause|PipeHype|PJHarley|PJSalt|PMSTwin|PogChamp|Poooound|PRChase|PunchTrees|PuppeyFace|RaccAttack|RalpherZ|RedCoat|ResidentSleeper|RitzMitz|RuleFive|Shazam|shazamicon|ShazBotstix|ShazBotstix|ShibeZ|SMOrc|SMSkull|SoBayed|SoonerLater|SriHead|SSSsss|StoneLightning|StrawBeary|SuperVinlin|SwiftRage|TF2John|TheRinger|TheTarFu|TheThing|ThunBeast|TinyFace|TooSpicy|TriHard|TTours|UleetBackup|UncleNox|UnSane|Volcania|WholeWheat|WinWaker|WTRuck|WutFace|YouWHY|\\(mooning\\)|\\(poolparty\\)|\\(puke\\)|:\\'\\(|:tf:|aPliS|BaconEffect|BasedGod|BroBalt|bttvNice|ButterSauce|cabbag3|CandianRage|CHAccepted|CiGrip|ConcernDoge|D:|DatSauce|FapFapFap|FishMoley|ForeverAlone|FuckYea|GabeN|HailHelix|HerbPerve|Hhhehehe|HHydro|iAMbh|iamsocal|iDog|JessSaiyan|JuliAwesome|KaRappa|KKona|LLuda|M&Mjc|ManlyScreams|NaM|OhGod|OhGodchanZ|OhhhKee|OhMyGoodness|PancakeMix|PedoBear|PedoNam|PokerFace|PoleDoge|RageFace|RebeccaBlack|RollIt!|rStrike|SexPanda|She'llBeRight|ShoopDaWhoop|SourPls|SuchFraud|SwedSwag|TaxiBro|tEh|ToasTy|TopHam|TwaT|UrnCrown|VisLaud|WatChuSay|WhatAYolk|YetiZ|PraiseIt|\\s){"
 									+ emotes + ",}")) {
-                            System.out.println("The bot has deemed the emotes in a message to be to much.");
+                            //System.out.println("The bot has deemed the emotes in a message to be to much.");
 				new Timeouts(channel, sender, 1, TType.EMOTE);
 			}
 			ResultSet rs = Database.getSpam(channel.substring(1));
