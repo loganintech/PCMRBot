@@ -314,7 +314,6 @@ public class IRCBot extends PircBot {
 						+ sender + "'s message has bad words", e);
 			}
 		}
-
                 
 	}
 
