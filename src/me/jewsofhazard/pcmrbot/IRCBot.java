@@ -255,6 +255,8 @@ public class IRCBot extends PircBot {
 	 * @param sender - the person the sent the message
 	 */
 	public void checkSpam(String channel, String message, String sender) {
+                        String [] checks = {"http","https","ftp","www"};
+                        UrlValidator urlValidate = new UrlValidator(checks);
 		if (!Database.isMod(sender, channel.substring(1)) && !Database.isRegular(sender, channel.substring(1)) && !Database.isWhitelisted(sender, channel.substring(1))) {
 			System.out.println("The system has checked if " + sender + " has posted spam in " + channel);
                         int caps = Database.getOption(channel.substring(1),
@@ -267,13 +269,11 @@ public class IRCBot extends PircBot {
 			int emotes = Database.getOption(channel.substring(1),
 					TOptions.numEmotes);
 
-                        String [] checks = {"http","https","ftp","www"};
-                        UrlValidator urlValidate = new UrlValidator(checks);
-			if (urlValidate.isValid(message) && link != -1)
-                                /*(message
+                        
+			if ((message
                                         .matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})") || message
                                         .matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?"))
-					&& link != -1)*/ {
+					&& link != -1) {
 				if (!isPermitted(channel, sender)) {
                                     //System.out.println("The links are being timed out.");
 					new Timeouts(channel, sender, 1, TType.LINK);
@@ -313,6 +313,7 @@ public class IRCBot extends PircBot {
 			}
 		}
 
+                
 	}
 
 	/**
