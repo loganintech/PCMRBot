@@ -261,12 +261,9 @@ public class IRCBot extends PircBot {
 	 *            - the person the sent the message
 	 */
 	public void checkSpam(String channel, String message, String sender) {
-		if (!Database.isMod(sender, channel.substring(1))
-				&& !Database.isRegular(sender, channel.substring(1))
-				&& !Database.isWhitelisted(sender, channel.substring(1))) {
-			System.out.println("The system has checked if " + sender
-					+ " has posted spam in " + channel);
-			int caps = Database.getOption(channel.substring(1),
+		if (!Database.isMod(sender, channel.substring(1)) && !Database.isRegular(sender, channel.substring(1)) && !Database.isWhitelisted(sender, channel.substring(1))) {
+			System.out.println("The system has checked if " + sender + " has posted spam in " + channel);
+                        int caps = Database.getOption(channel.substring(1),
 					TOptions.numCaps);
 			int symbols = Database.getOption(channel.substring(1),
 					TOptions.numSymbols);
@@ -318,6 +315,7 @@ public class IRCBot extends PircBot {
 			}
 		}
 
+                
 	}
 
 	/**
