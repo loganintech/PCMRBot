@@ -17,7 +17,7 @@ public class Top extends Command {
 
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		if(parameters[0].equalsIgnoreCase("!"+getCommandText())) {
+		if(parameters.length == 0) {
 			return Database.topPlayers(5, channel.substring(1));
 		}
 		int amnt = -1;

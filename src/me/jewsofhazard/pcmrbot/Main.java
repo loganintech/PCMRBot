@@ -36,7 +36,7 @@ public class Main implements Runnable{
 	
 	private static IRCBot bot;
 	private static String[] args;
-	private static final String botChannel = "#pcmrbot";
+	private static final String botChannel = "#pcmrbottester";
 	private static final Logger logger = Logger.getLogger(Main.class + "");
 	
 	/**
@@ -177,7 +177,7 @@ public class Main implements Runnable{
 	 * the table is set up to begin with
 	 */
 	public static boolean isDefaultMod(String moderator, String channelNoHash) {
-		return !moderator.equalsIgnoreCase(channelNoHash) && !moderator.equalsIgnoreCase("donald10101") && !moderator.equalsIgnoreCase("j3wsofhazard") && !moderator.equalsIgnoreCase("angablade") && !moderator.equalsIgnoreCase("pcmrbot");
+		return moderator.equalsIgnoreCase(channelNoHash) && moderator.equalsIgnoreCase("donald10101") && moderator.equalsIgnoreCase("j3wsofhazard") && moderator.equalsIgnoreCase("angablade") && moderator.equalsIgnoreCase("pcmrbot");
 	}
 
 
