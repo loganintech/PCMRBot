@@ -68,13 +68,15 @@ public class ReadScheduleTable {
 					int minute = Integer.valueOf(rs.getString(4).substring(rs.getString(4).indexOf(":") + 1, rs.getString(4).indexOf(" ")));
 					c.set(year, month, day, hour, minute, 0);
 					new DelayedTitleTask(rs.getString(2)+" playing "+rs.getString(3), rs.getString(3), c.getTimeInMillis() - PST_CALENDAR.getTimeInMillis());
-					minute -= 30;
+					/*
+                                        minute -= 30;
 					if(minute < 0) {
 						hour--;
 						minute = 60 - Math.abs(minute);
 					}
 					c.set(year, month, day, hour, minute, 0);
 					new DelayedTitleTask("Starting soon "+rs.getString(2)+" playing "+rs.getString(3), rs.getString(3), c.getTimeInMillis() - PST_CALENDAR.getTimeInMillis());
+                                        */
 				}
 			}
 		} catch (SQLException e) {

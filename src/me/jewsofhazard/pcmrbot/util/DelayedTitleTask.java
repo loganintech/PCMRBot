@@ -31,7 +31,7 @@ public class DelayedTitleTask extends TimerTask {
 	@Override
 	public void run() {
 		TwitchUtilities.updateTitle("officialpcmasterrace", title);
-		TwitchUtilities.updateGame("officialpcmasterrace", game);
+		//TwitchUtilities.updateGame("officialpcmasterrace", game);
 	}
 
 }
