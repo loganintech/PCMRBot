@@ -34,7 +34,7 @@ public class Say extends Command{
                             sb.append(parameters[i] + " ");  
                         }
                         
-                Main.getBot().sendMessage(sb.toString(), parameters[parameters.length - 1]);
+                Main.getBot().sendMessage(parameters[parameters.length - 1], sb.toString());
                         
 		}
 		return null;
