@@ -301,7 +301,7 @@ public class TwitchUtilities {
 
 	/**
 	 * @param channelNoHash
-	 *            - channel to run the commercial in wothout the leading #
+	 *            - channel to run the commercial in without the leading #
 	 * @return true if the channel is live, false otherwise
 	 */
 	public static boolean isLive(String channelNoHash) {

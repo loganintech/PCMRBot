@@ -35,9 +35,11 @@ public class Game extends Command {
 	@Override
 	public String execute(String channel, String sender, String...parameters) {
             StringBuilder sb = new StringBuilder();
-            for(String s:parameters) {
-            	sb.append(s);
+            for(int i = 0; i < parameters.length - 1; i++) {
+            	sb.append(parameters[i] + " ");
             }
+            sb.append(parameters[parameters.length-1]);
+            
 		if (TwitchUtilities.updateGame(channel.substring(1),
 				sb.toString())) {
 			return "Successfully changed the stream game to \""

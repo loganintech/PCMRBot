@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>PCMRBot</groupId>
 	<artifactId>PCMRBot</artifactId>
-	<version>beta-v0.13.01</version>
+	<version>beta-v0.14.01</version>
 	<name>PCMRBot</name>
 	<repositories>
 		<repository>
@@ -43,9 +43,11 @@
                        </descriptorRefs>
                        <archive>
                           <manifest>
-						  
-                              <mainClass>me.jewsofhazard.pcmrbot.Main</mainClass>
+                              <mainClass>me.jewsofhazard.pcmrbot.Main</mainClass>	                                
                           </manifest>
+                          <manifestEntries>
+                              <Build-Version>${project.version}</Build-Version>                              
+                          </manifestEntries>
                        </archive>
                     </configuration>
                     <executions>
@@ -61,6 +63,11 @@
                 </plugins>
 	</build>
 	<dependencies>
+                <dependency>
+                        <groupId>commons-validator</groupId>
+                        <artifactId>commons-validator</artifactId>
+                        <version>1.4.0</version>
+                </dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -91,5 +98,10 @@
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
 		</dependency>
+	 <dependency>
+	  <groupId>com.jcabi</groupId>
+	  <artifactId>jcabi-manifests</artifactId>
+	  <version>0.7.9</version>
+	 </dependency>
 	</dependencies>
 </project>

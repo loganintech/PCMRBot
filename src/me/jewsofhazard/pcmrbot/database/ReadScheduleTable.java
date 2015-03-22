@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.jewsofhazard.pcmrbot.util.DelayedTitleTask;
+import me.jewsofhazard.pcmrbot.util.MiscUtils;
 
 public class ReadScheduleTable {
 	private static final Logger logger = Logger.getLogger(ReadScheduleTable.class+"");
@@ -60,21 +61,18 @@ public class ReadScheduleTable {
 							year++;
 							month = 0;
 						}
-						if(day > c.getMaximum(Calendar.DATE)) {
-							day = day % c.getMaximum(Calendar.DATE);
-						}
+						day = day % c.getMaximum(Calendar.DATE);
 					}
-					int hour = Integer.valueOf(rs.getString(4).substring(0, rs.getString(4).indexOf(":"))) + 12;
-					int minute = Integer.valueOf(rs.getString(4).substring(rs.getString(4).indexOf(":") + 1, rs.getString(4).indexOf(" ")));
-					c.set(year, month, day, hour, minute, 0);
-					new DelayedTitleTask(rs.getString(2)+" playing "+rs.getString(3), rs.getString(3), c.getTimeInMillis() - PST_CALENDAR.getTimeInMillis());
-					minute -= 30;
-					if(minute < 0) {
-						hour--;
-						minute = 60 - Math.abs(minute);
-					}
-					c.set(year, month, day, hour, minute, 0);
-					new DelayedTitleTask("Starting soon "+rs.getString(2)+" playing "+rs.getString(3), rs.getString(3), c.getTimeInMillis() - PST_CALENDAR.getTimeInMillis());
+					int[] time = MiscUtils.parseTime(rs.getString(4));
+					c.set(year, month, day, time[0], time[1], 0);
+					new DelayedTitleTask(rs.getString(2)+" playing "+rs.getString(3), c.getTimeInMillis() - PST_CALENDAR.getTimeInMillis());
+//                  minute -= 30;
+//					if(minute < 0) {
+//						hour--;
+//						minute = 60 - Math.abs(minute);
+//					}
+//					c.set(year, month, day, hour, minute, 0);
+//					new DelayedTitleTask("Starting soon "+rs.getString(2)+" playing "+rs.getString(3), c.getTimeInMillis() - PST_CALENDAR.getTimeInMillis());
 				}
 			}
 		} catch (SQLException e) {

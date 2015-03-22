@@ -29,9 +29,9 @@ import me.jewsofhazard.pcmrbot.commands.AddModerator;
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
 import me.jewsofhazard.pcmrbot.customcommands.CustomCommandParser;
 import me.jewsofhazard.pcmrbot.database.Database;
+import me.jewsofhazard.pcmrbot.util.DelayedPermitTask;
 import me.jewsofhazard.pcmrbot.util.DelayedReJoin;
 import me.jewsofhazard.pcmrbot.util.DelayedWelcomeTask;
-import me.jewsofhazard.pcmrbot.util.DelayedPermitTask;
 import me.jewsofhazard.pcmrbot.util.PointsRunnable;
 import me.jewsofhazard.pcmrbot.util.TOptions;
 import me.jewsofhazard.pcmrbot.util.TType;
@@ -90,7 +90,8 @@ public class IRCBot extends PircBot {
 	protected void onOp(String channel, String sourceNick, String sourceLogin,
 			String sourceHostname, String recipient) {
 		try {
-			new AddModerator().execute(Main.getBotChannel().substring(1), channel, new String[] {recipient});
+			new AddModerator().execute(Main.getBotChannel().substring(1),
+					channel, new String[] { recipient });
 		} catch (Exception e) {
 			logger.log(Level.WARNING,
 					"An error was thrown while executing onOp() in " + channel,
@@ -99,8 +100,8 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * Decides how to welcome a user and then sends that message to the
-	 * the channel.
+	 * Decides how to welcome a user and then sends that message to the the
+	 * channel.
 	 * 
 	 * Also starts points accumulation for that user in the channel
 	 */
@@ -108,17 +109,17 @@ public class IRCBot extends PircBot {
 	public void onJoin(String channel, String sender, String login,
 			String hostname) {
 		try {
-			if (sender.equalsIgnoreCase(Main.getBotChannel()
-				.substring(1))) {
+			if (sender.equalsIgnoreCase(Main.getBotChannel().substring(1))) {
 				sendMessage(
 						channel,
 						"I have joined the channel and will stay with you unless you tell me to !leave or my creators do not shut me down properly because they are cruel people with devious minds.");
 				return;
 			}
 			if (welcomeEnabled.get(channel) && !isReJoin.containsKey(channel)) {
-				String msg = Database.getWelcomeMessage(
-						channel.substring(1)).replace("%user%", sender);
-				if (!msg.equalsIgnoreCase("none") && !recentlyWelcomed(sender, channel)) {
+				String msg = Database.getWelcomeMessage(channel.substring(1))
+						.replace("%user%", sender);
+				if (!msg.equalsIgnoreCase("none")
+						&& !recentlyWelcomed(sender, channel)) {
 					sendMessage(channel, msg);
 					addWelcome(channel, sender);
 				}
@@ -131,11 +132,10 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * Sends a message to the bot's channel when someone leaves
-	 * a channel the bot is in
+	 * Sends a message to the bot's channel when someone leaves a channel the
+	 * bot is in
 	 * 
-	 *  Stops the point accumulation for that user in the channel
-	 *  specified
+	 * Stops the point accumulation for that user in the channel specified
 	 */
 	@Override
 	public void onPart(String channel, String sender, String login,
@@ -151,31 +151,33 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * Handles spam checking, last seen, commands, auto replies,
-	 * and custom commands
+	 * Handles spam checking, last seen, commands, auto replies, and custom
+	 * commands
 	 */
 	@Override
 	public void onMessage(String channel, String sender, String login,
 			String hostname, String message) {
 		try {
 			checkSpam(channel, message, sender);
-			if(message.charAt(0) == '!'){
-				String[] params = message.substring(message.indexOf(' ') + 1).split(" ");
+			if (message.charAt(0) == '!') {
+				String[] params = message.substring(message.indexOf(' ') + 1)
+						.split(" ");
 				String command;
 				try {
 					command = message.substring(1, message.indexOf(' '));
-				} catch(StringIndexOutOfBoundsException e) {
+				} catch (StringIndexOutOfBoundsException e) {
 					command = message.substring(1, message.length());
 				}
-				if(command.equalsIgnoreCase(params[0].substring(1))) {
+				if (command.equalsIgnoreCase(params[0].substring(1))) {
 					params = new String[0];
 				}
-				String reply = CommandParser.parse(command, sender, channel, params);
+				String reply = CommandParser.parse(command, sender, channel,
+						params);
 				if (reply != null) {
 					sendMessage(channel, reply);
 				}
-				reply = CustomCommandParser.parse(command.toLowerCase(), sender,
-						channel, params);
+				reply = CustomCommandParser.parse(command.toLowerCase(),
+						sender, channel, params);
 				if (reply != null) {
 					sendMessage(channel, reply);
 				}
@@ -193,17 +195,17 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * Sends message when the bot join's a channel for the first
-	 * time.
+	 * Sends message when the bot join's a channel for the first time.
 	 */
 	public void onFirstJoin(String channel) {
 		sendMessage(
 				channel,
 				"Hello, this appears to be the first time you have invited me to join your channel. We just have a few preliminary manners to attend to. First off make sure to mod me so I don't get timed out, then type !setup");
 	}
-	
+
 	/**
-	 * @param channel - channel we might be in
+	 * @param channel
+	 *            - channel we might be in
 	 * @return true if we are in the channel specified
 	 */
 	public boolean isWatchingChannel(String channel) {
@@ -216,8 +218,10 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - the channel the message came from
-	 * @param message - the message that might contain keywords
+	 * @param channel
+	 *            - the channel the message came from
+	 * @param message
+	 *            - the message that might contain keywords
 	 */
 	public void autoReplyCheck(String channel, String message) {
 
@@ -249,13 +253,17 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - channel the massage happened in
-	 * @param message - message that might contain spam
-	 * @param sender - the person the sent the message
+	 * @param channel
+	 *            - channel the massage happened in
+	 * @param message
+	 *            - message that might contain spam
+	 * @param sender
+	 *            - the person the sent the message
 	 */
 	public void checkSpam(String channel, String message, String sender) {
 		if (!Database.isMod(sender, channel.substring(1)) && !Database.isRegular(sender, channel.substring(1)) && !Database.isWhitelisted(sender, channel.substring(1))) {
-			int caps = Database.getOption(channel.substring(1),
+			System.out.println("The system has checked if " + sender + " has posted spam in " + channel);
+                        int caps = Database.getOption(channel.substring(1),
 					TOptions.numCaps);
 			int symbols = Database.getOption(channel.substring(1),
 					TOptions.numSymbols);
@@ -264,27 +272,31 @@ public class IRCBot extends PircBot {
 					TOptions.paragraphLength);
 			int emotes = Database.getOption(channel.substring(1),
 					TOptions.numEmotes);
-
-			if (caps != -1 && message.matches("[A-Z\\s]{" + caps + ",}")) {
-				new Timeouts(channel, sender, 1, TType.CAPS);
-			} else if (link != -1
-					&& (message
-							.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})") || message
-							.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?"))) {
+			if (message
+					.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})")
+					|| message.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?")
+					&& link != -1) {
 				if (!isPermitted(channel, sender)) {
+					// System.out.println("The links are being timed out.");
 					new Timeouts(channel, sender, 1, TType.LINK);
 				} else {
 					removePermit(channel, sender);
 				}
+			} else if (caps != -1 && message.matches("[A-Z\\s]{" + caps + ",}")) {
+				// System.out.println("The bot has deemed the caps in a message to be to much.");
+				new Timeouts(channel, sender, 1, TType.CAPS);
 			} else if (symbols != -1
 					&& message.matches("[\\W_\\s]{" + symbols + ",}")) {
+				// System.out.println("The bot has deemed the symbols in a message to be to much.");
 				new Timeouts(channel, sender, 1, TType.SYMBOLS);
 			} else if (paragraph != -1 && message.length() >= paragraph) {
+				// System.out.println("The bot has deemed the letters in a paragraph to be to much.");
 				new Timeouts(channel, sender, 1, TType.PARAGRAPH);
 			} else if (emotes != -1
 					&& message
 							.matches("(:\\(|:\\)|:/|:D|:o|:p|:z|;\\)|;p|<3|>\\(|B\\)|o_o|R\\)|4Head|ANELE|ArsonNoSexy|AsianGlow|AtGL|AthenaPMS|AtIvy|BabyRage|AtWW|BatChest|BCWarrior|BibleThump|BigBrother|BionicBunion|BlargNaut|BloodTrail|BORT|BrainSlug|BrokeBack|BuddhaBar|CougarHunt|DAESuppy|DansGame|DatSheffy|DBstyle|DendiFace|DogFace|EagleEye|EleGiggle|EvilFetus|FailFish|FPSMarksman|FrankerZ|FreakinStinkin|FUNgineer|FunRun|FuzzyOtterOO|GasJoker|GingerPower|GrammarKing|HassaanChop|HassanChop|HeyGuys|HotPokket|HumbleLife|ItsBoshyTime|Jebaited|KZowl|JKanStyle|JonCarnage|KAPOW|Kappa|Keepo|KevinTurtle|Kippa|Kreygasm|KZassault|KZcover|KZguerilla|KZhelghast|KZskull|Mau5|mcaT|MechaSupes|MrDestructoid|MrDestructoid|MVGame|NightBat|NinjaTroll|NoNoSpot|noScope|NotAtk|OMGScoots|OneHand|OpieOP|OptimizePrime|panicBasket|PanicVis|PazPazowitz|PeoplesChamp|PermaSmug|PicoMause|PipeHype|PJHarley|PJSalt|PMSTwin|PogChamp|Poooound|PRChase|PunchTrees|PuppeyFace|RaccAttack|RalpherZ|RedCoat|ResidentSleeper|RitzMitz|RuleFive|Shazam|shazamicon|ShazBotstix|ShazBotstix|ShibeZ|SMOrc|SMSkull|SoBayed|SoonerLater|SriHead|SSSsss|StoneLightning|StrawBeary|SuperVinlin|SwiftRage|TF2John|TheRinger|TheTarFu|TheThing|ThunBeast|TinyFace|TooSpicy|TriHard|TTours|UleetBackup|UncleNox|UnSane|Volcania|WholeWheat|WinWaker|WTRuck|WutFace|YouWHY|\\(mooning\\)|\\(poolparty\\)|\\(puke\\)|:\\'\\(|:tf:|aPliS|BaconEffect|BasedGod|BroBalt|bttvNice|ButterSauce|cabbag3|CandianRage|CHAccepted|CiGrip|ConcernDoge|D:|DatSauce|FapFapFap|FishMoley|ForeverAlone|FuckYea|GabeN|HailHelix|HerbPerve|Hhhehehe|HHydro|iAMbh|iamsocal|iDog|JessSaiyan|JuliAwesome|KaRappa|KKona|LLuda|M&Mjc|ManlyScreams|NaM|OhGod|OhGodchanZ|OhhhKee|OhMyGoodness|PancakeMix|PedoBear|PedoNam|PokerFace|PoleDoge|RageFace|RebeccaBlack|RollIt!|rStrike|SexPanda|She'llBeRight|ShoopDaWhoop|SourPls|SuchFraud|SwedSwag|TaxiBro|tEh|ToasTy|TopHam|TwaT|UrnCrown|VisLaud|WatChuSay|WhatAYolk|YetiZ|PraiseIt|\\s){"
 									+ emotes + ",}")) {
+				// System.out.println("The bot has deemed the emotes in a message to be to much.");
 				new Timeouts(channel, sender, 1, TType.EMOTE);
 			}
 			ResultSet rs = Database.getSpam(channel.substring(1));
@@ -302,12 +314,14 @@ public class IRCBot extends PircBot {
 						+ sender + "'s message has bad words", e);
 			}
 		}
-
+                
 	}
 
 	/**
-	 * @param channel - channel the link was sent in
-	 * @param sender - person who might be permitted to post a link
+	 * @param channel
+	 *            - channel the link was sent in
+	 * @param sender
+	 *            - person who might be permitted to post a link
 	 * @return true if sender is permitted in channel
 	 */
 	public boolean isPermitted(String channel, String sender) {
@@ -324,23 +338,28 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - channel that we are setting the value for
-	 * @param value - true if welcome should be enabled, false otherwise
+	 * @param channel
+	 *            - channel that we are setting the value for
+	 * @param value
+	 *            - true if welcome should be enabled, false otherwise
 	 */
 	public void setWelcomeEnabled(String channel, boolean value) {
 		welcomeEnabled.put(channel, value);
 	}
 
 	/**
-	 * @param channel - channel that we are setting the value for
-	 * @param value - true if confirmations should be on, false otherwise
+	 * @param channel
+	 *            - channel that we are setting the value for
+	 * @param value
+	 *            - true if confirmations should be on, false otherwise
 	 */
 	public void setConfirmationEnabled(String channel, boolean value) {
 		confirmationReplies.put(channel, value);
 	}
 
 	/**
-	 * @param target - person who might have been seen
+	 * @param target
+	 *            - person who might have been seen
 	 * @return the time and channel they were seen in, null otherwise
 	 */
 	public String getChatPostSeen(String target) {
@@ -348,22 +367,26 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - the channel the poll is in
-	 * @param poll - the Poll Object
+	 * @param channel
+	 *            - the channel the poll is in
+	 * @param poll
+	 *            - the Poll Object
 	 */
 	public void addPoll(String channel, me.jewsofhazard.pcmrbot.util.Poll poll) {
 		polls.put(channel, poll);
 	}
 
 	/**
-	 * @param channel - the channel the poll is in
+	 * @param channel
+	 *            - the channel the poll is in
 	 */
 	public void removePoll(String channel) {
 		polls.remove(channel);
 	}
 
 	/**
-	 * @param channel - the channel the Poll might be in
+	 * @param channel
+	 *            - the channel the Poll might be in
 	 * @return true if the channel has a Poll, false otherwise
 	 */
 	public boolean hasPoll(String channel) {
@@ -371,7 +394,8 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - the channel the Poll is in
+	 * @param channel
+	 *            - the channel the Poll is in
 	 * @return the Poll Object
 	 */
 	public me.jewsofhazard.pcmrbot.util.Poll getPoll(String channel) {
@@ -379,7 +403,8 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - the channel to get confirmation reply for
+	 * @param channel
+	 *            - the channel to get confirmation reply for
 	 * @return true if the replies are enabled, false otherwise
 	 */
 	public boolean getConfirmationReplies(String channel) {
@@ -387,8 +412,10 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - the channel to add the raffle to
-	 * @param raffle - the Raffle Object
+	 * @param channel
+	 *            - the channel to add the raffle to
+	 * @param raffle
+	 *            - the Raffle Object
 	 */
 	public void addRaffle(String channel,
 			me.jewsofhazard.pcmrbot.util.Raffle raffle) {
@@ -396,14 +423,16 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - the channel to remove the raffle from
+	 * @param channel
+	 *            - the channel to remove the raffle from
 	 */
 	public void removeRaffle(String channel) {
 		raffles.remove(channel);
 	}
 
 	/**
-	 * @param channel - the channel to get the Raffle for
+	 * @param channel
+	 *            - the channel to get the Raffle for
 	 * @return the Raffle Object
 	 */
 	public me.jewsofhazard.pcmrbot.util.Raffle getRaffle(String channel) {
@@ -411,15 +440,18 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param chanel - the channel to set slow mode for
-	 * @param slowMode - true if slow mode is enabled, false otherwise
+	 * @param chanel
+	 *            - the channel to set slow mode for
+	 * @param slowMode
+	 *            - true if slow mode is enabled, false otherwise
 	 */
 	public void setSlowMode(String chanel, boolean slowMode) {
 		IRCBot.slowMode.put(chanel, slowMode);
 	}
 
 	/**
-	 * @param channel - the channel to get slow mode for
+	 * @param channel
+	 *            - the channel to get slow mode for
 	 * @return true if the channel is in slow mode, false otherwise
 	 */
 	public boolean getSlowMode(String channel) {
@@ -427,15 +459,18 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - the channel to set slow mode for
-	 * @param value - true if sub mode is enabled, false otherwise
+	 * @param channel
+	 *            - the channel to set slow mode for
+	 * @param value
+	 *            - true if sub mode is enabled, false otherwise
 	 */
 	public void setSubMode(String channel, boolean value) {
 		subMode.put(channel, value);
 	}
 
 	/**
-	 * @param channel - the channel to get ub mode for
+	 * @param channel
+	 *            - the channel to get ub mode for
 	 * @return true if the channel is in sub mode, false otherwise
 	 */
 	public boolean getSubMode(String channel) {
@@ -443,36 +478,42 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - the channel to remove from the welcome enabled list
+	 * @param channel
+	 *            - the channel to remove from the welcome enabled list
 	 */
 	public void removeWelcomeEnabled(String channel) {
 		welcomeEnabled.remove(channel);
 	}
 
 	/**
-	 * @param channel - the channel to remove from the confirmation replies list
+	 * @param channel
+	 *            - the channel to remove from the confirmation replies list
 	 */
 	public void removeConfirmationReplies(String channel) {
 		confirmationReplies.remove(channel);
 	}
 
 	/**
-	 * @param channel - the channel to remove from the slow mode list
+	 * @param channel
+	 *            - the channel to remove from the slow mode list
 	 */
 	public void removeSlowMode(String channel) {
 		slowMode.remove(channel);
 	}
 
 	/**
-	 * @param channel - the channel to remove from the sub mode list
+	 * @param channel
+	 *            - the channel to remove from the sub mode list
 	 */
 	public void removeSubMode(String channel) {
 		subMode.remove(channel);
 	}
 
 	/**
-	 * @param channel - the channel to add a vote time out for
-	 * @param voteTimeOut - VoteTimeOut Object
+	 * @param channel
+	 *            - the channel to add a vote time out for
+	 * @param voteTimeOut
+	 *            - VoteTimeOut Object
 	 */
 	public void addVoteTimeOut(String channel,
 			me.jewsofhazard.pcmrbot.util.VoteTimeOut voteTimeOut) {
@@ -480,7 +521,8 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - channel to get the VoteTimeOut Object for
+	 * @param channel
+	 *            - channel to get the VoteTimeOut Object for
 	 * @return VoteTimeOut Object
 	 */
 	public me.jewsofhazard.pcmrbot.util.VoteTimeOut getVoteTimeOut(
@@ -489,8 +531,10 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param permit - Permit Object
-	 * @param user - user to permit
+	 * @param permit
+	 *            - Permit Object
+	 * @param user
+	 *            - user to permit
 	 */
 	public void addPermit(DelayedPermitTask permit, String user) {
 		ArrayList<DelayedPermitTask> p = permits.get(user);
@@ -502,8 +546,10 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param permit - Permit Object to remove
-	 * @param user - user to remove the permit for
+	 * @param permit
+	 *            - Permit Object to remove
+	 * @param user
+	 *            - user to remove the permit for
 	 */
 	public void removePermit(DelayedPermitTask permit, String user) {
 		ArrayList<DelayedPermitTask> p = permits.get(user);
@@ -519,8 +565,10 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - the channel the permit might be in
-	 * @param sender - the person who might be permitted
+	 * @param channel
+	 *            - the channel the permit might be in
+	 * @param sender
+	 *            - the person who might be permitted
 	 */
 	private void removePermit(String channel, String sender) {
 		ArrayList<DelayedPermitTask> ps = permits.get(sender);
@@ -541,26 +589,31 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - the channel to set teJoin for
-	 * @param reJoin - true if this is a re join, false otherwise
+	 * @param channel
+	 *            - the channel to set teJoin for
+	 * @param reJoin
+	 *            - true if this is a re join, false otherwise
 	 */
 	public void setReJoin(String channel, boolean reJoin) {
-		if(reJoin) {
+		if (reJoin) {
 			isReJoin.put(channel, reJoin);
 			new DelayedReJoin(channel);
 		}
 	}
-	
+
 	/**
-	 * @param channel - the channel that might contain re join
+	 * @param channel
+	 *            - the channel that might contain re join
 	 */
 	public void removeReJoin(String channel) {
 		isReJoin.remove(channel);
 	}
 
 	/**
-	 * @param channel - the channel to add a welcome to
-	 * @param user - the user to add to the welcomes list
+	 * @param channel
+	 *            - the channel to add a welcome to
+	 * @param user
+	 *            - the user to add to the welcomes list
 	 */
 	public void addWelcome(String channel, String user) {
 		ArrayList<String> p = welcomes.get(user);
@@ -573,8 +626,10 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param channel - the channel to remove the welcome from
-	 * @param user -the user to remove from the welcomes list
+	 * @param channel
+	 *            - the channel to remove the welcome from
+	 * @param user
+	 *            -the user to remove from the welcomes list
 	 */
 	public void removeWelcome(String channel, String user) {
 		ArrayList<String> ws = welcomes.get(user);
@@ -595,9 +650,12 @@ public class IRCBot extends PircBot {
 	}
 
 	/**
-	 * @param sender - person who joined
-	 * @param channel - channel they joined
-	 * @return true if they have joined this channel in the last 30 minutes, false otherwise
+	 * @param sender
+	 *            - person who joined
+	 * @param channel
+	 *            - channel they joined
+	 * @return true if they have joined this channel in the last 30 minutes,
+	 *         false otherwise
 	 */
 	private boolean recentlyWelcomed(String sender, String channel) {
 		ArrayList<String> p = welcomes.get(sender);

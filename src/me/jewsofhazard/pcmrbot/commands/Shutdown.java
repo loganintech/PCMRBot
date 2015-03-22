@@ -28,7 +28,7 @@ public class Shutdown extends Command {
 
 	@Override
 	public CLevel getCommandLevel() {
-		return CLevel.Normal;
+		return CLevel.Mod;
 	}
 	
 	@Override

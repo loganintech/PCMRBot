@@ -6,24 +6,27 @@
 package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.util.CLevel;
+import com.jcabi.manifests.Manifests;
 
 /**
  *
- * @author 4thPeriod
+ * @author Hazard
  */
-public class ComeBack extends Command{
+public class Version extends Command {
     
-    
+    @Override
 	public CLevel getCommandLevel() {
 		return CLevel.Normal;
 	}
 	
-	
+	@Override
 	public String getCommandText() {
-		return "comeback";
+		return "version";
 	}
 	
-	public String execute(String channel, String sender, String...parameters) {
-		return String.format("%s COME BACK! YOU CAN BLAME IT ALL ON ME!", parameters[0]);    
+	@Override
+	public String execute(String channel, String sender, String... parameters) {
+		return "I am curently version " + Manifests.read("Build-Version")  + ".";
 	}
+    
 }
