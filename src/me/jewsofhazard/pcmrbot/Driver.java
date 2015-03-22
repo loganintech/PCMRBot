@@ -17,19 +17,14 @@
 
 package me.jewsofhazard.pcmrbot;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
+import me.jewsofhazard.pcmrbot.database.Database;
+import me.jewsofhazard.pcmrbot.database.ReadScheduleTable;
 
 
 public class Driver {
 
 	public static void main(String[] args) throws Exception {
-		URL url = new URL("https://docs.google.com/spreadsheets/d/1ymTNFmmE5P39-ifypM8u3tfEzcA60OSbns3PEdSJ980/pubhtml?gid=955381834&single=true");
-		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-		String inputLine;
-		while ((inputLine = in.readLine()) != null) {
-			System.out.println(inputLine);
-		}
+		Database.initDBConnection(args[0]);
+		ReadScheduleTable.createDelayedTasks();
 	}
 }
