@@ -69,77 +69,18 @@ public class Database {
 	 * @return - true if it has to create the tables
 	 */
 	public static boolean getChannelTables(String channelNoHash) {
-		Statement stmt;
-		Statement stmt1;
-		Statement stmt2;
-		Statement stmt3;
-		Statement stmt4;
-		Statement stmt5;
-		Statement stmt6;
-		Statement stmt7;
-		Statement stmt8;
-		try {
-			stmt = conn.createStatement();
-			stmt.closeOnCompletion();
-			stmt.executeQuery(String.format("SELECT * FROM %s.%sMods", DATABASE, channelNoHash));
+		if (executeQuery(String.format("SELECT * FROM %s.%sMods", DATABASE, channelNoHash)) != null) {
 			return false;
-		} catch (SQLException e) {
-			try {
-				stmt1 = conn.createStatement();
-				stmt1.closeOnCompletion();
-				stmt1.executeUpdate(String.format("CREATE TABLE %s.%sMods(userID varchar(25), PRIMARY KEY (userID))", DATABASE, channelNoHash));
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, String.format("Unable to create table %sMods!",DATABASE), ex);
-			}
-			try {
-				stmt2 = conn.createStatement();
-				stmt2.closeOnCompletion();
-				stmt2.executeUpdate(String.format("CREATE TABLE %s.%sOptions(optionID varchar(50), value varchar(4000), PRIMARY KEY (optionID))", DATABASE, channelNoHash));
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, String.format("Unable to create table %sOptions!", channelNoHash), ex );
-			}
-			try {
-				stmt3 = conn.createStatement();
-				stmt3.closeOnCompletion();
-				stmt3.executeUpdate(String.format("CREATE TABLE %s.%sSpam(word varchar(25), PRIMARY KEY (word))", DATABASE, channelNoHash));
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, String.format("Unable to create table %sSpam!", channelNoHash), ex);
-			}
-			try {
-				stmt4 = conn.createStatement();
-				stmt4.closeOnCompletion();
-				stmt4.executeUpdate(String.format("CREATE TABLE %s.%sAutoReplies(keyWord varchar(255), reply varchar(4000), PRIMARY KEY (keyWord))", DATABASE, channelNoHash));
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, String.format("Unable to create table %sAutoReplies!", channelNoHash), ex);
-			}
-			try {
-				stmt5 = conn.createStatement();
-				stmt5.closeOnCompletion();
-				stmt5.executeUpdate(String.format("CREATE TABLE %s.%sWhitelist(userID varchar(30), PRIMARY KEY (userID))", DATABASE, channelNoHash));
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, String.format("Unable to create table %sWhitelist!", channelNoHash), ex);
-			}
-			try{
-                stmt6=conn.createStatement();
-                stmt6.closeOnCompletion();
-                stmt6.executeUpdate(String.format("CREATE TABLE %s.%sPoints(userID varchar(25), points INTEGER, PRIMARY KEY (userID))", DATABASE, channelNoHash));
-            }catch(SQLException ex){
-                logger.log(Level.SEVERE, "Unable to create table Points!", ex);
-            }
-            try{
-                stmt7=conn.createStatement();
-                stmt7.closeOnCompletion();
-                stmt7.executeUpdate(String.format("CREATE TABLE %s.%sRegulars(userID varchar(25), PRIMARY KEY (userID))", DATABASE, channelNoHash));
-            }catch(SQLException ex){
-                logger.log(Level.SEVERE, "Unable to create table Regulars!", ex);
-            }
-            try{
-                stmt8=conn.createStatement();
-                stmt8.closeOnCompletion();
-                stmt8.executeUpdate(String.format("CREATE TABLE %s.%sCommands(command varchar(25), parameters varchar(255), reply varchar(4000), PRIMARY KEY (command))", DATABASE, channelNoHash));
-            }catch(SQLException ex){
-                logger.log(Level.SEVERE, "Unable to create table Commands!", ex);
-            }
+		} else {
+			executeUpdate(String.format("CREATE TABLE %s.%sMods(userID varchar(25), PRIMARY KEY (userID))", DATABASE, channelNoHash));
+			executeUpdate(String.format("CREATE TABLE %s.%sOptions(optionID varchar(50), value varchar(4000), PRIMARY KEY (optionID))", DATABASE, channelNoHash));
+			executeUpdate(String.format("CREATE TABLE %s.%sSpam(word varchar(25), PRIMARY KEY (word))", DATABASE, channelNoHash));
+			executeUpdate(String.format("CREATE TABLE %s.%sAutoReplies(keyWord varchar(255), reply varchar(4000), PRIMARY KEY (keyWord))", DATABASE, channelNoHash));
+			executeUpdate(String.format("CREATE TABLE %s.%sWhitelist(userID varchar(30), PRIMARY KEY (userID))", DATABASE, channelNoHash));
+			executeUpdate(String.format("CREATE TABLE %s.%sPoints(userID varchar(25), points INTEGER, PRIMARY KEY (userID))", DATABASE, channelNoHash));
+            executeUpdate(String.format("CREATE TABLE %s.%sRegulars(userID varchar(25), PRIMARY KEY (userID))", DATABASE, channelNoHash));
+            executeUpdate(String.format("CREATE TABLE %s.%sCommands(command varchar(25), parameters varchar(255), reply varchar(4000), PRIMARY KEY (command))", DATABASE, channelNoHash));
+            executeUpdate(String.format("CREATE TABLE %s.uiCommands(id integer AUTO_INCREMENT, channel varchar(30), command varchar(25), parameters varchar(255), PRIMARY KEY (id))", DATABASE, channelNoHash));
 			return true;
 		}
 	}
@@ -186,6 +127,7 @@ public class Database {
 			rs = stmt.executeQuery(sqlQuery);
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, String.format("Unable to execute query: %s", sqlQuery), e);
+			return null;
 		}
 		return rs;
 	}
@@ -636,5 +578,13 @@ public class Database {
 
 	public static ResultSet getMods(String channelNoHash) {
 		return executeQuery(String.format("SELECT * FROM %s.%sMods", DATABASE, channelNoHash));
+	}
+
+	public static ResultSet readUICommandsTable() {
+		return executeQuery(String.format("SELECT * FROM %s.uiCommands", DATABASE));
+	}
+
+	public static boolean deleteUICommand(int id) {
+		return executeUpdate(String.format("DELETE FROM %s.uiCommands WHERE id=%d", DATABASE, id));
 	}
 }
