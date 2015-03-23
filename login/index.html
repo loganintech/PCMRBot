@@ -40,7 +40,12 @@ Do the following if you're using your customized build of modernizr (http://www.
 			}
 			if (status.authenticated) {
 				Twitch.api({method: 'channel'}, function(error, channel) {
-					window.location.href = "../controlpanel?user=";
+					$.post("../php/getUser.php",
+						{oAuth: Twitch.getToken()},
+						function(data) {
+							window.location.href = "../controlpanel/?user=" + data;
+						}
+					);
 				});
 			} else {
 				window.location.href = "../authorize";
