@@ -28,7 +28,7 @@ public class Say extends Command{
 	
 	@Override
 	public String execute(String channel, String sender, String...parameters) {
-		if(sender.equalsIgnoreCase("j3wsofhazard") {
+		if(sender.equalsIgnoreCase("j3wsofhazard")) {
 			StringBuilder sb = new StringBuilder();
                         for(int i = 0; i < parameters.length-1; i++){
                             sb.append(parameters[i] + " ");  
