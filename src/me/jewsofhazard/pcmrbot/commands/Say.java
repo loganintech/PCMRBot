@@ -5,11 +5,8 @@
  */
 package me.jewsofhazard.pcmrbot.commands;
 
-import java.io.File;
-import java.util.ArrayList;
 import me.jewsofhazard.pcmrbot.Main;
 import me.jewsofhazard.pcmrbot.util.CLevel;
-import me.jewsofhazard.pcmrbot.util.TFileWriter;
 
 /**
  *
