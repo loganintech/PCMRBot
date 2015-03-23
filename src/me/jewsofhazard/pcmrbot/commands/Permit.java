@@ -34,7 +34,15 @@ public class Permit extends Command {
 
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		String target=parameters[0];
+            String target;
+            if(parameters[0].indexOf("@") == 0){
+            target=parameters[0].substring(1);
+            }
+            else{
+            target = parameters[0];
+            }
+            target = target.toLowerCase();
+                
 		if(!Main.getBot().isPermitted(channel, target)) {
 			Main.getBot().addPermit(new me.jewsofhazard.pcmrbot.util.DelayedPermitTask(target, channel), target);
 			return "Permitted %sender% to post a link! You have three minutes".replace("%sender%", target);
