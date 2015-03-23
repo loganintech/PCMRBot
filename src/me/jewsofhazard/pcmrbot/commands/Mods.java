@@ -29,12 +29,13 @@ public class Mods extends Command{
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		User[] users= Main.getBot().getUsers(channel);
+		User[] users = Main.getBot().getUsers(channel);
 		StringBuilder sb = new StringBuilder();
-		for(int i = 0; i < users.length; i++){
-			if(Database.isMod(users[i].getNick(), channel.substring(1))){}
+		for(int i = 0; i < users.length; i++) {
+			if(Database.isMod(users[i].getNick(), channel.substring(1))){
 				sb.append(users[i].getNick() + ", ");
 			}
+		}
         return "The present mods of this channel are " + sb.toString().substring(0, sb.toString().length()-1);
             
 	}
