@@ -71,11 +71,11 @@ public class CommandParser {
 			int i=0;
 			while(i < parameters.length) {
 				if(parameters[i].startsWith("\"")) {
-					String temp=parameters[i].replace("\"", "") + " ";
 					if(parameters[i].endsWith("\"")) {
 						passed.add(parameters[i].replace("\"", ""));
 						continue;
 					}
+					String temp=parameters[i].replace("\"", "") + " ";
 					i++;
 					boolean endQuote = true;
 					while(!parameters[i].endsWith("\"")) {

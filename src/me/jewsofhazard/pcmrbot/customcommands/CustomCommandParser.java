@@ -26,6 +26,11 @@ public class CustomCommandParser {
 					String reply = rs.getString(3);
 					ArrayList<String> passed = new ArrayList<>();
 					String[] params = rs.getString(2).split(" ");
+					if(params.length == 1) {
+						if(params[0].equalsIgnoreCase("")) {
+							params = new String[0];
+						}
+					}
 					int i=0;
 					while(i < parameters.length) {
 						if(parameters[i].startsWith("\"")) {
