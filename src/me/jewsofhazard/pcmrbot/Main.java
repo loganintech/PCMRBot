@@ -26,9 +26,10 @@ import java.util.logging.Logger;
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
 import me.jewsofhazard.pcmrbot.database.Database;
 import me.jewsofhazard.pcmrbot.database.ReadScheduleTable;
+import me.jewsofhazard.pcmrbot.ui.UICommandParser;
 import me.jewsofhazard.pcmrbot.util.CommandsPage;
-import me.jewsofhazard.pcmrbot.util.TOptions;
 import me.jewsofhazard.pcmrbot.util.TFileReader;
+import me.jewsofhazard.pcmrbot.util.TOptions;
 
 import org.jibble.pircbot.IrcException;
 
@@ -36,15 +37,15 @@ public class Main implements Runnable{
 	
 	private static IRCBot bot;
 	private static String[] args;
-	private static final String botChannel = "#pcmrbot";
+	private static final String botChannel = "#pcmrbottester";
 	private static final Logger logger = Logger.getLogger(Main.class + "");
 	
 	/**
 	 * Starts a new thread for the bot to exists in so we can pass
 	 * bot commands on the command line.
 	 */
-	public Main() {
-		new Thread(this).start();
+	public static void init() {
+		new Thread(new Main()).start();
 	}
 	
 	/**
@@ -55,7 +56,7 @@ public class Main implements Runnable{
 	 */
 	public static void main(String[] args) {
 		Main.args=args;
-		new Main();
+		Main.init();
 		try(Scanner scan=new Scanner(System.in)) {
 			while(true) {
 				String message = scan.nextLine();
@@ -92,6 +93,7 @@ public class Main implements Runnable{
 		}
 		joinChannel(getBotChannel(), false);
 		CommandParser.init();
+		UICommandParser.init();
 		
 		File f = new File("connectedChannels.txt");
 		if (f.exists()) {
