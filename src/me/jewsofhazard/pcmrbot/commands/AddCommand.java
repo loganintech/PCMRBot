@@ -19,6 +19,7 @@ package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.database.Database;
 import me.jewsofhazard.pcmrbot.util.CLevel;
+import me.jewsofhazard.pcmrbot.util.CommandsPage;
 
 public class AddCommand extends Command {
 
@@ -43,6 +44,7 @@ public class AddCommand extends Command {
 			}
 		}
 		Database.addCommand(channel.substring(1), parameters[0], params.toString(), parameters[parameters.length - 1]);
-		return "Added command to the database.";
+		CommandsPage.createCommandsHTML(channel.substring(1));
+		return "Added command to the database and generated you custom commands page located at http://pcmrbot.no-ip.info/commands/%channel%.html".replace("%channel%", channel.substring(1));
 	}
 }

@@ -19,6 +19,7 @@ package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.database.Database;
 import me.jewsofhazard.pcmrbot.util.CLevel;
+import me.jewsofhazard.pcmrbot.util.CommandsPage;
 
 public class DelCommand extends Command {
 
@@ -35,6 +36,7 @@ public class DelCommand extends Command {
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
 		Database.delCommand(channel.substring(1), parameters[0]);
+		CommandsPage.createCommandsHTML(channel.substring(1));
 		return "Removed command from the database.";
 	}
 
