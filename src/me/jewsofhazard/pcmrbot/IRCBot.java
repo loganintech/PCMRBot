@@ -184,7 +184,7 @@ public class IRCBot extends PircBot {
 			}
 			chatPostSeen.put(sender,
 					channel.substring(1) + "|" + new Date().toString());
-			if (!sender.equalsIgnoreCase(Main.getBotChannel().substring(1))) {
+			if (!sender.equalsIgnoreCase(Main.getBotChannel())) {
 				autoReplyCheck(channel, message);
 			}
 		} catch (Exception e) {
