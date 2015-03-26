@@ -185,7 +185,7 @@ public class IRCBot extends PircBot {
 			chatPostSeen.put(sender,
 					channel.substring(1) + "|" + new Date().toString());
 			if (!sender.equalsIgnoreCase(Main.getBotChannel().substring(1))) {
-				autoReplyCheck(channel, message);
+				autoReplyCheck(channel, message, sender);
 			}
 		} catch (Exception e) {
 			logger.log(Level.WARNING,
@@ -223,11 +223,17 @@ public class IRCBot extends PircBot {
 	 * @param message
 	 *            - the message that might contain keywords
 	 */
-	public void autoReplyCheck(String channel, String message) {
+	public void autoReplyCheck(String channel, String message, String sender) {
 
 		message = message.toLowerCase();
 		ResultSet rs = Database.getAutoReplies(channel.substring(1));
 		try {
+                    
+                    if(message.equals("hey guys!") && sender.equalsIgnoreCase("j3wsofhazard")){
+                
+                    sendMessage(channel, "Hi daddy!");
+                
+                }
 			while (rs.next()) {
 				String[] keyword = rs.getString(1).split(",");
 				boolean matches = true;
