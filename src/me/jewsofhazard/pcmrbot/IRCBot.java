@@ -185,7 +185,7 @@ public class IRCBot extends PircBot {
 			chatPostSeen.put(sender,
 					channel.substring(1) + "|" + new Date().toString());
 			if (!sender.equalsIgnoreCase(Main.getBotChannel())) {
-				autoReplyCheck(channel, message);
+				autoReplyCheck(channel, message, sender);
 			}
 		} catch (Exception e) {
 			logger.log(Level.WARNING,
@@ -222,13 +222,17 @@ public class IRCBot extends PircBot {
 	 *            - the channel the message came from
 	 * @param message
 	 *            - the message that might contain keywords
+         * @param sender
+         *            - the sender of the message only used for the Hi Daddy reply for me
 	 */
-	public void autoReplyCheck(String channel, String message) {
+	public void autoReplyCheck(String channel, String message, String sender) {
 
 		message = message.toLowerCase();
 		ResultSet rs = Database.getAutoReplies(channel.substring(1));
 		try {
-			while (rs.next()) {
+                    if(message.equals("hey guys!") && sender.equalsIgnoreCase("j3wsofhazard")){
+                    sendMessage(channel, "Hi daddy!");
+                    }   while (rs.next()) {
 				String[] keyword = rs.getString(1).split(",");
 				boolean matches = true;
 				for (int i = 0; i < keyword.length; i++) {
@@ -274,7 +278,7 @@ public class IRCBot extends PircBot {
 					TOptions.numEmotes);
 			if (message
 					.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})")
-					|| message.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?")
+					|| message.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.\\?-]*)*\\/?")
 					&& link != -1) {
 				if (!isPermitted(channel, sender)) {
 					// System.out.println("The links are being timed out.");
