@@ -33,6 +33,10 @@ body {
 	width: 220px;
 }
 
+.text-center {
+	text-align: center;
+}
+
 	/* Custom container */
 .container-narrow {
 	background: url(../media/cream_pixels.png) repeat 0 0;

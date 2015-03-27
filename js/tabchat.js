@@ -41,3 +41,17 @@ function loadtwitch(username){
 			document.getElementById('reloader').style.display = 'inline';
 		},4000);
 }
+
+function loadsolotwitch(username){
+		document.getElementById('load').style.display = 'inline';
+		document.getElementById('reloader').style.display = 'none';
+		
+		document.getElementById('men').innerHTML='<ul id="navtabs" class="navtabs"><li><button class="selected">'+username+'</button></li></ul>';
+				
+		document.getElementById('reloader').innerHTML='<br /><iframe id="twitch-player" src="http://www.twitch.tv/'+username+'/embed" frameborder="0" scrolling="no" height="378" width="620">We\'re sorry. Your browser doesn\'t support Iframes. Please update your browser to view the embedded content.</iframe>&nbsp;<iframe id="twitch-chat" frameborder="0" scrolling="yes" id="chat_embed" src="http://www.twitch.tv/'+username+'/chat" height="378" width="300">We\'re sorry. Your browser doesn\'t support Iframes. Please update your browser to view the embedded content.</iframe>';
+
+		setTimeout(function(){
+			document.getElementById('load').style.display = 'none';
+			document.getElementById('reloader').style.display = 'inline';
+		},4000);
+}

@@ -36,13 +36,15 @@ Do the following if you're using your customized build of modernizr (http://www.
 <![endif]-->
 <script src="../js/respond.min.js"></script>
 <script src="./../js/jquery.min.js"></script>
+<script src="../js/tabchat.js"></script>
 <script>
 	$(function () {
 		$('#user').hide();
 		$('#link').hide();
+		$('#welcomeDisable').hide();
 		$('#optionValue').show();
 	
-		$('#welcomeSubmit').click(function() {
+		$('#textSubmit').click(function() {
 			$.post("../php/setOption.php",
 				{user: $('#user').val(), option: 'welcomeMessage', value: $('#welcomeMessage').val()},
 				function(data) {
@@ -121,10 +123,34 @@ Do the following if you're using your customized build of modernizr (http://www.
 				$('#optionValue').show();
 			}
 		});
+		
+		$('#textOptions').change(function() {
+			if ($('#textOptions').val() == 'wm') {
+				$('#welcomeDisable').show();
+			} else {
+				$('#welcomeDisable').hide();
+			}
+		});
 	});
+
+	function getUser() {
+		var params = {};
+		
+		if (location.search) {
+			var parts = location.search.substring(1).split('&');
+
+			for (var i = 0; i < parts.length; i++) {
+				var nv = parts[i].split('=');
+				if (!nv[0]) continue;
+				params[nv[0]] = nv[1] || true;
+			}
+			
+			return params.user;
+		}
+	}
 </script>
 </head>
-<body>
+<body onLoad="loadsolotwitch(document.getElementById('user').innerHTML)">
 	<div class="gridContainer clearfix">
 		<div id="content" class="fluid  container-narrow">
 			<div class="masthead">
@@ -140,11 +166,27 @@ Do the following if you're using your customized build of modernizr (http://www.
 			<br />
 			<hr>
 			<p id="user"><?php echo $_GET['user']; ?></p>
+			<div class="text-center">
+				<input type="submit" value="Join" id="join" />
+				<input type="submit" value="Leave" id="leave" />
+			</div>
+			<br />
 			<div id="points" class="fluid ">
-				<input type="text" id="welcomeMessage" name="welomeMessage" placeholder="Welcome Message" />
-				<br />
-				<input type="submit" value="Submit" id="welcomeSubmit" />
-				<input type="submit" value="Disable" id="welcomeDisable" />
+				<form class="form-inline">
+					<div class="form-group" id="textType">
+						<select id="options" name="textOptions">
+							<option selected value="no">Choose an Option</option>
+							<option value="title">Title</option>
+							<option value="game">Game</option>
+							<option value="wm">Welcome Message</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<input type="text" id="textValue" name="textValue" placeholder="Value" />
+					</div>
+					<input type="submit" value="Submit" id="textSubmit" />
+					<input type="submit" value="Disable" id="welcomeDisable" />
+				</form>
 			</div>
 			<div id="reliability" class="fluid ">
 				<form class="form-inline">
@@ -171,7 +213,19 @@ Do the following if you're using your customized build of modernizr (http://www.
 					<input type="submit" value="Submit" id="optionSubmit" />
 				</form>
 			</div>
-      </div>
+			<br />
+			<br />
+			<br />
+			<br />
+			<hr>
+			<div id="men" class="men" name="men"></div>
+		
+			<div id="twitch" class="twitch" name="twitch">
+				<div id="load" name="load" name="load" class="load"><p id="vs" class="vs"><img src="../media/loading.gif"  height="15" width="15" />Loading.....</p></div>
+			
+				<div id="reloader" class="reloader" name="reloader"></div>
+			</div>
+		</div>
 	</div>
 </body>
 </html>

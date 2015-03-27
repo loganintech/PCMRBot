@@ -38,15 +38,20 @@ Do the following if you're using your customized build of modernizr (http://www.
 			if (error) {
 				alert(error);
 			}
+			
+			
+			Twitch.login({
+				scope: ['channel_editor']
+			});
+			
 			if (status.authenticated) {
-				Twitch.api({method: 'channel'}, function(error, channel) {
-					$.post("../php/getUser.php",
-						{oAuth: Twitch.getToken()},
-						function(data) {
-							window.location.href = "../controlpanel/?user=" + data;
-						}
-					);
-				});
+				var token = Twitch.getToken();
+				$.post("../php/getUser.php",
+					{oAuth: token},
+					function(data) {
+						window.location.href = "../controlpanel/?user=" + data;
+					}
+				);
 			} else {
 				window.location.href = "../authorize";
 			}
