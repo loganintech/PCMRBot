@@ -266,6 +266,8 @@ public class IRCBot extends PircBot {
 	 */
 	public void checkSpam(String channel, String message, String sender) {
 		if (!Database.isMod(sender, channel.substring(1)) && !Database.isRegular(sender, channel.substring(1)) && !Database.isWhitelisted(sender, channel.substring(1))) {
+                    
+                        String [] stringSpaced = message.split(" ");
 			System.out.println("The system has checked if " + sender + " has posted spam in " + channel);
                         int caps = Database.getOption(channel.substring(1),
 					TOptions.numCaps);
@@ -276,9 +278,10 @@ public class IRCBot extends PircBot {
 					TOptions.paragraphLength);
 			int emotes = Database.getOption(channel.substring(1),
 					TOptions.numEmotes);
-			if (message
+                        for(String s : stringSpaced){
+			if (s
 					.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})")
-					|| message.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.\\?-]*)*\\/?")
+					|| s.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.\\?-]*)*\\/?")
 					&& link != -1) {
 				if (!isPermitted(channel, sender)) {
 					// System.out.println("The links are being timed out.");
@@ -286,7 +289,7 @@ public class IRCBot extends PircBot {
 				} else {
 					removePermit(channel, sender);
 				}
-			} else if (caps != -1 && message.matches("[A-Z\\s]{" + caps + ",}")) {
+			}} if (caps != -1 && message.matches("[A-Z\\s]{" + caps + ",}")) {
 				// System.out.println("The bot has deemed the caps in a message to be to much.");
 				new Timeouts(channel, sender, 1, TType.CAPS);
 			} else if (symbols != -1
