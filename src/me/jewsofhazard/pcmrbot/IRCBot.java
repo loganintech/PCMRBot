@@ -267,7 +267,7 @@ public class IRCBot extends PircBot {
 	public void checkSpam(String channel, String message, String sender) {
 		if (!Database.isMod(sender, channel.substring(1)) && !Database.isRegular(sender, channel.substring(1)) && !Database.isWhitelisted(sender, channel.substring(1))) {
                     
-                        String [] stringSpaced = message.split(" ");
+                    String [] splitString = message.split(" ");
 			System.out.println("The system has checked if " + sender + " has posted spam in " + channel);
                         int caps = Database.getOption(channel.substring(1),
 					TOptions.numCaps);
@@ -278,10 +278,11 @@ public class IRCBot extends PircBot {
 					TOptions.paragraphLength);
 			int emotes = Database.getOption(channel.substring(1),
 					TOptions.numEmotes);
-                        for(String s : stringSpaced){
-			if (s
+			
+                        for(int i = 0; i < splitString.length; i++){
+                        if (splitString[i]
 					.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})")
-					|| s.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.\\?-]*)*\\/?")
+					|| splitString[i].matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.\\?-]*)*\\/?")
 					&& link != -1) {
 				if (!isPermitted(channel, sender)) {
 					// System.out.println("The links are being timed out.");
