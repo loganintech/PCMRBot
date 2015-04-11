@@ -29,11 +29,11 @@ public class LolRank extends Command {
             
             if(parameters.length > 0){
             
-                return LeagueUtils.getSummonerRank();
+                return LeagueUtils.getSummonerRank(parameters[0], parameters[1]);
                 
             } else {
             
-            return "You must search for someone's summoner name.";
+            return "You must search for someone's summoner name and region.";
             
             }
             

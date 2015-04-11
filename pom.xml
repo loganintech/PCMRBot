@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>PCMRBot</groupId>
 	<artifactId>PCMRBot</artifactId>
-	<version>beta-v0.14.12</version>
+	<version>beta-v0.14.13</version>
 	<name>PCMRBot</name>
 	<repositories>
 		<repository>
@@ -102,6 +102,11 @@
 	  <groupId>com.jcabi</groupId>
 	  <artifactId>jcabi-manifests</artifactId>
 	  <version>0.7.9</version>
+	 </dependency>
+	 <dependency>
+	  <groupId>com.robrua</groupId>
+	  <artifactId>orianna</artifactId>
+	  <version>2.0.3</version>
 	 </dependency>
 	</dependencies>
 </project>

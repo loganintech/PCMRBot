@@ -4,81 +4,125 @@
  * and open the template in the editor.
  */
 package me.jewsofhazard.pcmrbot.league;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.net.ssl.HttpsURLConnection;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
-import java.io.Reader;
 
+import java.util.List;
+import com.robrua.orianna.api.core.RiotAPI;
+import com.robrua.orianna.type.core.common.QueueType;
+import com.robrua.orianna.type.core.common.Region;
+import com.robrua.orianna.type.core.league.League;
+import com.robrua.orianna.type.core.staticdata.Champion;
+import com.robrua.orianna.type.core.summoner.Summoner;
 /**
  *
  * @author Hazard
- * @riot api key: df57fbca-8417-4af6-92d0-3150cb01e1f7
  */
 public class LeagueUtils {
+    private String region;
+    private String summoner;
+    
+    private static String apiKey = "df57fbca-8417-4af6-92d0-3150cb01e1f7";    
+    //private final String NAME_URL = "https://" + region + ".api.pvp.net/api/lol/na/v1.4/summoner/by-name/"+summoner+"?api_key="+apiKey;
+    
+    public LeagueUtils(String region, String summoner) throws Exception{
+    
+    this.region = region;
+    this.summoner = summoner;
 
-    
-    //private String apiKey = "df57fbca-8417-4af6-92d0-3150cb01e1f7";
-    
-    //private final static Logger logger = Logger.getLogger(LeagueUtils.class
-	//		+ "");
-    //private final static String CHARSET = StandardCharsets.UTF_8.name();
-    
-    //private String location = "na";
-    //private String summoner = "jewsofhazard";
-    ///* add methods to find a bunch of different things here, primarily summoner rank, or level
-    //    then we can do, oh idk, something else interesting.
-    //*/
-    /*
-    public String getSummonerId(String location, String summoner){
-        this.location = location;
-        this.summoner = summoner;
-        
-        URLConnection connection = null;
-        String query = "https://"+ location +".api.pvp.net/api/lol/"+location+"/v1.4/summoner/by-name/"+ summoner +"?" + apiKey;
-        return getSummonerName(getSomething(query, "id"));
-        
     }
     
-    public String getSummonerName(String id){
-        String query = "https://"+location+".api.pvp.net/api/lol/na/v1.4/summoner/34854742?api_key=df57fbca-8417-4af6-92d0-3150cb01e1f7"
-        getSomething(query, )
-    
-    }
-    
-    public String getSomething(String url, String something){
-        try{
-            Reader reader = new InputStreamReader(new URL("url").openStream()); //Read the json output
-            Gson gson = new GsonBuilder().create();
-            DataObject obj = gson.fromJson(reader, DataObject.class);
-            return obj.toString();
-        }catch(Exception e){
-            System.out.println(e);
-            return "-1";
+    public static String getSummonerRank(String region, String summonerName){
+
+        if(region.toLowerCase().equals("na")){
+        RiotAPI.setMirror(Region.NA);
+        RiotAPI.setRegion(Region.NA);
+        RiotAPI.setAPIKey(apiKey);
+
+        Summoner summoner = RiotAPI.getSummonerByName(summonerName);
+        return summoner.getName() + " is in " + summoner.getLeagues().get(0).getTier().toString().toLowerCase();
         }
-    }
-    
+        if(region.toLowerCase().equals("oce")){
+        RiotAPI.setMirror(Region.OCE);
+        RiotAPI.setRegion(Region.OCE);
+        RiotAPI.setAPIKey(apiKey);
 
-
-private class DataObject{ //This class should match your json object structure
-        private String something;
-        
-        public String toString(){
-        return something;
+        Summoner summoner = RiotAPI.getSummonerByName(summonerName);
+        return summoner.getName() + " is in " + summoner.getLeagues().get(0).getTier().toString().toLowerCase();
         }
+        else if(region.toLowerCase().equals("pbe")){
+        RiotAPI.setMirror(Region.PBE);
+        RiotAPI.setRegion(Region.PBE);
+        RiotAPI.setAPIKey(apiKey);
+
+        Summoner summoner = RiotAPI.getSummonerByName(summonerName);
+        return summoner.getName() + " is in " + summoner.getLeagues().get(0).getTier().toString().toLowerCase();
+        }
+        else if(region.toLowerCase().equals("ru")){
+        RiotAPI.setMirror(Region.RU);
+        RiotAPI.setRegion(Region.RU);
+        RiotAPI.setAPIKey(apiKey);
+
+        Summoner summoner = RiotAPI.getSummonerByName(summonerName);
+        return summoner.getName() + " is in " + summoner.getLeagues().get(0).getTier().toString().toLowerCase();
+        }
+        else if(region.toLowerCase().equals("tr")){
+        RiotAPI.setMirror(Region.TR);
+        RiotAPI.setRegion(Region.TR);
+        RiotAPI.setAPIKey(apiKey);
+
+        Summoner summoner = RiotAPI.getSummonerByName(summonerName);
+        return summoner.getName() + " is in " + summoner.getLeagues().get(0).getTier().toString().toLowerCase();
+        }
+        else if(region.toLowerCase().equals("las")){
+        RiotAPI.setMirror(Region.LAS);
+        RiotAPI.setRegion(Region.LAS);
+        RiotAPI.setAPIKey(apiKey);
+
+        Summoner summoner = RiotAPI.getSummonerByName(summonerName);
+        return summoner.getName() + " is in " + summoner.getLeagues().get(0).getTier().toString().toLowerCase();
+        }
+        else if(region.toLowerCase().equals("lan")){
+        RiotAPI.setMirror(Region.LAN);
+        RiotAPI.setRegion(Region.LAN);
+        RiotAPI.setAPIKey(apiKey);
+
+        Summoner summoner = RiotAPI.getSummonerByName(summonerName);
+        return summoner.getName() + " is in " + summoner.getLeagues().get(0).getTier().toString().toLowerCase();
+        }
+        else if(region.toLowerCase().equals("kr")){
+        RiotAPI.setMirror(Region.KR);
+        RiotAPI.setRegion(Region.KR);
+        RiotAPI.setAPIKey(apiKey);
+
+        Summoner summoner = RiotAPI.getSummonerByName(summonerName);
+        return summoner.getName() + " is in " + summoner.getLeagues().get(0).getTier().toString().toLowerCase();
+        }
+        else if(region.toLowerCase().equals("euw")){
+        RiotAPI.setMirror(Region.EUW);
+        RiotAPI.setRegion(Region.EUW);
+        RiotAPI.setAPIKey(apiKey);
+
+        Summoner summoner = RiotAPI.getSummonerByName(summonerName);
+        return summoner.getName() + " is in " + summoner.getLeagues().get(0).getTier().toString().toLowerCase();
+        }
+        else if(region.toLowerCase().equals("eune")){
+        RiotAPI.setMirror(Region.EUNE);
+        RiotAPI.setRegion(Region.EUNE);
+        RiotAPI.setAPIKey(apiKey);
+
+        Summoner summoner = RiotAPI.getSummonerByName(summonerName);
+        return summoner.getName() + " is in " + summoner.getLeagues().get(0).getTier().toString().toLowerCase();
+        }
+        else if(region.toLowerCase().equals("br")){
+        RiotAPI.setMirror(Region.BR);
+        RiotAPI.setRegion(Region.BR);
+        RiotAPI.setAPIKey(apiKey);
+
+        Summoner summoner = RiotAPI.getSummonerByName(summonerName);
+        return summoner.getName() + " is in " + summoner.getLeagues().get(0).getTier().toString().toLowerCase();
+        }
+    return "You have used an incorrect region or summoner name, please try again.";
     }
-*/
+   
+    
+    
 }
