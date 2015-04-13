@@ -282,14 +282,7 @@ public class IRCBot extends PircBot {
 					TOptions.numEmotes);
 			
                         
-                        if (URLInString.CheckForUrl(message)
-                                
-                                /*splitString[i]
-					.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})")
-					|| splitString[i].matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.\\?-]*)*\\/?")*/
-                                
-                                
-					&& link != -1) {
+                        if (URLInString.CheckForUrl(message) && link != -1) {
 				if (!isPermitted(channel, sender)) {
 					// System.out.println("The links are being timed out.");
 					new Timeouts(channel, sender, 1, TType.LINK);
