@@ -58,7 +58,7 @@ public class IRCBot extends PircBot {
 	private static HashMap<String, ArrayList<DelayedPermitTask>> permits;
 	private static HashMap<String, ArrayList<String>> welcomes;
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
-        private static String [] schemes = {"http","https","ftp","ssh","www","sftp"};
+        //private static String [] schemes = {"http","https","ftp","ssh","www","sftp"};
 
 
 	/**
@@ -119,7 +119,7 @@ public class IRCBot extends PircBot {
 			}
 			if (welcomeEnabled.get(channel) && !isReJoin.containsKey(channel)) {
 				String msg = Database.getWelcomeMessage(channel.substring(1))
-						.replace("%user%", sender);
+						.replace("%user%", sender).replace("%chan%", channel).replace("%quote%", "\"");
 				if (!msg.equalsIgnoreCase("none")
 						&& !recentlyWelcomed(sender, channel)) {
 					sendMessage(channel, msg);
@@ -237,12 +237,12 @@ public class IRCBot extends PircBot {
                     }   while (rs.next()) {
 				String[] keyword = rs.getString(1).split(",");
 				boolean matches = true;
-				for (int i = 0; i < keyword.length; i++) {
-					if (!message.contains(keyword[i].toLowerCase())) {
-						matches = false;
-						break;
-					}
-				}
+                        for (String keyword1 : keyword) {
+                            if (!message.toLowerCase().contains(keyword1.toLowerCase())) {
+                                matches = false;
+                                break;
+                            }
+                        }
 				if (matches) {
 					sendMessage(channel, rs.getString("reply"));
 				}
@@ -282,7 +282,7 @@ public class IRCBot extends PircBot {
 					TOptions.numEmotes);
 			
                         
-                        if (URLInString.CheckForUrl(message) && link != -1) {
+                        if (URLInString.CheckForUrl(message) == true && link != -1) {
 				if (!isPermitted(channel, sender)) {
 					// System.out.println("The links are being timed out.");
 					new Timeouts(channel, sender, 1, TType.LINK);
