@@ -5,7 +5,7 @@
  */
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.league.LeagueUtils;
+import me.jewsofhazard.pcmrbot.external.league.LeagueUtils;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 /**

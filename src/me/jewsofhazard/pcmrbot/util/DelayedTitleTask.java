@@ -3,7 +3,7 @@ package me.jewsofhazard.pcmrbot.util;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import me.jewsofhazard.pcmrbot.twitch.TwitchUtilities;
+import me.jewsofhazard.pcmrbot.external.twitch.TwitchUtilities;
 
 public class DelayedTitleTask extends TimerTask {
 

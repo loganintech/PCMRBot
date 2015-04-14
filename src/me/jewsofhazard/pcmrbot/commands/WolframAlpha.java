@@ -6,6 +6,7 @@
 package me.jewsofhazard.pcmrbot.commands;
 
 import me.jewsofhazard.pcmrbot.util.CLevel;
+
 import com.wolfram.alpha.WAEngine;
 import com.wolfram.alpha.WAException;
 import com.wolfram.alpha.WAPlainText;
@@ -18,7 +19,7 @@ import com.wolfram.alpha.WASubpod;
 
 public class WolframAlpha extends Command {
     
-    private static final String appid = "XXXXX";
+    private static final String APP_ID = "U5EPTK-QKXR23EUV2";
     
     	@Override
 	public CLevel getCommandLevel() {
@@ -34,7 +35,7 @@ public class WolframAlpha extends Command {
 	public String execute(String channel, String sender, String... parameters) {
 
         WAEngine engine = new WAEngine();
-        engine.setAppID(appid);
+        engine.setAppID(APP_ID);
         engine.addFormat("plaintext");
         WAQuery query = engine.createQuery();
         query.setInput(parameters[0]);
@@ -53,12 +54,10 @@ public class WolframAlpha extends Command {
                             }
                         }
                     }
-                }
-            
+                }  
         } catch (WAException ex) {
            return "I'm sorry. I do not understand.";
         }
-        
         return null;
     }
 }

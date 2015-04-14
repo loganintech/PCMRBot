@@ -5,7 +5,6 @@
  */
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.database.Database;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 /**

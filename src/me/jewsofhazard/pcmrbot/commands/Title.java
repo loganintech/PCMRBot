@@ -17,7 +17,7 @@
 
 package me.jewsofhazard.pcmrbot.commands;
 
-import me.jewsofhazard.pcmrbot.twitch.TwitchUtilities;
+import me.jewsofhazard.pcmrbot.external.twitch.TwitchUtilities;
 import me.jewsofhazard.pcmrbot.util.CLevel;
 
 public class Title extends Command {

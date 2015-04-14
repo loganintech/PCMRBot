@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
 import me.jewsofhazard.pcmrbot.database.Database;
 import me.jewsofhazard.pcmrbot.database.ReadScheduleTable;
-import me.jewsofhazard.pcmrbot.ui.UICommandParser;
+import me.jewsofhazard.pcmrbot.external.ui.UICommandParser;
 import me.jewsofhazard.pcmrbot.util.CommandsPage;
 import me.jewsofhazard.pcmrbot.util.TFileReader;
 import me.jewsofhazard.pcmrbot.util.TOptions;

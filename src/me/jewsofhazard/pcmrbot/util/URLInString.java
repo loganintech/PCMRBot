@@ -11,26 +11,19 @@
      * @author Hazard
      */
     public class URLInString {
-
-
         public static Boolean CheckForUrl(String arg) {
             boolean isLink = false;
             //System.out.println("UrlString is properly being checked.");
             String [] parts = arg.split("\\s+");
-
             for( String item : parts ){
-                
                 try {
-                URL url = new URL(item);
-                isLink = true;
-
+	                URL url = new URL(item);
+	                isLink = true;
                 } catch (MalformedURLException e) {
-
+                	
                 }
             return isLink;
-
             }
-            
             return false;
         }
     }

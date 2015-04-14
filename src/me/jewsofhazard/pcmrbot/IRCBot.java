@@ -58,7 +58,7 @@ public class IRCBot extends PircBot {
 	private static HashMap<String, ArrayList<DelayedPermitTask>> permits;
 	private static HashMap<String, ArrayList<String>> welcomes;
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
-        //private static String [] schemes = {"http","https","ftp","ssh","www","sftp"};
+    //private static String [] schemes = {"http","https","ftp","ssh","www","sftp"};
 
 
 	/**

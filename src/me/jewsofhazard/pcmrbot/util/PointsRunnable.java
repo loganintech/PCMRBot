@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.jewsofhazard.pcmrbot.database.Database;
-import me.jewsofhazard.pcmrbot.twitch.TwitchUtilities;
+import me.jewsofhazard.pcmrbot.external.twitch.TwitchUtilities;
 
 public class PointsRunnable implements Runnable {
 	static final Logger logger = Logger.getLogger(PointsRunnable.class+"");

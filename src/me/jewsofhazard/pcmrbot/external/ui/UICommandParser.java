@@ -1,4 +1,4 @@
-package me.jewsofhazard.pcmrbot.ui;
+package me.jewsofhazard.pcmrbot.external.ui;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

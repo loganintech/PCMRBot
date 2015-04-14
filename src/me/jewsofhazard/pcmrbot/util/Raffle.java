@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import me.jewsofhazard.pcmrbot.Main;
-import me.jewsofhazard.pcmrbot.twitch.TwitchUtilities;
+import me.jewsofhazard.pcmrbot.external.twitch.TwitchUtilities;
 
 public class Raffle {
 
