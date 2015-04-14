@@ -36,7 +36,7 @@ import me.jewsofhazard.pcmrbot.util.PointsRunnable;
 import me.jewsofhazard.pcmrbot.util.TOptions;
 import me.jewsofhazard.pcmrbot.util.TType;
 import me.jewsofhazard.pcmrbot.util.Timeouts;
-
+import me.jewsofhazard.pcmrbot.util.URLInString;
 import org.jibble.pircbot.PircBot;
 
 /**
@@ -58,6 +58,8 @@ public class IRCBot extends PircBot {
 	private static HashMap<String, ArrayList<DelayedPermitTask>> permits;
 	private static HashMap<String, ArrayList<String>> welcomes;
 	private static final Logger logger = Logger.getLogger(IRCBot.class + "");
+        //private static String [] schemes = {"http","https","ftp","ssh","www","sftp"};
+
 
 	/**
 	 * Creates a new instance of IRCBot for the specified channel
@@ -117,7 +119,7 @@ public class IRCBot extends PircBot {
 			}
 			if (welcomeEnabled.get(channel) && !isReJoin.containsKey(channel)) {
 				String msg = Database.getWelcomeMessage(channel.substring(1))
-						.replace("%user%", sender);
+						.replace("%user%", sender).replace("%chan%", channel).replace("%quote%", "\"");
 				if (!msg.equalsIgnoreCase("none")
 						&& !recentlyWelcomed(sender, channel)) {
 					sendMessage(channel, msg);
@@ -235,12 +237,12 @@ public class IRCBot extends PircBot {
                     }   while (rs.next()) {
 				String[] keyword = rs.getString(1).split(",");
 				boolean matches = true;
-				for (int i = 0; i < keyword.length; i++) {
-					if (!message.contains(keyword[i].toLowerCase())) {
-						matches = false;
-						break;
-					}
-				}
+                        for (String keyword1 : keyword) {
+                            if (!message.toLowerCase().contains(keyword1.toLowerCase())) {
+                                matches = false;
+                                break;
+                            }
+                        }
 				if (matches) {
 					sendMessage(channel, rs.getString("reply"));
 				}
@@ -266,6 +268,8 @@ public class IRCBot extends PircBot {
 	 */
 	public void checkSpam(String channel, String message, String sender) {
 		if (!Database.isMod(sender, channel.substring(1)) && !Database.isRegular(sender, channel.substring(1)) && !Database.isWhitelisted(sender, channel.substring(1))) {
+                    
+                    
 			System.out.println("The system has checked if " + sender + " has posted spam in " + channel);
                         int caps = Database.getOption(channel.substring(1),
 					TOptions.numCaps);
@@ -276,17 +280,16 @@ public class IRCBot extends PircBot {
 					TOptions.paragraphLength);
 			int emotes = Database.getOption(channel.substring(1),
 					TOptions.numEmotes);
-			if (message
-					.matches("([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})")
-					|| message.matches("(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.\\?-]*)*\\/?")
-					&& link != -1) {
+			
+                        
+                        if (URLInString.CheckForUrl(message) == true && link != -1) {
 				if (!isPermitted(channel, sender)) {
 					// System.out.println("The links are being timed out.");
 					new Timeouts(channel, sender, 1, TType.LINK);
 				} else {
 					removePermit(channel, sender);
 				}
-			} else if (caps != -1 && message.matches("[A-Z\\s]{" + caps + ",}")) {
+			} if (caps != -1 && message.matches("[A-Z\\s]{" + caps + ",}")) {
 				// System.out.println("The bot has deemed the caps in a message to be to much.");
 				new Timeouts(channel, sender, 1, TType.CAPS);
 			} else if (symbols != -1
