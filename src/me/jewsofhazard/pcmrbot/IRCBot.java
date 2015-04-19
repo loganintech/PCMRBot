@@ -17,13 +17,16 @@
 
 package me.jewsofhazard.pcmrbot;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static me.jewsofhazard.pcmrbot.Main.getBotChannel;
 
 import me.jewsofhazard.pcmrbot.commands.AddModerator;
 import me.jewsofhazard.pcmrbot.commands.CommandParser;
@@ -33,6 +36,7 @@ import me.jewsofhazard.pcmrbot.util.DelayedPermitTask;
 import me.jewsofhazard.pcmrbot.util.DelayedReJoin;
 import me.jewsofhazard.pcmrbot.util.DelayedWelcomeTask;
 import me.jewsofhazard.pcmrbot.util.PointsRunnable;
+import me.jewsofhazard.pcmrbot.util.TFileWriter;
 import me.jewsofhazard.pcmrbot.util.TOptions;
 import me.jewsofhazard.pcmrbot.util.TType;
 import me.jewsofhazard.pcmrbot.util.Timeouts;
@@ -101,6 +105,40 @@ public class IRCBot extends PircBot {
 		}
 	}
 
+        /**
+         * Ensures that the bot will automatically reconnect to the server if the bot has been spontaneously disconnected. Hopefully
+         */
+        
+        public void onDisconnect(){
+        
+        ArrayList<String> channels = new ArrayList<>();
+			for (String s : Main.getBot().getChannels()) {
+				channels.add(s);
+				Main.getBot().sendMessage(s, "I am shutting down, I will automatically rejoin your channel when I restart!");
+			}
+        TFileWriter.overWriteFile(new File("connectedChannels.txt"), channels);
+            
+        Main.init();
+        
+        try(Scanner scan=new Scanner(System.in)) {
+			while(true) {
+				String message = scan.nextLine();
+				String[] params = message.substring(message.indexOf(' ') + 1).split(" ");
+				String command;
+				try {
+					command = message.substring(1, message.indexOf(' '));
+				} catch(StringIndexOutOfBoundsException e) {
+					command = message.substring(1, message.length());
+				}
+				if(command.equalsIgnoreCase(params[0].substring(1))) {
+					params = new String[0];
+				}
+				CommandParser.parse(command, getBotChannel().substring(1), getBotChannel(), params);
+			}
+		}
+        
+        }
+        
 	/**
 	 * Decides how to welcome a user and then sends that message to the the
 	 * channel.

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>PCMRBot</groupId>
 	<artifactId>PCMRBot</artifactId>
-	<version>beta-v0.14.14</version>
+	<version>beta-v0.14.16</version>
 	<name>PCMRBot</name>
 	<repositories>
 		<repository>
@@ -108,5 +108,10 @@
 	  <artifactId>orianna</artifactId>
 	  <version>2.0.3</version>
 	 </dependency>
+         <dependency>
+            <groupId>WolframAlpha</groupId>
+            <artifactId>WolframAlpha</artifactId>
+            <version>1.1</version>
+        </dependency>
 	</dependencies>
 </project>
