@@ -118,24 +118,8 @@ public class IRCBot extends PircBot {
 			}
         TFileWriter.overWriteFile(new File("connectedChannels.txt"), channels);
             
-        Main.init();
+        Main.init();        //starts a thread for the main bot.
         
-        try(Scanner scan=new Scanner(System.in)) {
-			while(true) {
-				String message = scan.nextLine();
-				String[] params = message.substring(message.indexOf(' ') + 1).split(" ");
-				String command;
-				try {
-					command = message.substring(1, message.indexOf(' '));
-				} catch(StringIndexOutOfBoundsException e) {
-					command = message.substring(1, message.length());
-				}
-				if(command.equalsIgnoreCase(params[0].substring(1))) {
-					params = new String[0];
-				}
-				CommandParser.parse(command, getBotChannel().substring(1), getBotChannel(), params);
-			}
-		}
         
         }
         
