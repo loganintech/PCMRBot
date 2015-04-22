@@ -92,8 +92,10 @@ public class Main implements Runnable{
 			logger.log(Level.SEVERE, "An error occurred while connecting to Twitch IRC", e);
 		}
 		joinChannel(getBotChannel(), false);
+                bot.setMode(bot.getNick(), "+B"); //Needed to identify bot as a bot to server!
 		CommandParser.init();
 		UICommandParser.init();
+                
 		
 		File f = new File("connectedChannels.txt");
 		if (f.exists()) {
@@ -102,6 +104,7 @@ public class Main implements Runnable{
 			}
 			f.delete();
 		}
+                
 	}
 
 	/**
