@@ -107,6 +107,15 @@ public class Main implements Runnable{
                 
 	}
 
+        
+        /**
+        * Shuts down the thread to conserve memory on thread restart.
+        */
+        
+        public static void kill(){
+        //this is what needs to interuppt the thread.
+        }
+        
 	/**
 	 * Performs all of the setup for the bot in the channel specified.
 	 */

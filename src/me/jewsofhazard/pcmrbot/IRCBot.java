@@ -117,7 +117,7 @@ public class IRCBot extends PircBot {
 				Main.getBot().sendMessage(s, "I am shutting down, I will automatically rejoin your channel when I restart!");
 			}
         TFileWriter.overWriteFile(new File("connectedChannels.txt"), channels);
-            
+        Main.kill();        //does nothing at the moment. Intended to close the thread so init re-opens it.
         Main.init();        //starts a thread for the main bot.
         
         
