@@ -36,15 +36,23 @@ public class AddCommand extends Command {
 //	!addcom !welcome|{user}|Hey there, {user}! Welcome to the chat!
 
 	@Override
+        @SuppressWarnings("empty-statement")
 	public String execute(String channel, String sender, String... parameters) {
-		StringBuilder params = new StringBuilder();
+       try {
+           
+                StringBuilder params = new StringBuilder();
 		if (parameters.length > 2) {
 			for(int i = 1;i < parameters.length - 1;i++) {
 				params.append(parameters[i] + " ");
 			}
 		}
-		Database.addCommand(channel.substring(1), parameters[0], params.toString(), parameters[parameters.length - 1]);
+		Database.addCommand(channel, parameters[0], params.toString(), parameters[parameters.length - 1]);
 		CommandsPage.createCommandsHTML(channel.substring(1));
 		return "Added command to the database and generated you custom commands page located at http://pcmrbot.no-ip.info/commands/%channel%.html".replace("%channel%", channel.substring(1));
 	}
+       catch (IndexOutOfBoundsException e) {
+           return "There was an issue processing the information!";
+        }
+            
+    }
 }

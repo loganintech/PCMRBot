@@ -36,6 +36,8 @@ public class Leave extends Command {
 	public String execute(String channel, String sender, String...parameters){
 		if (!channel.equalsIgnoreCase(Main.getBotChannel())) {
 			Main.partChannel(channel);
+                        Main.getBot().SaveChanList();
+                        
 			return "I have disconnected from %channel%'s channel.".replace("%channel%", channel);
 		}
 		return "Sorry %user%, I cannot allow you to disconnect me from my home channel.".replace("%user%", sender);

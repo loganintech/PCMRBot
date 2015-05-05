@@ -34,7 +34,8 @@ public class AddAutoReply extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters){
-		StringBuilder keywords = new StringBuilder();
+	try{
+            StringBuilder keywords = new StringBuilder();
 		for (int i = 0; i < parameters.length - 2; i++) {
 			keywords.append(parameters[i] + ",");
 		}
@@ -46,6 +47,14 @@ public class AddAutoReply extends Command {
 		String reply = parameters[parameters.length - 1];
 		Database.addAutoReply(channel.substring(1), keywords.toString(), reply);
 		return String.format("Added auto reply: \"%s\"! Which will be said when all of the following key words are said in %s: %s", reply, channel.substring(1), keywords.toString());
-	}
-	
+
+        }
+       catch (ArrayIndexOutOfBoundsException e) {
+           return "There was an issue processing the information!";
+       }
+       catch (IndexOutOfBoundsException e) {
+        return "There was an issue processing the information!";
+       }
+   }
 }
+
