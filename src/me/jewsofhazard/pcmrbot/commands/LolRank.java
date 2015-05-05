@@ -27,13 +27,13 @@ public class LolRank extends Command {
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
             
-            if(parameters.length > 0){
+            try {
             
                 return LeagueUtils.getSummonerRank(parameters[0], parameters[1]);
                 
-            } else {
+            } catch(Exception e) {
             
-            return "You must search for someone's summoner name and region.";
+            return "You must search for someone's summoner name and region only.";
             
             }
             

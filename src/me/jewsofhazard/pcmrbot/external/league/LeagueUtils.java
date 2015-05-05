@@ -8,6 +8,7 @@ package me.jewsofhazard.pcmrbot.external.league;
 import com.robrua.orianna.api.core.RiotAPI;
 import com.robrua.orianna.type.core.common.Region;
 import com.robrua.orianna.type.core.summoner.Summoner;
+import com.robrua.orianna.type.dto.stats.PlayerStatsSummary;
 
 /**
  *
@@ -28,11 +29,21 @@ public class LeagueUtils {
 		summoner = RiotAPI.getSummonerByName(summonerName);
 		try {
 			if (regionTest.equals("-1")) {
+                            try{
 				return summoner.getName()
 						+ " is in "
-						+ summoner.getLeagues().get(0).getTier().toString()
-								.toLowerCase();
-			}
+						+ summoner.getLeagues().get(0).getTier().toString().toLowerCase()
+                                                + " and is playing "
+                                                + summoner.getCurrentGame().getMode().toString().toLowerCase()
+                                                + " on "
+                                                + summoner.getCurrentGame().getMap().toString().replaceAll("_"," ").toLowerCase()
+                                                + ".";
+                            } catch(Exception e){
+                                return summoner.getName()
+						+ " is in "
+						+ summoner.getLeagues().get(0).getTier().toString().toLowerCase() + ".";                            
+                                }
+                            }
 		} catch (Exception e) {
 			return getLevel(region, summonerName);
 		}
@@ -108,7 +119,7 @@ public class LeagueUtils {
 			System.out.println(e);
 			// return
 			// "An error has occured checking for the level of the user, perhaps you used the wrong name or region?";
-			return "";
+			return "An error has occured when checking the level of the user. This is most likely due to an incorrect name.";
 		}
 	}
 }
