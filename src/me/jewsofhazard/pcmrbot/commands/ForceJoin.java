@@ -14,35 +14,54 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package me.jewsofhazard.pcmrbot.commands;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import me.jewsofhazard.pcmrbot.Main;
+import static me.jewsofhazard.pcmrbot.Main.joinChannel;
 import me.jewsofhazard.pcmrbot.util.CLevel;
+import me.jewsofhazard.pcmrbot.util.TFileReader;
+import org.apache.commons.io.IOUtils;
 
 public class ForceJoin extends Command {
 
-	@Override
-	public CLevel getCommandLevel() {
-		return CLevel.Mod;
-	}
+    @Override
+    public CLevel getCommandLevel() {
+        return CLevel.Mod;
+    }
 
-	@Override
-	public String getCommandText() {
-		return "forcejoin";
-	}
+    @Override
+    public String getCommandText() {
+        return "forcejoin";
+    }
 
-	@Override
-	public String execute(String channel, String sender, String... parameters) {
-		if(channel.equalsIgnoreCase(Main.getBotChannel())) {
-			if(parameters[0].startsWith("#")) {
-				Main.joinChannel(parameters[0], false);
-			} else {
-				Main.joinChannel("#"+parameters[0], false);
+    @Override
+    public String execute(String channel, String sender, String... parameters) {
+        if (channel.equalsIgnoreCase(Main.getBotChannel())) {
+            if (parameters[0].length() >= 1) {
+                if (parameters[0].startsWith("#")) {
+                    Main.joinChannel(parameters[0], false);
+                } else {
+                    Main.joinChannel("#" + parameters[0], false);
+                }
+                return "Forcefully joining %channel%".replace("%channel%", parameters[0]);
+            }
+            if (parameters[0].length() == 0) {
+                File f = new File("connectedChannels.txt");
+		if (f.exists()) {
+			for (String s : TFileReader.readFile(f)) {
+				joinChannel(s, true);
 			}
-			return "Forcefully joining %channel%".replace("%channel%", parameters[0]);
 		}
-		return "You can only preform this command from the main bot channel!";
-	}
+            }
 
+            return "You can only preform this command from the main bot channel!";
+        }
+        return null;
+    }
 }

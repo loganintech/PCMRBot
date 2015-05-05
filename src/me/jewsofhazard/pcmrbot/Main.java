@@ -106,7 +106,7 @@ public class Main implements Runnable{
 			for (String s : TFileReader.readFile(f)) {
 				joinChannel(s, true);
 			}
-			f.delete();
+			
 		}
                 
 	}
