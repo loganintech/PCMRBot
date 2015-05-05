@@ -81,8 +81,12 @@ public class Main implements Runnable{
 	@Override
 	public void run() {
 		Database.initDBConnection(args[1]);
-		ReadScheduleTable.createDelayedTasks();
-		bot = new IRCBot();
+		
+                /*
+                ReadScheduleTable.createDelayedTasks();
+		Disabled due to it being considered a hassle and not a favor. Well, we tried.
+                */
+                bot = new IRCBot();
 
 		bot.setVerbose(true);
 		try {
