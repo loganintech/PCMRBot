@@ -26,7 +26,7 @@ public class LeagueUtils {
 		try {
 			if (regionTest.equals("-1")) {
                             String tier = summoner.getLeagues().get(0).getTier().toString(); //silver, gold, etc
-                            tier = tier.substring(1).toLowerCase();
+                            tier = tier.substring(0,1).concat(tier.substring(1).toLowerCase());
                             String division = summoner.getLeagueEntries().get(0).getEntries().get(0).getDivision(); //2, 3, etc
                             try{
                                 
