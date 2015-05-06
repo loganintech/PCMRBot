@@ -17,11 +17,7 @@ import com.robrua.orianna.type.dto.stats.PlayerStatsSummary;
 public class LeagueUtils {
 	// private String region;
 	private static Summoner summoner;
-
 	private static String apiKey = "df57fbca-8417-4af6-92d0-3150cb01e1f7";
-
-	// private final String NAME_URL = "https://" + region +
-	// ".api.pvp.net/api/lol/na/v1.4/summoner/by-name/"+summoner+"?api_key="+apiKey;
 
 	public static String getSummonerRank(String region, String summonerName) {
 		String regionTest = setRegion(region);
@@ -29,19 +25,26 @@ public class LeagueUtils {
 		summoner = RiotAPI.getSummonerByName(summonerName);
 		try {
 			if (regionTest.equals("-1")) {
+                            String tier = summoner.getLeagues().get(0).getTier().toString(); //silver, gold, etc
+                            tier = tier.substring(1).toLowerCase();
+                            String division = summoner.getLeagueEntries().get(0).getEntries().get(0).getDivision(); //2, 3, etc
                             try{
+                                
+                                String mode = summoner.getCurrentGame().getMode().toString().toLowerCase();
+                                String map = summoner.getCurrentGame().getMap().toString().replaceAll("_"," ");
+                                map = map.substring(0,1)
+                                        .concat(map.substring(1,map.indexOf(" ")).toLowerCase())
+                                        .concat(map.substring(map.indexOf(" "), map.indexOf(" ") + 2))
+                                        .concat(map.substring(map.indexOf(" ") + 2).toLowerCase());
+                                
 				return summoner.getName()
-						+ " is in "
-						+ summoner.getLeagues().get(0).getTier().toString().toLowerCase()
-                                                + " and is playing "
-                                                + summoner.getCurrentGame().getMode().toString().toLowerCase()
-                                                + " on "
-                                                + summoner.getCurrentGame().getMap().toString().replaceAll("_"," ").toLowerCase()
-                                                + ".";
+                                        + " is in " + tier + " " + division + " and is playing " + mode + " on " + map + ".";
+                                
                             } catch(Exception e){
+                                
                                 return summoner.getName()
-						+ " is in "
-						+ summoner.getLeagues().get(0).getTier().toString().toLowerCase() + ".";                            
+                                        + " is in " + tier + " " + division;                
+                                
                                 }
                             }
 		} catch (Exception e) {
