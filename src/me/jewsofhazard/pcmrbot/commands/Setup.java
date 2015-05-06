@@ -24,6 +24,12 @@ public class Setup extends Command {
 
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
+                try {
+                System.out.println(parameters[0]);
+                }
+                catch(Exception e) {
+                parameters[0] = "fish"; //It doesn't matter as long as it is not continue. We didn't check if there was no parameters.
+                }
 		if(!parameters[0].equalsIgnoreCase("continue")) {
 			Main.getBot().sendMessage(
 				channel,

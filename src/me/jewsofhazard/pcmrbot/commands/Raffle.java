@@ -35,7 +35,8 @@ public class Raffle extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		if(Main.getBot().getRaffle(channel) != null) {
+            try{
+                if(Main.getBot().getRaffle(channel) != null) {
 			return "There is already a raffle in progress!";
 		}
 		ULevel level=ULevel.getTypeFromString(parameters[0]);
@@ -47,5 +48,10 @@ public class Raffle extends Command {
 			return "Raffle started for everyone! Type !enter to enter!";
 		}
 		return "Raffle started for %level%s! Type !enter to enter!".replace("%level%", level.toString());
-	}
+            }
+        
+        catch(Exception e){
+            return "Make sure you enter a type of raffle you would like. (all, follower, or subscriber)";
+        }
+    }
 }

@@ -201,7 +201,7 @@ public class IRCBot extends PircBot {
                 }
                 String reply = CommandParser.parse(command, sender, channel,
                         params);
-                if (reply != null && sender.toLowerCase() != Main.getBotChannel().replace("#", "").toLowerCase()) {
+                if (reply != null && !sender.toLowerCase().equals(Main.getBotChannel().replace("#", "").toLowerCase())) {
                     sendMessage(channel, reply);
 
                 }

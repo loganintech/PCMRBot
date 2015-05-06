@@ -51,7 +51,7 @@ public class ChangeOption extends Command {
 				return "You have changed the capitals cap to %option%.".replace("%option%", parameters[1]);
 			} else if (parameters[0].equalsIgnoreCase("regulars")) {
 				Database.setOption(channel.substring(1), TOptions.regular, Integer.valueOf(parameters[1]));
-				return "You have changed the time for regulars to %option%.".replace("%option%", parameters[1]);
+				return "You have changed the time for regulars to %option% hours.".replace("%option%", parameters[1]);
 			} else if (parameters[0].equalsIgnoreCase("links")) {
 				if (parameters[1].toLowerCase().equalsIgnoreCase("enable")) {
 					Database.setOption(channel.substring(1), TOptions.link, 0);

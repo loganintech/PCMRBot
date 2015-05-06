@@ -17,7 +17,7 @@ public class Points extends Command {
 
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		if(parameters[0].length() == 0) {
+		if(parameters.length == 0) {
 			String pts = Database.getPoints(sender, channel.substring(1));
 			if (pts == null) {
 				return "%user% has no points!".replace("%user%", sender);

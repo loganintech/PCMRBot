@@ -40,8 +40,8 @@ public class LeagueUtils {
 				return summoner.getName()
                                         + " is in " + tier + " " + division + " and is playing " + mode + " on " + map + ".";
                                 
-                            } catch(Exception e){
-                                
+                            } catch(Exception e) {
+
                                 return summoner.getName()
                                         + " is in " + tier + " " + division;                
                                 
