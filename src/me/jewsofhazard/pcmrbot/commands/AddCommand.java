@@ -46,9 +46,10 @@ public class AddCommand extends Command {
 				params.append(parameters[i] + " ");
 			}
 		}
+                
 		Database.addCommand(channel, parameters[0], params.toString(), parameters[parameters.length - 1]);
 		CommandsPage.createCommandsHTML(channel.substring(1));
-		return "Added command to the database and generated you custom commands page located at http://pcmrbot.no-ip.info/commands/%channel%.html".replace("%channel%", channel.substring(1));
+		return "Added command ( " + parameters[0] + " ) to the database and generated you custom commands page located at http://pcmrbot.no-ip.info/commands/%channel%.html".replace("%channel%", channel.substring(1));
 	}
        catch (IndexOutOfBoundsException e) {
            return "There was an issue processing the information!";
