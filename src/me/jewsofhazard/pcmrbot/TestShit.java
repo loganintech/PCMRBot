@@ -14,7 +14,7 @@ public class TestShit {
     
     public static void main(String [] args){
     
-        System.out.println(LeagueUtils.getSummonerRank("na", "jewsofhazard"));
+        
     
     }
     

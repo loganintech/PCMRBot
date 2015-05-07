@@ -28,9 +28,16 @@ public class LolRank extends Command {
 	public String execute(String channel, String sender, String... parameters) {
             
             try {
-            
-                return LeagueUtils.getSummonerRank(parameters[0], parameters[1]);
-                
+                if(parameters.length == 2){
+                    return LeagueUtils.getSummonerRank(parameters[0], parameters[1]);
+                }
+                else if(parameters.length > 2){
+                    return "You must put the summoner name as one string. To search for GH Fifty, use ghfifty.";
+                }
+                else{
+                    return LeagueUtils.getSummonerRank(parameters[0]);
+                }
+
             } catch(Exception e) {
             
             return "You must search for someone's summoner name and region only.";

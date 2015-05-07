@@ -8,7 +8,7 @@ package me.jewsofhazard.pcmrbot.external.league;
 import com.robrua.orianna.api.core.RiotAPI;
 import com.robrua.orianna.type.core.common.Region;
 import com.robrua.orianna.type.core.summoner.Summoner;
-import com.robrua.orianna.type.dto.stats.PlayerStatsSummary;
+
 
 /**
  *
@@ -17,25 +17,81 @@ import com.robrua.orianna.type.dto.stats.PlayerStatsSummary;
 public class LeagueUtils {
 	// private String region;
 	private static Summoner summoner;
-	private static String apiKey = "df57fbca-8417-4af6-92d0-3150cb01e1f7";
+	private static final String apiKey = "df57fbca-8417-4af6-92d0-3150cb01e1f7";
+        private static String regionTest ;
+        private static String regionSet ;
+        private static boolean isSetup = false;
 
+        public static String setupClass(String region){
+            RiotAPI.setAPIKey(apiKey);
+            regionTest = setRegion(region);
+            regionSet = region;
+            isSetup = true;
+            return regionTest;
+        }
+        
 	public static String getSummonerRank(String region, String summonerName) {
-		String regionTest = setRegion(region);
-		RiotAPI.setAPIKey(apiKey);
-		summoner = RiotAPI.getSummonerByName(summonerName);
-		try {
-			if (regionTest.equals("-1")) {
-                            String tier = summoner.getLeagues().get(0).getTier().toString(); //silver, gold, etc
-                            tier = tier.substring(0,1).concat(tier.substring(1).toLowerCase());
-                            String division = summoner.getLeagueEntries().get(0).getEntries().get(0).getDivision(); //2, 3, etc
+		            setRegion(region);
+		try {                    
+			if (isSetup && regionTest.equals("-1")) {
+                            
+                            summoner = RiotAPI.getSummonerByName(summonerName);
+                            String tier = getTier();
+                            String division = getDivision();
                             try{
                                 
-                                String mode = summoner.getCurrentGame().getMode().toString().toLowerCase();
-                                String map = summoner.getCurrentGame().getMap().toString().replaceAll("_"," ");
-                                map = map.substring(0,1)
-                                        .concat(map.substring(1,map.indexOf(" ")).toLowerCase())
-                                        .concat(map.substring(map.indexOf(" "), map.indexOf(" ") + 2))
-                                        .concat(map.substring(map.indexOf(" ") + 2).toLowerCase());
+                                String mode = getMode();
+                                String map = getMap();
+                                
+                                
+                                String returnMe = summoner.getName()
+                                        + " is in " + tier + " " + division + " and is playing " + mode + " on " + map + ".";
+                                                            setRegion(regionSet);
+				return returnMe;
+                                
+                            } catch(Exception e) {
+                                
+                                String returnMe = summoner.getName()
+                                        + " is in " + tier + " " + division;  
+                                                            setRegion(regionSet);
+                                return returnMe;
+                                
+                                
+                                }
+                            }
+                        else{
+                            
+                            setupClass(region);
+                            return getSummonerRank(region, summonerName);
+                            
+                        }
+		} catch (Exception e) {
+                    if (!regionTest.equals("-1")) {
+			return regionTest;
+                    }
+                    else{
+                    setRegion(region);
+                    String returnMe = getLevel(summonerName); 
+                    setRegion(regionSet);
+			return returnMe;
+                    
+                    }
+		}
+		
+		
+	}
+
+        public static String getSummonerRank(String summonerName){
+                        
+        try {
+			if (isSetup && regionTest.equals("-1")) {
+                            summoner = RiotAPI.getSummonerByName(summonerName);
+                            String tier = getTier();
+                            String division = getDivision();
+                            try{
+                                
+                                String mode = getMode();
+                                String map = getMap();
                                 
 				return summoner.getName()
                                         + " is in " + tier + " " + division + " and is playing " + mode + " on " + map + ".";
@@ -47,15 +103,23 @@ public class LeagueUtils {
                                 
                                 }
                             }
+                        else{
+                        
+                            return "To use lolrank without a region, you need to run !setlolregion [region] first.";
+                            
+                        }
 		} catch (Exception e) {
-			return getLevel(region, summonerName);
-		}
-		if (!regionTest.equals("-1")) {
+                    
+                    if (!regionTest.equals("-1")) {
 			return regionTest;
+                    }
+                    else{
+			return getLevel(summonerName);
+                    }
 		}
-		return "";
-	}
-
+		
+        }
+        
 	public static String setRegion(String region) {
 		try {
 			switch (region.toLowerCase()) {
@@ -111,7 +175,7 @@ public class LeagueUtils {
 
 	}
 
-	public static String getLevel(String region, String summonerName) { // this
+	public static String getLevel(String summonerName) { // this
 																		// is
 																		// broken,
 																		// always
@@ -125,4 +189,36 @@ public class LeagueUtils {
 			return "An error has occured when checking the level of the user. This is most likely due to an incorrect name.";
 		}
 	}
+
+        public static String getMap(){
+        
+            String map = summoner.getCurrentGame().getMap().toString().replaceAll("_"," ");
+            map = map.substring(0,1)
+                .concat(map.substring(1,map.indexOf(" ")).toLowerCase())
+                .concat(map.substring(map.indexOf(" "), map.indexOf(" ") + 2))
+                .concat(map.substring(map.indexOf(" ") + 2).toLowerCase());
+        return map;
+        
+        }
+        
+        public static String getMode(){
+            return summoner.getCurrentGame().getMode().toString().toLowerCase();
+        }
+        
+        public static String getTier(){     //silver, gold, etc
+            String tier = summoner.getLeagues().get(0).getTier().toString(); 
+            return tier.substring(0,1).concat(tier.substring(1).toLowerCase());
+        }
+        
+        public static String getDivision(){
+        
+            return summoner.getLeagueEntries().get(0).getEntries().get(0).getDivision(); //2, 3, etc
+            
+        }
+        
+        public static boolean isSetup(){
+        
+            return isSetup;
+            
+        }
 }
