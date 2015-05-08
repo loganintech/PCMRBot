@@ -45,7 +45,7 @@ public class LeagueUtils {
                             String returnMe = summoner.getName()
                                     + " is in " + tier + " " + division;
                             if (!mode.equals("404")){
-                                returnMe = returnMe.concat(" and is playing " + mode + " on " + map + ".");
+                                returnMe = returnMe.concat(" and is playing " + mode + " on " + map);
                             }
                             setRegion(regionSet);
                             return returnMe; 
