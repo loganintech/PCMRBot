@@ -42,13 +42,13 @@ public class Setup extends Command {
 				"We would like you to configure the ammount of capital letters, symbols, and emotes (all of which default to 20), and paragraphs(defaults to 250 characters) allowed in a message.");
 			Main.getBot().sendMessage(
 				channel,
-				"To change this, please run !changeOption <caps, symbols, emotes, paragraph>|<new value>. Note: If you make paragraph to short users may not be able to post proper sentences. Think of it like twitter messages.");
+				"To change this, please run !changeOption <caps, symbols, emotes, paragraph> <new value>. Note: If you make paragraph to short users may not be able to post proper sentences. Think of it like twitter messages.");
 			Main.getBot().sendMessage(
 					channel,
 					"If you would like to disable any spam protection simply set its value to -1, except for links which only take \"enable\" or \"disable\".");
 			Main.getBot().sendMessage(channel, "Now you need to set up how regulars are set up in your channel. Regulars are essentially people who have spent a certain ammount of time in your chat (which you define)");
 			Main.getBot().sendMessage(channel, "To become a regular a user must earn a certain number of points which are earned by being in chat, 1 point for every 5 minutes.");
-			Main.getBot().sendMessage(channel, "Set how many hours a user must be in the chat to become a regular by typing !changeOption regular|<time in hours>");
+			Main.getBot().sendMessage(channel, "Set how many hours a user must be in the chat to become a regular by typing !changeOption regular <time in hours>");
 			Main.getBot().sendMessage(
 				channel,
 				"Once you are finished type \"!setup continue\" in chat!");
