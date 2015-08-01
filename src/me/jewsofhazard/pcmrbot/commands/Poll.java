@@ -33,7 +33,11 @@ public class Poll extends Command {
 	
 	@Override
 	public String execute(String channel, String sender, String... parameters) {
-		String[] answers = new String[parameters.length - 2];
+		try{
+			String[] answers = new String[parameters.length - 2];
+		} catch (NullPointerException e){
+			return "You need to provide a length, question, and answers for the poll to work."
+		}
 		if (answers.length < 2) {
 			return	"You must provide at least two answers!";
 		} else if (Main.getBot().hasPoll(channel)) {
