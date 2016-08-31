@@ -1,6 +1,5 @@
 # PCMRBot
 ## A Twitch bot, because we can.
-## [PCMRBot Website](http://pcmrbot.no-ip.info)
 
 #Usage
 You should be able to download the sources and compile with your login and OAuth code and run the bot. You don't have to have a second twitch account, but you can.
